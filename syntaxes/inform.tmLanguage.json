@@ -1,0 +1,251 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "INFORM JBI for YASKAWA Motoman",
+	"patterns": [
+		{ "include": "#metainst" },
+		{ "include": "#metaargname" },
+		{ "include": "#metajobname" },
+		{ "include": "#metapositions" },
+		{ "include": "#metaheader" }
+	],
+	"repository": {
+		"metaheader": {
+			"match": "^/.*",
+			"name": "meta.preprocessor.inform"
+		},
+		"metaargname": {
+			"begin": "^(///COMMENT)$",
+			"beginCaptures": {"1": {"name": "meta.preprocessor.inform" }},			
+			"while": "^([^\\/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [
+					{
+						"match": "^.{0,16}$",
+						"name": "variable.parameter.inform"
+					},
+					{
+						"match": "^.*$",
+						"name": "invalid.illegal.argname.length.inform"
+					}
+				 	]
+				}
+			}
+		},
+		"metajobname": {
+			"match": "^//NAME\\s+(\\S+)",
+			"name": "meta.preprocessor.jobname.inform",
+			"captures": {
+				"1": { "patterns": [{"include": "#jobnamestring"}] }
+			}
+		},
+		"metapositions": {
+			"begin": "^(\\/\\/POS)$",
+			"beginCaptures": {"1": {"name": "meta.preprocessor.position.inform" }},			
+			"while": "^((?!\\/\\/).*|\\/\\/\\/.*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [
+					{
+						"match": "^///.*$",
+						"name": "meta.preprocessor.position.inform"
+					},
+					{
+						"match": "^[CP][0-9]*",
+						"name": "variable.other.inform"
+					},
+					{ "include": "#floatvalues" },
+					{ "include": "#decimalvalues" }
+				 	]
+				}
+			}
+		},
+		"metainst": {
+			"begin": "^(//INST)$",
+			"beginCaptures": { "1":{"name":"meta.preprocessor.inst.inform"} },
+			"end": "^(END)\\Z",
+			"endCaptures": { "1":{"name":"keyword.control.inform"} },
+			"patterns": [
+				{ "include": "#invalidline" },
+				{ "include": "#COMMENT" },
+				{ "include": "#LABEL" },
+				{ "include": "#JUMP" },
+				{ "include": "#CALL" },
+				{ "include": "#MACRO" },
+				{ "include": "#generalcontrol" },
+				{ "include": "#generalcommands" },
+				{ "include": "#variables" },
+				{ "include": "#strings" },
+				{ "include": "#floatvalues" },
+				{ "include": "#decimalvalues" },
+				{
+					"match": "^/.*$",
+					"name": "meta.preprocessor.inst.inform"
+				}
+			]
+		},
+		"COMMENT": {
+			"e.g.": "'comment",
+			"patterns": [
+				{
+					"match": "^\\s*'.{0,32}$",
+					"name": "comment.line.inform"
+				},
+				{
+					"match": "^\\s*'.*",
+					"name": "invalid.illegal.comment.length.inform"
+				}
+			]
+		},
+		"LABEL": {
+			"e.g.": "*LABEL",
+			"patterns": [
+				{
+					"match": "^\\s*(\\*.*)$",
+					"captures": {
+						"1": { "patterns": [ { "include": "#labelstring" } ] }
+					}
+				}
+			]
+		},
+		"JUMP": {
+			"e.g.": "JUMP *LABEL",
+			"patterns": [
+				{
+					"match": "^\\s*(JUMP)\\s*(\\*.*)$",
+					"captures": {
+						"1": { "name": "keyword.control.jump.inform" },
+						"2": { "patterns": [ { "include": "#labelstring" } ] }
+					}
+				}
+			]
+		},
+		"CALL": {
+			"e.g.1": "CALL JOB:JOBNAME",
+			"e.g.2": "CALL JOB:JOBNAME ARGFB000",
+			"patterns": [
+				{
+					"match": "^\\s*(CALL)\\sJOB:(\\S+)((\\s+(ARGF(\\S+)))*)$",
+					"captures": {
+						"1": { "name": "keyword.control.call.inform" },
+						"2": { "patterns": [{"include": "#jobnamestring"}] },
+						"3": { "patterns": [{"include": "#ARGF"}] }
+					}
+				}
+			]
+		},
+		"MACRO": {
+			"e.g.1": "MACRO1 MJ#(1) ARGFB000",
+			"patterns": [
+				{
+					"match": "^\\s*(MACRO[12])\\s(\\S+)((\\s+(ARGF(\\S+)))*)$",
+					"captures": {
+						"1": { "name": "keyword.control.call.inform" },
+						"3": {
+							"patterns": [{"include": "#ARGF"}]
+						}
+					}
+				}
+			]
+		},
+		"invalidline": {
+			"patterns": [
+				{
+					"begin": "^([ ]+.*|)$",
+					"while": ".*",
+					"name": "invalid.illegal.startspace.inform"
+				}
+			]
+		},
+		"generalcontrol": {
+			"patterns": [
+				{
+					"match": "^\\s*(NOP|END)\\b",
+					"name": "keyword.control.general.inform"
+				},
+				{
+					"match": "^\\s*(IFTHENEXP|ELSEIFEXP|ELSE|ENDIF|WHILEEXP|ENDWHILE|RET)\\b",
+					"name": "keyword.control.general.inform"
+				},
+				{
+					"match": "^\\s*(TIMER|WAIT|PAUSE|ABORT)\\b",
+					"name": "keyword.control.general.inform"
+				},
+				{
+					"match": "\\b(EXPRESS|ANDEXP|OREXP)\\b",
+					"name": "keyword.operator.general.inform"
+				}
+			]
+		},
+		"generalcommands": {
+			"patterns": [
+				{
+					"match": "^\\s*[[:upper:][0-9]]+\\b",
+					"name": "support.function.inform"
+				}
+			]
+		},
+		"labelstring": {
+			"patterns": [
+				{
+					"match": "\\*\\S{1,8}\\b",
+					"name": "entity.name.tag.label.inform"
+				},
+				{
+					"match": "^\\*.*",
+					"name": "invalid.illegal.label.inform"
+				}
+			]
+		},
+		"jobnamestring":{
+			"patterns": [
+				{
+					"match": "[[:upper:]0-9_\\-]{1,32}",
+					"name": "entity.name.function.jobname.inform"
+				},
+				{
+					"match": ".*",
+					"name": "invalid.illegal.jobname.inform"
+				}
+			]
+		},
+		"variables": {
+			"patterns": [
+				{
+					"match": "\\b[L$]*(B|I|D|R|S|P|C|PX)([0-9]+\\b|\\[(B|I|D)*[0-9]+\\])",
+					"name": "variable.other.inform"
+				}
+			]
+		},
+		"ARGF": {
+			"patterns": [
+				{
+					"match": "ARGF([L$]*(B|I|D|R|S|P|C|PX)[0-9]+)",
+					"captures": {
+						"1": {"name": "variable.other.inform" }
+					}
+				},
+				{
+					"match": "ARGF([-]?[0-9]+)",
+					"captures": {
+						"1": {"name": "constant.numeric.decimal.inform"}
+					}
+				}
+			]
+		},
+		"strings": {
+			"name": "string.quoted.double.inform",
+			"begin": "\"",
+			"end": "\""
+		},
+		"decimalvalues": {
+			"match": "\\b[-]?[1-9]*[0-9]+\\b",
+			"name": "constant.numeric.decimal.inform"
+		},
+		"floatvalues": {
+			"match": "\\b[-]?[0-9]+\\.[0-9]+\\b",
+			"name": "constant.numeric.float.inform"
+		}
+	},
+	"scopeName": "source.inform"
+}

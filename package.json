@@ -1,0 +1,25 @@
+{
+    "name": "inform-job-support",
+    "displayName": "inform job support",
+    "description": "Support INFORM JOB JBI for YASKAWA Motoman",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.63.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "inform",
+            "aliases": ["inform", "INFORM JBI for YASKAWA Motoman"],
+            "extensions": [".JBI"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "inform",
+            "scopeName": "source.inform",
+            "path": "./syntaxes/inform.tmLanguage.json"
+        }]
+    }
+}

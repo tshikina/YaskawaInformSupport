@@ -1,8 +1,14 @@
 {
     "name": "inform-job-support",
-    "displayName": "inform job support",
+    "displayName": "YASKAWA Inform Job Support",
     "description": "Support INFORM JOB JBI for YASKAWA Motoman",
-    "version": "0.0.1",
+    "publisher": "tshikina",
+    "icon": "images/icon.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tshikina/YaskawaInformSupport.git"
+    },
+    "version": "0.0.3",
     "engines": {
         "vscode": "^1.63.0"
     },

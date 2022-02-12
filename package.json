@@ -21,11 +21,20 @@
             "aliases": ["inform", "INFORM JBI for YASKAWA Motoman"],
             "extensions": [".JBI"],
             "configuration": "./language-configuration.json"
+        },{
+            "id": "cioprglst",
+            "aliases": ["CIOPRG.LST", "CIOPRG.LST for YASKAWA Motoman"],
+            "filenames": ["CIOPRG.LST"],
+            "configuration": "./language-configuration.json"
         }],
         "grammars": [{
             "language": "inform",
             "scopeName": "source.inform",
             "path": "./syntaxes/inform.tmLanguage.json"
+        },{
+            "language": "cioprglst",
+            "scopeName": "source.cioprglst",
+            "path": "./syntaxes/cioprglst.tmLanguage.json"
         }]
     }
 }

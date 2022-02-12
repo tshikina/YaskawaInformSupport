@@ -1,0 +1,97 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "CIOPRG.LST for YASKAWA Motoman",
+	"patterns": [
+		{ "include": "#msection" },
+		{ "include": "#ciosection" },
+		{ "include": "#iomessagesection" },
+		{ "include": "#metaheader" }
+	],
+	"repository": {
+		"metaheader": {
+			"match": "^/.*",
+			"name": "meta.preprocessor.cioprglst"
+		},
+		"msection": {
+			"begin": "^(//\\$M)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.m.cioprglst" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [
+						{ "include": "#decimalvalues" }
+					]
+				}
+			}
+		},
+		"ciosection": {
+			"begin": "^(//KEY.*)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.cio.cioprglst" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [
+						{ "include": "#ciocontrol" },
+						{ "include": "#ciocommands"},
+						{ "include": "#variables" },
+						{ "include": "#decimalvalues" }
+					]
+				}
+			}
+		},
+		"iomessagesection":{
+			"begin": "^(//(ALARM|MESSAGE).*)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.iomessage.cioprglst" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [{
+						"match": "^.{0,32}$",
+						"name": "string.unquoted.iomessage.cioprglst"
+					},{
+						"match": "^.*$",
+						"name": "invalid.illegal.length.iomessage.cioprglst"
+					}
+					]
+				}
+			}
+		},
+		"ciocontrol": {
+			"patterns": [
+				{
+					"match": "^(PART.*)$",
+					"name": "keyword.control.general.cioprglst"
+				},
+				{
+					"match": "^END$",
+					"name": "keyword.control.general.cioprglst"
+				}
+			]
+		},
+		"ciocommands": {
+			"patterns": [
+				{
+					"match": "^\\s*[[:upper:]-]+\\b",
+					"name": "support.function.cioprglst"
+				}
+			]
+		},
+		"variables": {
+			"patterns": [
+				{
+					"match": "\\bM[0-9]+\\b",
+					"name": "variable.other.register.cioprglst"
+				},
+				{
+					"match": "#[0-9]+\\b",
+					"name": "variable.other.io.cioprglst"
+				}
+			]
+		},
+		"decimalvalues": {
+			"match": "\\b[-]?[1-9]*[0-9]+\\b",
+			"name": "constant.numeric.decimal.cioprglst"
+		}
+	},
+	"scopeName": "source.cioprglst"
+}

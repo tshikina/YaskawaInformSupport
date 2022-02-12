@@ -26,6 +26,11 @@
             "aliases": ["CIOPRG.LST", "CIOPRG.LST for YASKAWA Motoman"],
             "filenames": ["CIOPRG.LST"],
             "configuration": "./language-configuration.json"
+        },{
+            "id": "varnamedat",
+            "aliases": ["VARNAME.DAT", "VARNAME.DAT for YASKAWA Motoman"],
+            "filenames": ["VARNAME.DAT"],
+            "configuration": "./language-configuration.json"
         }],
         "grammars": [{
             "language": "inform",
@@ -35,6 +40,10 @@
             "language": "cioprglst",
             "scopeName": "source.cioprglst",
             "path": "./syntaxes/cioprglst.tmLanguage.json"
+        },{
+            "language": "varnamedat",
+            "scopeName": "source.varnamedat",
+            "path": "./syntaxes/varnamedat.tmLanguage.json"
         }]
     }
 }

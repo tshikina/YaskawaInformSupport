@@ -1,0 +1,46 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "IONAME.DAT for YASKAWA Motoman",
+	"patterns": [
+		{ "include": "#ionamesection" },
+		{ "include": "#metaheader" }
+	],
+	"repository": {
+		"metaheader": {
+			"match": "^/.*",
+			"name": "meta.preprocessor.ionamedat"
+		},
+		"ionamesection": {
+			"begin": "^(//(IN|OUT))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.varname.ionamedat" } },
+			"while": "(^[^,]*,[^,]*,[^,]*,[^,]*$)",
+			"whileCaptures": { 
+				"1":{
+					"patterns": [{
+							"match": "^([^,]{0,16}),([^,]{0,16}),([^,]{0,16}),([^,]{0,16}$)",
+							"captures": {
+								"1": {"name": "string.other.ioname.ionamedat"},
+								"2": {"name": "string.other.ioname.ionamedat"},
+								"3": {"name": "string.other.ioname.ionamedat"},
+								"4": {"name": "string.other.ioname.ionamedat"}
+							}
+						},{
+							"match": "(.*)",
+							"name": "invalid.illegal.ioname.ionamedat"
+						}
+					]
+				}
+			}
+		},
+		"ioname":{
+			"patterns": [ {
+				"match": ".{0,16}",
+				"name": "string.other.varname.ionamedat"
+			},{
+				"match": ".*",
+				"name": "invalid.illegal.varname.ionamedat"
+			}]
+		}
+	},
+	"scopeName": "source.ionamedat"
+}

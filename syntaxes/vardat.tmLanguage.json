@@ -1,0 +1,89 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "VAR.DAT for YASKAWA Motoman",
+	"patterns": [
+		{ "include": "#integervarsection" },
+		{ "include": "#floatvarsection" },
+		{ "include": "#stringvarsection" },
+		{ "include": "#positionvarsection" },
+		{ "include": "#metashare" },
+		{ "include": "#metaheader" }
+	],
+	"repository": {
+		"metaheader": {
+			"match": "^/.*",
+			"name": "meta.preprocessor.vardat"
+		},
+		"metashare": {
+			"match": "^(///SHARE)(.*)",
+			"captures": {
+				"1": { "name": "meta.preprocessor.share.vardat" },
+				"2": { "patterns": [{"include": "#decimalvalues"}]}
+			}
+		},
+		"integervarsection": {
+			"begin": "^(///(B|I|D))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.vardat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [{"include": "#decimalvalues"}]
+				}
+			}
+		},
+		"floatvarsection": {
+			"begin": "^(///(R))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.vardat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [{"include": "#floatvalues"}]
+				}
+			}
+		},
+		"stringvarsection": {
+			"begin": "^(///(S))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.vardat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [{
+						"match": "^.{0,32}$",
+						"name": "string.other.stringvar.vardat"
+					},{
+						"match": "^.*$",
+						"name": "invalid.illegal.stringvar.vardat"
+					}]
+				}
+			}
+		},
+		"positionvarsection": {
+			"begin": "^(///(P))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.vardat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [
+						{"include": "#quotedstrings"},
+						{"include": "#floatvalues"},
+						{"include": "#decimalvalues"}
+					]
+				}
+			}
+		},
+		"decimalvalues": {
+			"match": "\\b[-]?[1-9]*[0-9]+\\b",
+			"name": "constant.numeric.decimal.vardat"
+		},
+		"floatvalues": {
+			"match": "\\b[+-]?[0-9]+(\\.[0-9]+([eE][+-]?[0-9]+)?)?\\b",
+			"name": "constant.numeric.float.vardat"
+		},
+		"quotedstrings": {
+			"name": "string.quoted.double.inform",
+			"begin": "\"",
+			"end": "\""
+		}
+	},
+	"scopeName": "source.vardat"
+}

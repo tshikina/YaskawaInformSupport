@@ -32,6 +32,11 @@
             "filenames": ["VARNAME.DAT"],
             "configuration": "./language-configuration.json"
         },{
+            "id": "vardat",
+            "aliases": ["VAR.DAT", "VAR.DAT for YASKAWA Motoman"],
+            "filenames": ["VAR.DAT"],
+            "configuration": "./language-configuration.json"
+        },{
             "id": "ionamedat",
             "aliases": ["IONAME.DAT", "IONAME.DAT for YASKAWA Motoman"],
             "filenames": ["IONAME.DAT"],
@@ -49,6 +54,10 @@
             "language": "varnamedat",
             "scopeName": "source.varnamedat",
             "path": "./syntaxes/varnamedat.tmLanguage.json"
+        },{
+            "language": "vardat",
+            "scopeName": "source.vardat",
+            "path": "./syntaxes/vardat.tmLanguage.json"
         },{
             "language": "ionamedat",
             "scopeName": "source.ionamedat",

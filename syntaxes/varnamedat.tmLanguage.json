@@ -1,6 +1,6 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "IONAME.DAT for YASKAWA Motoman",
+	"name": "VARNAME.DAT for YASKAWA Motoman",
 	"patterns": [
 		{ "include": "#varnamesection" },
 		{ "include": "#metashare" },

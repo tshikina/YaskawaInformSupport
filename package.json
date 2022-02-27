@@ -41,6 +41,11 @@
             "aliases": ["IONAME.DAT", "IONAME.DAT for YASKAWA Motoman"],
             "filenames": ["IONAME.DAT"],
             "configuration": "./language-configuration.json"
+        },{
+            "id": "iomnamedat",
+            "aliases": ["IOMNAME.DAT", "IOMNAME.DAT for YASKAWA Motoman"],
+            "filenames": ["IOMNAME.DAT"],
+            "configuration": "./language-configuration.json"
         }],
         "grammars": [{
             "language": "inform",
@@ -62,6 +67,10 @@
             "language": "ionamedat",
             "scopeName": "source.ionamedat",
             "path": "./syntaxes/ionamedat.tmLanguage.json"
+        },{
+            "language": "iomnamedat",
+            "scopeName": "source.iomnamedat",
+            "path": "./syntaxes/iomnamedat.tmLanguage.json"
         }]
     }
 }

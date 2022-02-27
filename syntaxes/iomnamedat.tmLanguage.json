@@ -1,0 +1,31 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "IOMNAME.DAT for YASKAWA Motoman",
+	"patterns": [
+		{ "include": "#namesection" },
+		{ "include": "#metaheader" }
+	],
+	"repository": {
+		"metaheader": {
+			"match": "^/.*",
+			"name": "meta.preprocessor.iomnamedat"
+		},
+		"namesection": {
+			"begin": "^(//(NAME))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.name.iomnamedat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [ {
+						"match": "^(.{0,16})$",
+						"name": "string.other.varname.iomnamedat"
+					},{
+						"match": "^(.*)$",
+						"name": "invalid.illegal.varname.iomnamedat"
+					}]
+				}
+			}
+		}
+	},
+	"scopeName": "source.iomnamedat"
+}

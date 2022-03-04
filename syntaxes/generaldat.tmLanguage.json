@@ -1,0 +1,19 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "General DAT,CND,PRM files for YASKAWA Motoman",
+	"patterns": [
+		{ "include": "#metaheader" },
+		{ "include": "#floatvalues" }
+	],
+	"repository": {
+		"metaheader": {
+			"match": "^/.*",
+			"name": "meta.preprocessor.generaldat"
+		},
+		"floatvalues": {
+			"match": "\\b[+-]?[0-9]+(\\.[0-9]+([eE][+-]?[0-9]+)?)?\\b",
+			"name": "constant.numeric.float.generaldat"
+		}
+	},
+	"scopeName": "source.generaldat"
+}

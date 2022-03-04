@@ -1,0 +1,24 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "psc file for YASKAWA Motoman",
+	"patterns": [
+		{ "include": "#comments" },
+		{ "include": "#data" }
+	],
+	"repository": {
+		"comments": {
+			"match": "^'.*",
+			"name": "comment.line.pscfile"
+		},
+		"data": {
+			"match": "^(\\S+)\\s*,\\s*([0-9]+)\\s*,\\s*([0-9]+)\\s*,(.*)$",
+			"captures": {
+				"1": { "name": "variable.other.pscfile" },
+				"2": { "name": "variable.other.pscfile"},
+				"3": { "name": "constant.numeric.decimal.pscfile"},
+				"4": { "name": "comment.line.pscfile"}
+			}
+		}
+	},
+	"scopeName": "source.pscfile"
+}

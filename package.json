@@ -126,6 +126,11 @@
                 "SVS.PRM"
             ],
             "configuration": "./language-configuration.json"
+        },{
+            "id": "pscfile",
+            "aliases": ["psc", "PSC file for YASKAWA Motoman"],
+            "extensions": [".psc"],
+            "configuration": "./language-configuration.json"
         }],
         "grammars": [{
             "language": "inform",
@@ -155,6 +160,10 @@
             "language": "generaldat",
             "scopeName": "source.generaldat",
             "path": "./syntaxes/generaldat.tmLanguage.json"
+        },{
+            "language": "pscfile",
+            "scopeName": "source.pscfile",
+            "path": "./syntaxes/psc.tmLanguage.json"
         }]
     }
 }

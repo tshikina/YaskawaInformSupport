@@ -15,8 +15,21 @@ This extension support syntax highlight for YASKAWA Motoman Inform language as f
 
 ## Release Notes
 
+### [0.0.4]
+Support syntax highlight of following files.
+- VAR.DAT
+- VARNAME.DAT
+- CIOPRG.LST
+- IONAME.DAT
+- IOMNAME.DAT
 
-### 0.0.1
+Support minimum syntax highlight for other DAT, PRM, CND files.
+
+
+### [0.0.3]
+Add icon in extesion.
+
+### [0.0.1]
 
 Initial release of this extension.
 

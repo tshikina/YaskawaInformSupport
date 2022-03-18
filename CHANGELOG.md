@@ -6,6 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 ### Added
+- Support snippets for Inform
 ### Changed
 ### Deprecated
 ### Removed

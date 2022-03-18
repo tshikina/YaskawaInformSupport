@@ -164,6 +164,12 @@
             "language": "pscfile",
             "scopeName": "source.pscfile",
             "path": "./syntaxes/psc.tmLanguage.json"
-        }]
+        }],
+        "snippets": [
+            {
+                "language": "inform",
+                "path": "./snippets/inform.code-snippets"
+            }
+        ]
     }
 }

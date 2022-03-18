@@ -1,0 +1,528 @@
+{
+    "IFTHENEXP":{
+        "scope": "inform",
+        "prefix": "IFTHENEXP",
+        "body": [
+            "IFTHENEXP ${1:I000=0}",
+            "\t 'if",
+            "ELSEIFEXP ${2:I000=1}",
+            "\t 'else if",
+            "ELSE",
+            "\t 'else",
+            "ENDIF"
+        ],
+        "description": "IFTHENEXP/ELSEIFEXP/ELSE/ENDIF commands"
+    },
+    "FOR": {
+        "scope": "inform",
+        "prefix": "FOR",
+        "body": [
+            "FOR ${1|I000,LI000|} START= ${2:1} TO ${3:10} STEP=${4:1}",
+            "\t 'for loop",
+            "NEXT $1"
+        ],
+        "description": "FOR loop command"
+    },
+    "WHILE": {
+        "scope": "inform",
+        "prefix": "WHILE",
+        "body": [
+            "WHILEEXP IN#(1)=ON",
+            "\t 'while loop",
+            "ENDWHILE"
+        ],
+        "description": "WHILE loop command"
+    },
+
+    "SWITCH": {
+        "scope": "inform",
+        "prefix": "SWITCH",
+        "body": [
+            "SWITCH ${1|LI000,I000|}",
+            "CASE ${2:0}",
+            "\t 'case",
+            "DEFAULT",
+            "\t 'default",
+            "ENDSWITCH"
+        ],
+        "description": "SWITCH CASE command"
+    },
+    "CASE": {
+        "scope": "inform",
+        "prefix": "CASE",
+        "body": [
+            "CASE ${1:<value>}",
+            "\t 'case"
+        ],
+        "description": "CASE command"
+    },
+
+    "PSTART":{
+        "prefix": "PSTART",
+        "body": ["PSTART SUB1"],
+        "description":  "PSTART command"
+    },
+    "PWAIT":{
+        "prefix": "PWAIT",
+        "body": ["PWAIT SUB1"],
+        "description":  "PWAIT command"
+    },
+    
+    "DOUT":{
+        "prefix": "DOUT",
+        "body": ["DOUT OT#(1) ON"],
+        "description":  "DOUT command"
+    },
+    "DIN":{
+        "prefix": "DIN",
+        "body": ["DIN B000 IN#(1)"],
+        "description":  "DIN command"
+    },
+    "WAIT":{
+        "prefix": "WAIT",
+        "body": ["WAIT IN#(1)=ON"],
+        "description":  "WAIT command"
+    },
+    "PULSE":{
+        "prefix": "PULSE",
+        "body": ["PULSE OT#(1)"],
+        "description":  "PULSE command"
+    },
+    "AOUT":{
+        "prefix": "AOUT",
+        "body": ["AOUT AO#(1) 0.00"],
+        "description":  "AOUT command"
+    },
+    "ARATION":{
+        "prefix": "ARATION",
+        "body": ["ARATION AO#(1)"],
+        "description":  "ARATION command"
+    },
+    "ARATIOF":{
+        "prefix": "ARATIOF",
+        "body": ["ARATIOF AO#(1)"],
+        "description":  "ARATIOF command"
+    },
+    "*LABEL":{
+        "prefix": "*LABEL",
+        "body": ["*LABEL"],
+        "description":  "*LABEL command"
+    },
+    "JUMP":{
+        "prefix": "JUMP",
+        "body": ["JUMP *LABEL"],
+        "description":  "JUMP command"
+    },
+    "CALL":{
+        "prefix": "CALL",
+        "body": ["CALL JOB:JOB"],
+        "description":  "CALL command"
+    },
+    "RET":{
+        "prefix": "RET",
+        "body": ["RET"],
+        "description":  "RET command"
+    },
+    "TIMER":{
+        "prefix": "TIMER",
+        "body": ["TIMER T=1.00"],
+        "description":  "TIMER command"
+    },
+    "PAUSE":{
+        "prefix": "PAUSE",
+        "body": ["PAUSE"],
+        "description":  "PAUSE command"
+    },
+    "ABORT":{
+        "prefix": "ABORT",
+        "body": ["ABORT"],
+        "description":  "ABORT command"
+    },
+    "CWAIT":{
+        "prefix": "CWAIT",
+        "body": ["CWAIT"],
+        "description":  "CWAIT command"
+    },
+    "PRINT":{
+        "prefix": "PRINT",
+        "body": ["PRINT \"STRING\""],
+        "description":  "PRINT command"
+    },
+    "CLS":{
+        "prefix": "CLS",
+        "body": ["CLS"],
+        "description":  "CLS command"
+    },
+    "MSG":{
+        "prefix": "MSG",
+        "body": ["MSG S000"],
+        "description":  "MSG command"
+    },
+    "INPUT":{
+        "prefix": "INPUT",
+        "body": ["INPUT B000"],
+        "description":  "INPUT command"
+    },
+    "TSYNC":{
+        "prefix": "TSYNC",
+        "body": ["TSYNC 1"],
+        "description":  "TSYNC command"
+    },
+    "ADVINIT":{
+        "prefix": "ADVINIT",
+        "body": ["ADVINIT"],
+        "description":  "ADVINIT command"
+    },
+    "ADVSTOP":{
+        "prefix": "ADVSTOP",
+        "body": ["ADVSTOP"],
+        "description":  "ADVSTOP command"
+    },
+    "SETUALM":{
+        "prefix": "SETUALM",
+        "body": ["SETUALM 8000 S000 0"],
+        "description":  "SETUALM command"
+    },
+    "LATESTJOB":{
+        "prefix": "LATESTJOB",
+        "body": ["LATESTJOB"],
+        "description":  "LATESTJOB command"
+    },
+    "SETTM":{
+        "prefix": "SETTM",
+        "body": ["SETTM TM000 TSTART"],
+        "description":  "SETTM command"
+    },
+    "WVON":{
+        "prefix": "WVON",
+        "body": ["WVON WEV#(1)"],
+        "description":  "WVON command"
+    },
+    "WVOF":{
+        "prefix": "WVOF",
+        "body": ["WVOF"],
+        "description":  "WVOF command"
+    },
+    "TOOLON":{
+        "prefix": "TOOLON",
+        "body": ["TOOLON"],
+        "description":  "TOOLON command"
+    },
+    "TOOLOF":{
+        "prefix": "TOOLOF",
+        "body": ["TOOLOF"],
+        "description":  "TOOLOF command"
+    },
+
+    "MOVJ":{
+        "prefix": "MOVJ",
+        "body": ["MOVJ P000 VJ=50.00"],
+        "description":  "MOVJ command"
+    },
+    "MOVL":{
+        "prefix": "MOVL",
+        "body": ["MOVL P000 V=23.0"],
+        "description":  "MOVL command"
+    },
+    "MOVC":{
+        "prefix": "MOVC",
+        "body": ["MOVC P000 V=23.0"],
+        "description":  "MOVC command"
+    },
+    "MOVS":{
+        "prefix": "MOVS",
+        "body": ["MOVS P000 V=23.0"],
+        "description":  "MOVS command"
+    },
+    "IMOV":{
+        "prefix": "IMOV",
+        "body": ["IMOV P000 V=23.0"],
+        "description":  "IMOV command"
+    },
+    "SPEED":{
+        "prefix": "SPEED",
+        "body": ["SPEED V=23.0"],
+        "description":  "SPEED command"
+    },
+    "REFP":{
+        "prefix": "REFP",
+        "body": ["REFP 1 P000"],
+        "description":  "REFP command"
+    },
+
+    "SET":{
+        "prefix": "SET",
+        "body": ["SET B000 1"],
+        "description":  "SET command"
+    },
+    "CLEAR":{
+        "prefix": "CLEAR",
+        "body": ["CLEAR B000 0"],
+        "description":  "CLEAR command"
+    },
+    "INC":{
+        "prefix": "INC",
+        "body": ["INC B000"],
+        "description":  "INC command"
+    },
+    "DEC":{
+        "prefix": "DEC",
+        "body": ["DEC B000"],
+        "description":  "DEC command"
+    },
+    "ADD":{
+        "prefix": "ADD",
+        "body": ["ADD B000 0"],
+        "description":  "ADD command"
+    },
+    "SUB":{
+        "prefix": "SUB",
+        "body": ["SUB B000 0"],
+        "description":  "SUB command"
+    },
+    "MUL":{
+        "prefix": "MUL",
+        "body": ["MUL B000 1"],
+        "description":  "MUL command"
+    },
+    "DIV":{
+        "prefix": "DIV",
+        "body": ["DIV B000 1"],
+        "description":  "DIV command"
+    },
+    "SQRT":{
+        "prefix": "SQRT",
+        "body": ["SQRT R000  0.000000E+00"],
+        "description":  "SQRT command"
+    },
+    "SIN":{
+        "prefix": "SIN",
+        "body": ["SIN R000  0.000000E+00"],
+        "description":  "SIN command"
+    },
+    "COS":{
+        "prefix": "COS",
+        "body": ["COS R000  0.000000E+00"],
+        "description":  "COS command"
+    },
+    "ATAN":{
+        "prefix": "ATAN",
+        "body": ["ATAN R000  0.000000E+00"],
+        "description":  "ATAN command"
+    },
+    "MULMAT":{
+        "prefix": "MULMAT",
+        "body": ["MULMAT P000 P001 P002"],
+        "description":  "MULMAT command"
+    },
+    "INVMAT":{
+        "prefix": "INVMAT",
+        "body": ["INVMAT P000 P001"],
+        "description":  "INVMAT command"
+    },
+    
+    "AND":{
+        "prefix": "AND",
+        "body": ["AND B000 255"],
+        "description":  "AND command"
+    },
+    "OR":{
+        "prefix": "OR",
+        "body": ["OR B000 0"],
+        "description":  "OR command"
+    },
+    "NOT":{
+        "prefix": "NOT",
+        "body": ["NOT B000 0"],
+        "description":  "NOT command"
+    },
+    "XOR":{
+        "prefix": "XOR",
+        "body": ["XOR B000 0"],
+        "description":  "XOR command"
+    },
+
+    "CNVRT":{
+        "prefix": "CNVRT",
+        "body": ["CNVRT PX000 PX000 BF"],
+        "description":  "CNVRT command"
+    },
+    "MFRAME":{
+        "prefix": "MFRAME",
+        "body": ["MFRAME UF#(1) PX000 PX001 PX002"],
+        "description":  "MFRAME command"
+    },
+    "SETE":{
+        "prefix": "SETE",
+        "body": ["SETE P000 (1) 0"],
+        "description":  "Set element of P-var command"
+    },
+    "GETE":{
+        "prefix": "GETE",
+        "body": ["GETE D000 P000 (1)"],
+        "description":  "Get element of P-var command"
+    },
+
+    "GETS":{
+        "prefix": "GETS",
+        "body": ["GETS B000 $B000"],
+        "description":  "Get system variable command"
+    },
+    "GETPOS":{
+        "prefix": "GETPOS",
+        "body": ["GETPOS PX000 STEP#(1)"],
+        "description":  "GETPOS command"
+    },
+    "SFTON":{
+        "prefix": "SFTON",
+        "body": ["SFTON P000"],
+        "description":  "SFTON command"
+    },
+    "SFTOF":{
+        "prefix": "SFTOF",
+        "body": ["SFTOF"],
+        "description":  "SFTOF command"
+    },
+    "MSHIFT":{
+        "prefix": "MSHIFT",
+        "body": ["MSHIFT PX000 BF PX001 PX002"],
+        "description":  "MSHIFT command"
+    },
+
+    "VAL":{
+        "prefix": "VAL",
+        "body": ["VAL B000 \"0\""],
+        "description":  "String to value command"
+    },
+    "VAL2STR":{
+        "prefix": "VAL",
+        "body": ["VAL2STR S000 B000"],
+        "description":  "Value to string command"
+    },
+    "ASC":{
+        "prefix": "ASC",
+        "body": ["ASC B000 \"0\""],
+        "description":  "Get ASCII code command"
+    },
+    "CHR":{
+        "prefix": "CHR",
+        "body": ["CHR$ S000 0"],
+        "description":  "ASCII code value to string command"
+    },
+    "MID":{
+        "prefix": "MID",
+        "body": ["MID$ S000 S001 0"],
+        "description":  "Get substring command"
+    },
+    "LEN":{
+        "prefix": "LEN",
+        "body": ["LEN B000 S000"],
+        "description":  "LEN command"
+    },
+    "CAT":{
+        "prefix": "CAT",
+        "body": ["CAT$ S000 S001 S002"],
+        "description":  "CAT command"
+    },
+    "STRSTR":{
+        "prefix": "STRSTR",
+        "body": ["STRSTR B000 S000 S001"],
+        "description":  "STRSTR command"
+    },
+    "GETNAME":{
+        "prefix": "GETNAME",
+        "body": ["GETNAME S000 B000"],
+        "description":  "GETNAME command"
+    },
+    "SETFILE":{
+        "prefix": "SETFILE",
+        "body": ["SETFILE WEV#(1) (1) 0"],
+        "description":  "SETFILE command"
+    },
+    "GETFILE":{
+        "prefix": "GETFILE",
+        "body": ["GETFILE D000 WEV#(1) (1)"],
+        "description":  "GETFILE command"
+    },
+    "SETREG":{
+        "prefix": "SETREG",
+        "body": ["SETREG MREG#(0) I000"],
+        "description":  "SETREG command"
+    },
+    "GETREG":{
+        "prefix": "GETREG",
+        "body": ["GETREG I000 MREG#(0)"],
+        "description":  "GETREG command"
+    },
+    "LOADJ":{
+        "prefix": "LOADJ",
+        "body": ["LOADJ JOB:JOB JBI"],
+        "description":  "LOADJ command"
+    },
+    "SAVEJ":{
+        "prefix": "SAVEJ",
+        "body": ["SAVEJ JOB:JOB JBI"],
+        "description":  "SAVEJ command"
+    },
+    "LOADV":{
+        "prefix": "LOADV",
+        "body": ["LOADV B000"],
+        "description":  "LOADV command"
+    },
+    "SAVEV":{
+        "prefix": "SAVEV",
+        "body": ["SAVEV B000"],
+        "description":  "SAVEV command"
+    },
+    "DELETEJ":{
+        "prefix": "DELETEJ",
+        "body": ["DELETEJ"],
+        "description":  "DELETEJ command"
+    },
+    "SWAIT":{
+        "prefix": "SWAIT",
+        "body": ["SWAIT"],
+        "description":  "SWAIT command"
+    },
+    "SHCKSET":{
+        "prefix": "SHCKSET",
+        "body": ["SHCKSET SSL#(1)"],
+        "description":  "SHCKSET command"
+    },
+    "SHCKRST":{
+        "prefix": "SHCKRST",
+        "body": ["SHCKRST"],
+        "description":  "SHCKRST command"
+    },
+
+    "HTRAJON":{
+        "prefix": "HTRAJON",
+        "body": ["HTRAJON"],
+        "description":  "HTRAJON command"
+    },
+    "HTRAJOF":{
+        "prefix": "HTRAJOF",
+        "body": ["HTRAJOF"],
+        "description":  "HTRAJOF command"
+    },
+    "HPVELON":{
+        "prefix": "HPVELON",
+        "body": ["HPVELON"],
+        "description":  "HPVELON command"
+    },
+    "HPVELOF":{
+        "prefix": "HPVELOF",
+        "body": ["HPVELOF"],
+        "description":  "HPVELOF command"
+    },
+    "HPMMVON":{
+        "prefix": "HPMMVON",
+        "body": ["HPMMVON V=23.0"],
+        "description":  "HPMMVON command"
+    },
+    "HPMMVOF":{
+        "prefix": "HPMMVOF",
+        "body": ["HPMMVOF"],
+        "description":  "HPMMVOF command"
+    }
+}

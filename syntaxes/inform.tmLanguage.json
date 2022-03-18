@@ -160,11 +160,23 @@
 		"generalcontrol": {
 			"patterns": [
 				{
-					"match": "^\\s*(NOP|END)\\b",
+					"match": "^\\s*(NOP|END|RET)\\b",
 					"name": "keyword.control.general.inform"
 				},
 				{
-					"match": "^\\s*(IFTHENEXP|ELSEIFEXP|ELSE|ENDIF|WHILEEXP|ENDWHILE|RET)\\b",
+					"match": "^\\s*(IFTHENEXP|ELSEIFEXP|ELSE|ENDIF)\\b",
+					"name": "keyword.control.general.inform"
+				},
+				{
+					"match": "^\\s*(SWITCH|CASE|DEFAULT|ENDSWITCH)\\b",
+					"name": "keyword.control.general.inform"
+				},
+				{
+					"match": "^\\s*(FOR|NEXT|WHILEEXP|ENDWHILE)\\b",
+					"name": "keyword.control.general.inform"
+				},
+				{
+					"match": "^\\s*(PSTART|PWAIT|TSYNC)\\b",
 					"name": "keyword.control.general.inform"
 				},
 				{

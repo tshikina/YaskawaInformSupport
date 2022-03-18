@@ -7,6 +7,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 ### Added
 - Support snippets for Inform
+- Added FOR, SWITCH, PSTART commands to control keyword for syntax highlight
 ### Changed
 ### Deprecated
 ### Removed

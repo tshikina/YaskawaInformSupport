@@ -8,6 +8,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Added
 - Support snippets for Inform
 - Added FOR, SWITCH, PSTART commands to control keyword for syntax highlight
+- Support comment of MOV command
 ### Changed
 ### Deprecated
 ### Removed

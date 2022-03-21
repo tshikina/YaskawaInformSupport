@@ -86,13 +86,22 @@
 		},
 		"COMMENT": {
 			"e.g.": "'comment",
+			"e.g.2": "MOVL //comment",
 			"patterns": [
 				{
 					"match": "^\\s*'.{0,32}$",
 					"name": "comment.line.inform"
 				},
 				{
+					"match": "(?<=^(MOVJ|MOVL|MOVC|IMOV)\\s+.*)\/\/.{0,32}$",
+					"name": "comment.line.move.inform"
+				},
+				{
 					"match": "^\\s*'.*",
+					"name": "invalid.illegal.comment.length.inform"
+				},
+				{
+					"match": "(?<=^(MOVJ|MOVL|MOVC|IMOV)\\s+.*)\/\/.*$",
 					"name": "invalid.illegal.comment.length.inform"
 				}
 			]

@@ -365,7 +365,7 @@
 
     "GETS":{
         "prefix": "GETS",
-        "body": ["GETS B000 $B000"],
+        "body": ["GETS B000 \\$B000"],
         "description":  "Get system variable command"
     },
     "GETPOS":{
@@ -406,12 +406,12 @@
     },
     "CHR":{
         "prefix": "CHR",
-        "body": ["CHR$ S000 0"],
+        "body": ["CHR\\$ S000 0"],
         "description":  "ASCII code value to string command"
     },
     "MID":{
         "prefix": "MID",
-        "body": ["MID$ S000 S001 0"],
+        "body": ["MID\\$ S000 S001 0"],
         "description":  "Get substring command"
     },
     "LEN":{
@@ -421,7 +421,7 @@
     },
     "CAT":{
         "prefix": "CAT",
-        "body": ["CAT$ S000 S001 S002"],
+        "body": ["CAT\\$ S000 S001 S002"],
         "description":  "CAT command"
     },
     "STRSTR":{

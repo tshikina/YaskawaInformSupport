@@ -6,14 +6,18 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 ### Added
-- Support snippets for Inform
-- Added FOR, SWITCH, PSTART commands to control keyword for syntax highlight
-- Support comment of MOV command
 ### Changed
 ### Deprecated
 ### Removed
 ### Fixed
 ### Security
+
+## [0.1.0] - 2022-03-21
+### Added
+- Support snippets for Inform
+- Added FOR, SWITCH, PSTART commands to control keyword for syntax highlight
+- Support comment of MOV command
+
 
 ## [0.0.4] - 2022-03-04
 ### Added

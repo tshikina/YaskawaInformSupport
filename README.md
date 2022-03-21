@@ -15,6 +15,9 @@ This extension support syntax highlight for YASKAWA Motoman Inform language as f
 
 ## Release Notes
 
+### [0.1.0]
+- Support snippets for Inform
+
 ### [0.0.4]
 Support syntax highlight of following files.
 - VAR.DAT

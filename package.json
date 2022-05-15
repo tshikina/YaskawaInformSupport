@@ -40,7 +40,7 @@
             },{
                 "id": "ionamedat",
                 "aliases": ["IONAME.DAT", "IONAME.DAT for YASKAWA Motoman"],
-                "filenames": ["IONAME.DAT"],
+                "filenames": ["IONAME.DAT", "EXIONAME.DAT"],
                 "configuration": "./language-configuration.json"
             },{
                 "id": "iomnamedat",
@@ -66,7 +66,6 @@
                     "EIOALLOC.DAT",
                     "ENCHEAT.DAT",
                     "ETHERIP.DAT",
-                    "EXIONAME.DAT",
                     "FLNAME.DAT",
                     "HCVAR.DAT",
                     "HISPDLOG.DAT",

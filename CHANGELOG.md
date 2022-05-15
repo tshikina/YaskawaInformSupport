@@ -7,6 +7,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 ### Added
 - Support syntax highlight for MACRO.DAT
+- Update syntax highlight for EXIONAME.DAT
 ### Changed
 ### Deprecated
 ### Removed

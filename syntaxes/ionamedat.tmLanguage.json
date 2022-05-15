@@ -11,7 +11,7 @@
 			"name": "meta.preprocessor.ionamedat"
 		},
 		"ionamesection": {
-			"begin": "^(//(IN|OUT))$",
+			"begin": "^(//(IN|OUT|EXIN|EXOUT))$",
 			"beginCaptures": { "1" : { "name": "meta.preprocessor.varname.ionamedat" } },
 			"while": "(^[^,]*,[^,]*,[^,]*,[^,]*$)",
 			"whileCaptures": { 

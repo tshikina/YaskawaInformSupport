@@ -6,6 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 ### Added
+- Support syntax highlight for MACRO.DAT
 ### Changed
 ### Deprecated
 ### Removed

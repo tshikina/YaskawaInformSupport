@@ -16,155 +16,168 @@
         "Programming Languages"
     ],
     "contributes": {
-        "languages": [{
-            "id": "inform",
-            "aliases": ["inform", "INFORM JBI for YASKAWA Motoman"],
-            "extensions": [".JBI"],
-            "configuration": "./language-configuration.json"
-        },{
-            "id": "cioprglst",
-            "aliases": ["CIOPRG.LST", "CIOPRG.LST for YASKAWA Motoman"],
-            "filenames": ["CIOPRG.LST"],
-            "configuration": "./language-configuration.json"
-        },{
-            "id": "varnamedat",
-            "aliases": ["VARNAME.DAT", "VARNAME.DAT for YASKAWA Motoman"],
-            "filenames": ["VARNAME.DAT"],
-            "configuration": "./language-configuration.json"
-        },{
-            "id": "vardat",
-            "aliases": ["VAR.DAT", "VAR.DAT for YASKAWA Motoman"],
-            "filenames": ["VAR.DAT"],
-            "configuration": "./language-configuration.json"
-        },{
-            "id": "ionamedat",
-            "aliases": ["IONAME.DAT", "IONAME.DAT for YASKAWA Motoman"],
-            "filenames": ["IONAME.DAT"],
-            "configuration": "./language-configuration.json"
-        },{
-            "id": "iomnamedat",
-            "aliases": ["IOMNAME.DAT", "IOMNAME.DAT for YASKAWA Motoman"],
-            "filenames": ["IOMNAME.DAT"],
-            "configuration": "./language-configuration.json"
-        },{
-            "id": "generaldat",
-            "aliases": ["DAT,PRM,CND", "DAT,PRM,CND files for YASKAWA Motoman"],
-            "filenames": [
-                "ABSO.DAT",
-                "ALMHIST.DAT",
-                "APPRBUZR.DAT",
-                "AVDFUNC.DAT",
-                "AXRNGLMT.DAT",
-                "AXSPDMON.DAT",
-                "CRCMON.DAT",
-                "EIOALLOC.DAT",
-                "ENCHEAT.DAT",
-                "ETHERIP.DAT",
-                "EXIONAME.DAT",
-                "FLNAME.DAT",
-                "HCVAR.DAT",
-                "HISPDLOG.DAT",
-                "HNDGUIDE.DAT",
-                "HOME2.DAT",
-                "IFPANEL.DAT",
-                "INTJOB.DAT",
-                "IOMSGHST.DAT",
-                "IPNETCFG.DAT",
-                "JOBMONI.DAT",
-                "KEYALLOC.DAT",
-                "LOGDATA.DAT",
-                "OPEORG.DAT",
-                "PFLFLMT.DAT",
-                "PFLORGP.DAT",
-                "PMHARD.DAT",
-                "PMLOG.DAT",
-                "PMTMMNG.DAT",
-                "PMTRQDB.DAT",
-                "PSEUDOIN.DAT",
-                "RBRNGLMT.DAT",
-                "ROBOMONI.DAT",
-                "RBSTPFCT.DAT",
-                "SETTM.DAT",
-                "SPDLMT.DAT",
-                "STEPDIAG.DAT",
-                "SVMON.DAT",
-                "TLANGMON.DAT",
-                "TMNAME.DAT",
-                "TMVAR.DAT",
-                "TOOLINTF.DAT",
-                "TRQDAT.DAT",
-                "USERMENU.DAT",
-                "USRGRPIN.DAT",
-                "USRGRPOT.DAT",
-                "UWORD.DAT",
-                "YSFLOGIC.DAT",
-                "WEAV.CND",
-                "SHOCKLVL.CND",
-                "CUBEINTF.CND",
-                "PMCOND.CND",
-                "TOOL.CND",
-                "PANELBOX.LOG",
-                "SYSTEM.SYS",
-                "ALL.PRM",
-                "CIO.PRM",
-                "FD.PRM",
-                "FMS.PRM",
-                "MF.PRM",
-                "AMC.PRM",
-                "AP.PRM",
-                "RC.PRM",
-                "RE.PRM",
-                "RO.PRM",
-                "RS.PRM",
-                "SC.PRM",
-                "SD.PRM",
-                "SE.PRM",
-                "SV.PRM",
-                "SVC.PRM",
-                "SVM.PRM",
-                "SVP.PRM",
-                "SVS.PRM"
-            ],
-            "configuration": "./language-configuration.json"
-        },{
-            "id": "pscfile",
-            "aliases": ["psc", "PSC file for YASKAWA Motoman"],
-            "extensions": [".psc"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "inform",
-            "scopeName": "source.inform",
-            "path": "./syntaxes/inform.tmLanguage.json"
-        },{
-            "language": "cioprglst",
-            "scopeName": "source.cioprglst",
-            "path": "./syntaxes/cioprglst.tmLanguage.json"
-        },{
-            "language": "varnamedat",
-            "scopeName": "source.varnamedat",
-            "path": "./syntaxes/varnamedat.tmLanguage.json"
-        },{
-            "language": "vardat",
-            "scopeName": "source.vardat",
-            "path": "./syntaxes/vardat.tmLanguage.json"
-        },{
-            "language": "ionamedat",
-            "scopeName": "source.ionamedat",
-            "path": "./syntaxes/ionamedat.tmLanguage.json"
-        },{
-            "language": "iomnamedat",
-            "scopeName": "source.iomnamedat",
-            "path": "./syntaxes/iomnamedat.tmLanguage.json"
-        },{
-            "language": "generaldat",
-            "scopeName": "source.generaldat",
-            "path": "./syntaxes/generaldat.tmLanguage.json"
-        },{
-            "language": "pscfile",
-            "scopeName": "source.pscfile",
-            "path": "./syntaxes/psc.tmLanguage.json"
-        }],
+        "languages": [
+            {
+                "id": "inform",
+                "aliases": ["inform", "INFORM JBI for YASKAWA Motoman"],
+                "extensions": [".JBI"],
+                "configuration": "./language-configuration.json"
+            },{
+                "id": "cioprglst",
+                "aliases": ["CIOPRG.LST", "CIOPRG.LST for YASKAWA Motoman"],
+                "filenames": ["CIOPRG.LST"],
+                "configuration": "./language-configuration.json"
+            },{
+                "id": "varnamedat",
+                "aliases": ["VARNAME.DAT", "VARNAME.DAT for YASKAWA Motoman"],
+                "filenames": ["VARNAME.DAT"],
+                "configuration": "./language-configuration.json"
+            },{
+                "id": "vardat",
+                "aliases": ["VAR.DAT", "VAR.DAT for YASKAWA Motoman"],
+                "filenames": ["VAR.DAT"],
+                "configuration": "./language-configuration.json"
+            },{
+                "id": "ionamedat",
+                "aliases": ["IONAME.DAT", "IONAME.DAT for YASKAWA Motoman"],
+                "filenames": ["IONAME.DAT"],
+                "configuration": "./language-configuration.json"
+            },{
+                "id": "iomnamedat",
+                "aliases": ["IOMNAME.DAT", "IOMNAME.DAT for YASKAWA Motoman"],
+                "filenames": ["IOMNAME.DAT"],
+                "configuration": "./language-configuration.json"
+            },{
+                "id": "macrodat",
+                "aliases": ["MACRO.DAT", "MACRO.DAT for YASKAWA Motoman"],
+                "filenames": ["MACRO.DAT"],
+                "configuration": "./language-configuration.json"
+            },{
+                "id": "generaldat",
+                "aliases": ["DAT,PRM,CND", "DAT,PRM,CND files for YASKAWA Motoman"],
+                "filenames": [
+                    "ABSO.DAT",
+                    "ALMHIST.DAT",
+                    "APPRBUZR.DAT",
+                    "AVDFUNC.DAT",
+                    "AXRNGLMT.DAT",
+                    "AXSPDMON.DAT",
+                    "CRCMON.DAT",
+                    "EIOALLOC.DAT",
+                    "ENCHEAT.DAT",
+                    "ETHERIP.DAT",
+                    "EXIONAME.DAT",
+                    "FLNAME.DAT",
+                    "HCVAR.DAT",
+                    "HISPDLOG.DAT",
+                    "HNDGUIDE.DAT",
+                    "HOME2.DAT",
+                    "IFPANEL.DAT",
+                    "INTJOB.DAT",
+                    "IOMSGHST.DAT",
+                    "IPNETCFG.DAT",
+                    "JOBMONI.DAT",
+                    "KEYALLOC.DAT",
+                    "LOGDATA.DAT",
+                    "OPEORG.DAT",
+                    "PFLFLMT.DAT",
+                    "PFLORGP.DAT",
+                    "PMHARD.DAT",
+                    "PMLOG.DAT",
+                    "PMTMMNG.DAT",
+                    "PMTRQDB.DAT",
+                    "PSEUDOIN.DAT",
+                    "RBRNGLMT.DAT",
+                    "ROBOMONI.DAT",
+                    "RBSTPFCT.DAT",
+                    "SETTM.DAT",
+                    "SPDLMT.DAT",
+                    "STEPDIAG.DAT",
+                    "SVMON.DAT",
+                    "TLANGMON.DAT",
+                    "TMNAME.DAT",
+                    "TMVAR.DAT",
+                    "TOOLINTF.DAT",
+                    "TRQDAT.DAT",
+                    "USERMENU.DAT",
+                    "USRGRPIN.DAT",
+                    "USRGRPOT.DAT",
+                    "UWORD.DAT",
+                    "YSFLOGIC.DAT",
+                    "WEAV.CND",
+                    "SHOCKLVL.CND",
+                    "CUBEINTF.CND",
+                    "PMCOND.CND",
+                    "TOOL.CND",
+                    "PANELBOX.LOG",
+                    "SYSTEM.SYS",
+                    "ALL.PRM",
+                    "CIO.PRM",
+                    "FD.PRM",
+                    "FMS.PRM",
+                    "MF.PRM",
+                    "AMC.PRM",
+                    "AP.PRM",
+                    "RC.PRM",
+                    "RE.PRM",
+                    "RO.PRM",
+                    "RS.PRM",
+                    "SC.PRM",
+                    "SD.PRM",
+                    "SE.PRM",
+                    "SV.PRM",
+                    "SVC.PRM",
+                    "SVM.PRM",
+                    "SVP.PRM",
+                    "SVS.PRM"
+                ],
+                "configuration": "./language-configuration.json"
+            },{
+                "id": "pscfile",
+                "aliases": ["psc", "PSC file for YASKAWA Motoman"],
+                "extensions": [".psc"],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "inform",
+                "scopeName": "source.inform",
+                "path": "./syntaxes/inform.tmLanguage.json"
+            },{
+                "language": "cioprglst",
+                "scopeName": "source.cioprglst",
+                "path": "./syntaxes/cioprglst.tmLanguage.json"
+            },{
+                "language": "varnamedat",
+                "scopeName": "source.varnamedat",
+                "path": "./syntaxes/varnamedat.tmLanguage.json"
+            },{
+                "language": "vardat",
+                "scopeName": "source.vardat",
+                "path": "./syntaxes/vardat.tmLanguage.json"
+            },{
+                "language": "ionamedat",
+                "scopeName": "source.ionamedat",
+                "path": "./syntaxes/ionamedat.tmLanguage.json"
+            },{
+                "language": "iomnamedat",
+                "scopeName": "source.iomnamedat",
+                "path": "./syntaxes/iomnamedat.tmLanguage.json"
+                },{
+                    "language": "macrodat",
+                    "scopeName": "source.macrodat",
+                    "path": "./syntaxes/macrodat.tmLanguage.json"
+                },{
+                "language": "generaldat",
+                "scopeName": "source.generaldat",
+                "path": "./syntaxes/generaldat.tmLanguage.json"
+            },{
+                "language": "pscfile",
+                "scopeName": "source.pscfile",
+                "path": "./syntaxes/psc.tmLanguage.json"
+            }
+        ],
         "snippets": [
             {
                 "language": "inform",

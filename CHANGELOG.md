@@ -6,13 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 ### Added
-- Support syntax highlight for MACRO.DAT
-- Update syntax highlight for EXIONAME.DAT
 ### Changed
 ### Deprecated
 ### Removed
 ### Fixed
 ### Security
+
+## [0.2.0] - 2022-05-15
+### Added
+- Support syntax highlight for MACRO.DAT
+- Update syntax highlight for EXIONAME.DAT
 
 ## [0.1.0] - 2022-03-21
 ### Added

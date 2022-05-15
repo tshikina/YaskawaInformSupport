@@ -15,6 +15,10 @@ This extension support syntax highlight for YASKAWA Motoman Inform language as f
 
 ## Release Notes
 
+### [0.2.0]
+- Support syntax highlight for MACRO.DAT
+- Update syntax highlight for EXIONAME.DAT
+
 ### [0.1.0]
 - Support snippets for Inform
 

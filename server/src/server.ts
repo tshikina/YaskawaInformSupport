@@ -33,6 +33,11 @@ import * as fs from "fs";
 import path = require('path');
 import { MochaInstanceOptions } from 'mocha';
 
+function createJobNamePattern() {
+	return /(?<=\s+JOB:)(\S+)/g;
+}
+
+
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -253,6 +258,40 @@ connection.onHover(
 
 connection.onDefinition(
 	(definitionParams ) : Definition | null => {
+		const document = documents.get(definitionParams.textDocument.uri);
+		const pos = definitionParams.position;
+		const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
+	
+		const filePath = URI.parse( definitionParams.textDocument.uri ).fsPath.replace( /\\/g, "/" );
+		const dirPath = path.dirname(filePath);
+
+
+		let lineText: string;
+		
+		if(document != null)
+		{
+			lineText = document.getText( lineRange );
+			let m: RegExpExecArray | null;
+			const posInLine = pos.character - lineRange.start.character;
+
+			// search JobName
+			const jobNamePattern = createJobNamePattern();
+			while ((m = jobNamePattern.exec(lineText)) ) {
+				if( posInLine < m.index || m.index + m[0].length < posInLine ) {
+					continue;
+				}
+				const jobFileName = m[1] + ".JBI";
+				
+				const jobFilePath = path.join( dirPath, jobFileName );
+
+				if( fs.existsSync( jobFilePath ) ) {
+					return {
+						uri: URI.file(jobFilePath).toString(),
+						range: Range.create(0,0,0,0)
+					};
+				}
+			}
+		}
 		return null;
 	}
 );

@@ -1,0 +1,48 @@
+// Go to Definition
+
+Test1Item : Item {
+	id: root
+}
+
+Test2Item : Item {
+	id: root
+}
+
+TestMain: Item {
+	id: root
+
+	property bool boolTest: 100;
+	property int intTest: 10;
+	property real realTest: 0.1.0;
+	property string stringTest: "test";
+	property map mapTest: {a:10, b:10};
+	property array arrayTest: [1,2,3];
+
+	property alias aliasTest: test1.width
+
+	Test1Item {
+		id: test1
+
+		width: root.width
+		height: root.height
+	}
+
+	Test2Item {
+		id: test2
+
+		width: test1.width
+		height: test2.height
+	}
+
+	Test2Item {
+		
+		width: aliasTest
+
+	}
+	Button {
+		id: testButton608037
+		text: "Button Label"
+		enabled: boolTest
+		
+	}
+}

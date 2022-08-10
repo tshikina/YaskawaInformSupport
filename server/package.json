@@ -1,0 +1,19 @@
+{
+	"name": "inform-job-support-server",
+	"description": "Support INFORM JOB JBI for YASKAWA Motoman server in node.",
+	"version": "0.1.0",
+	"author": "Taku Shikina",
+	"engines": {
+		"node": "*"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tshikina/YaskawaInformSupport.git"
+	},
+	"dependencies": {
+		"vscode-languageserver": "^7.0.0",
+		"vscode-languageserver-textdocument": "^1.0.4",
+		"vscode-uri": "^3.0.3"
+	},
+	"scripts": {}
+}

@@ -1,0 +1,21 @@
+{
+	"name": "inform-job-support-client",
+	"description": "VSCode part of a language server",
+	"author": "Taku Shikina",
+	"version": "0.0.1",
+	"publisher": "tshikina",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tshikina/YaskawaInformSupport.git"
+	},
+	"engines": {
+		"vscode": "^1.63.0"
+	},
+	"dependencies": {
+		"vscode-languageclient": "^7.0.0"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.63.0",
+		"@vscode/test-electron": "^2.1.2"
+	}
+}

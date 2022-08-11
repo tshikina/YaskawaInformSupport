@@ -37,6 +37,9 @@ function createJobNamePattern() {
 	return /(?<=\s+JOB:)(\S+)/g;
 }
 
+function createLabelPattern() {
+	return /(?<=\s)(\*\S{1,8})\b/g;
+}
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -291,6 +294,40 @@ connection.onDefinition(
 					};
 				}
 			}
+
+			// search Label
+			const labelPattern = createLabelPattern();
+			while ((m = labelPattern.exec(lineText)) ) {
+				if( posInLine < m.index || m.index + m[0].length < posInLine ) {
+					continue;
+				}
+				const label = m[1];
+				const escapedLabel = label.replace("*", "\\*");
+
+				let isInstructionSection = false;
+				for( let i = 0; i< document.lineCount; i++ ) {
+					let str = document.getText(Range.create(i, 0, i+1, 0));
+					str = str.replace(/[\r\n]/g,"");
+
+					if( !isInstructionSection) {
+						if(str === "//INST") {
+							isInstructionSection = true;
+						}
+					}
+					else {
+						const mm = str.match( `(?<=^\\s*)${escapedLabel}\\b` );
+						if( mm?.index != undefined ) {
+							return {
+								uri: definitionParams.textDocument.uri,
+								range: Range.create(i, mm.index, i, str.length)
+		
+							};
+						}
+					}
+				}
+			}
+
+
 		}
 		return null;
 	}

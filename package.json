@@ -31,7 +31,8 @@
         "Programming Languages"
     ],
     "activationEvents": [
-        "onLanguage:inform"
+        "onLanguage:inform",
+        "onLanguage:generaldat"
     ],
 	"main": "./client/out/extension",
     "contributes": {

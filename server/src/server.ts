@@ -252,9 +252,54 @@ documents.onDidChangeContent(change => {
 // );
 
 
+function onHoverParam(hoverParams: HoverParams): Hover | null {
+	const document = documents.get(hoverParams.textDocument.uri);
+	const pos = hoverParams.position;
+	const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
+
+	let lineText: string;
+
+	if(document != null) {
+		lineText = document.getText( lineRange );
+
+		if( !lineText.startsWith("/")) {
+			let parameterType: string | undefined = undefined;
+			let offset = 0;
+			for( let i = pos.line - 1; i >= 0; i-- ) {
+				const str = document.getText( Range.create( i, 0, i+1, 0) );
+				if( str.startsWith("/")) {
+					parameterType = str.replace(/[/]/g, "");
+					offset = pos.line - i - 1;
+					break;
+				}
+			}
+			if( parameterType ) {
+				const str = document.getText( Range.create( pos.line, 0, pos.line, pos.character) );
+				let index = str.match(/,/g)?.length;
+				index = index ? index : 0;
+
+				return {
+					contents: [
+						`${parameterType}${offset*10 + index}`
+					]
+				};
+			}
+		}
+	}
+
+	return null;
+}
+
 
 connection.onHover( 
 	(hoverParams: HoverParams): Hover | null  => {
+		const filePath = URI.parse( hoverParams.textDocument.uri ).fsPath.replace( /\\/g, "/" );
+		const fileName = path.basename( filePath );
+
+		if( path.extname(fileName) === ".PRM" ) {
+			return onHoverParam( hoverParams );
+		}
+
 		return null;
 	}
 );

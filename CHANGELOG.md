@@ -8,6 +8,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Added
 - Support Go to Definition to JOB
 - Support Go to Definition to LABEL
+- Support Hover to show parameter number in .PRM files
 
 ## [0.2.0] - 2022-05-15
 ### Added

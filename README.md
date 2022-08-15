@@ -15,6 +15,11 @@ This extension support syntax highlight for YASKAWA Motoman Inform language as f
 
 ## Release Notes
 
+### [0.3.0]
+- Support Go to Definition to JOB
+- Support Go to Definition to LABEL
+- Support Hover to show parameter number in .PRM files
+
 ### [0.2.0]
 - Support syntax highlight for MACRO.DAT
 - Update syntax highlight for EXIONAME.DAT

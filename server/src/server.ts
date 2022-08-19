@@ -32,6 +32,7 @@ import { URI } from 'vscode-uri';
 import * as fs from "fs";
 import path = require('path');
 import { MochaInstanceOptions } from 'mocha';
+import { integer } from 'vscode-languageclient';
 
 function createJobNamePattern() {
 	return /(?<=\s+JOB:)(\S+)/g;
@@ -251,6 +252,112 @@ documents.onDidChangeContent(change => {
 // 	}
 // );
 
+interface Section {
+	range: Range
+}
+
+interface ParamSection {
+	sectionMap: Map<string, Section>	// <parameter, section>
+}
+
+const paramSectionMap = new Map<string, ParamSection>();
+
+function getTextLines( filePath: string ) {
+	let lines : Array<string>;
+	const fileUri = URI.file(filePath).toString();
+
+	const document = documents.get(fileUri);
+
+	if( document ) {
+		lines = new Array<string>(0);
+
+		const range = Range.create( 0, 0, 0, 0);
+		for( let i=0; i < document.lineCount; i++ ) {
+			range.start.line = i;
+			range.end.line = i+1;
+			const lineText = document.getText( range ).replace(/[\r\n]/g,"");
+			lines.push(lineText);
+		}
+	}
+	else {
+		fs.readFileSync(filePath);
+		const text = fs.readFileSync(filePath, "utf-8");
+		lines = text.replace("\r\n","\n").split("\n");
+	}
+
+	return lines;
+}
+
+function extractSectionNameFromText( lineText: string ) {
+	const m = /^[/]*(\S*)/.exec(lineText);
+
+	if( m ) {
+		return m[1];
+	}
+
+	return "";
+}
+
+function getParameterSectionMap( filePath: string ) {
+	let paramSection = paramSectionMap.get(filePath);
+
+	if( paramSection ) {
+		return paramSection;
+	}
+
+	paramSection = {
+		sectionMap: new Map<string, Section>()
+	};
+
+	const lines = getTextLines( filePath );
+	let currentSection = "";
+	let sectionRange = Range.create(0,0,0,0);
+
+	for( let i=0; i<lines.length; i++ ) {
+		const lineText = lines[i];
+		if( lineText.startsWith("/") ) {
+			const newSectionName = extractSectionNameFromText( lineText );
+			if(newSectionName.length == 0 || newSectionName == "CRC") {
+				sectionRange.start.line = i+1;
+				sectionRange.end.line = i+1;
+				continue;
+			}
+			else if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
+				console.log(`new section: ${currentSection} , from ${sectionRange.start.line} to ${sectionRange.end.line}`);
+				paramSection.sectionMap.set( currentSection, {
+					range: sectionRange
+				} );
+			}
+			sectionRange = Range.create(i+1,0,i+1,0);
+			currentSection = newSectionName;
+		}
+		else {
+			sectionRange.end.line = i+1;
+		}
+	}
+	if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
+		paramSection.sectionMap.set( currentSection, {
+			range: sectionRange
+		} );
+	}
+
+	paramSectionMap.set(filePath, paramSection);
+
+	return paramSection;
+}
+
+function getSectionNameFromLineNo( filePath: string, lineNo: integer ) {
+	const paramSection = getParameterSectionMap( filePath );
+
+	for( const [sectionName, section] of paramSection.sectionMap ){
+		if( lineNo >= section.range.start.line && lineNo < section.range.end.line ) {
+			return sectionName;
+		}
+	}
+	
+	return "";
+}
+
 
 function onHoverParam(hoverParams: HoverParams): Hover | null {
 	const document = documents.get(hoverParams.textDocument.uri);
@@ -260,30 +367,24 @@ function onHoverParam(hoverParams: HoverParams): Hover | null {
 	let lineText: string;
 
 	if(document != null) {
-		lineText = document.getText( lineRange );
+		const filePath = URI.parse(hoverParams.textDocument.uri).fsPath;
+		const sectionName = getSectionNameFromLineNo( filePath, pos.line );
 
-		if( !lineText.startsWith("/")) {
-			let parameterType: string | undefined = undefined;
-			let offset = 0;
-			for( let i = pos.line - 1; i >= 0; i-- ) {
-				const str = document.getText( Range.create( i, 0, i+1, 0) );
-				if( str.startsWith("/")) {
-					parameterType = str.replace(/[/]/g, "");
-					offset = pos.line - i - 1;
-					break;
-				}
-			}
-			if( parameterType ) {
-				const str = document.getText( Range.create( pos.line, 0, pos.line, pos.character) );
-				let index = str.match(/,/g)?.length;
-				index = index ? index : 0;
+		const section = getParameterSectionMap( filePath ).sectionMap.get( sectionName );
 
-				return {
-					contents: [
-						`${parameterType}${offset*10 + index}`
-					]
-				};
-			}
+		if( section ) {
+			const offset = pos.line - section.range.start.line;
+			const str = document.getText( Range.create( pos.line, 0, pos.line, pos.character) );
+			let index = str.match(/,/g)?.length;
+			index = index ? index : 0;
+			return {
+				contents: [
+					`${sectionName} ${offset*10 + index}`
+				]
+			};
+		}
+		else {
+			return null;
 		}
 	}
 

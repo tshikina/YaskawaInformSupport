@@ -260,10 +260,11 @@ interface ParamSection {
 	sectionMap: Map<string, Section>	// <parameter, section>
 }
 
-const paramSectionMap = new Map<string, ParamSection>();
+const paramSectionMap = new Map<string, ParamSection>(); // <filePath, paramSection>
+const paramFileValueMap = new Map<string, Map<string, number>>(); // <filePath, <parameterNumber, value>>
 
 function getTextLines( filePath: string ) {
-	let lines : Array<string>;
+	let lines : Array<string> | undefined;
 	const fileUri = URI.file(filePath).toString();
 
 	const document = documents.get(fileUri);
@@ -280,9 +281,14 @@ function getTextLines( filePath: string ) {
 		}
 	}
 	else {
-		fs.readFileSync(filePath);
-		const text = fs.readFileSync(filePath, "utf-8");
-		lines = text.replace("\r\n","\n").split("\n");
+		try{
+			fs.readFileSync(filePath);
+			const text = fs.readFileSync(filePath, "utf-8");
+			lines = text.replace("\r\n","\n").split("\n");
+		}
+		catch(err) {
+			console.error( `cannot read file: ${filePath}` );
+		}
 	}
 
 	return lines;
@@ -312,6 +318,10 @@ function getParameterSectionMap( filePath: string ) {
 	const lines = getTextLines( filePath );
 	let currentSection = "";
 	let sectionRange = Range.create(0,0,0,0);
+
+	if( !lines ) {
+		return undefined;
+	}
 
 	for( let i=0; i<lines.length; i++ ) {
 		const lineText = lines[i];
@@ -346,8 +356,55 @@ function getParameterSectionMap( filePath: string ) {
 	return paramSection;
 }
 
+function getParameterValue( filePath: string, parameterType: string, parameterNumber: number ) {
+	const paramPath = path.join( path.dirname(filePath), "ALL.PRM" );
+
+	let value: undefined | number = undefined;
+	let paramValueMap = paramFileValueMap.get( paramPath );
+
+	const paramNumberStr = parameterType + parameterNumber;
+
+	if( !paramValueMap ) {
+		// update value
+		const textLines = getTextLines( paramPath );
+
+		if( textLines && textLines.length > 0 ) {
+			paramValueMap = new Map<string, number>();
+			paramFileValueMap.set( paramPath, paramValueMap );
+			let sectionName = "";
+			let startLine = 0;
+			for( let i = 0; i < textLines.length; i++) {
+				const lineText = textLines[i];
+				const newSectionName = extractSectionNameFromText( lineText );
+				if( lineText.startsWith("/") ) {
+					startLine = i+1;
+					if(newSectionName.length == 0 || newSectionName == "CRC") {
+						continue;
+					}
+					sectionName = newSectionName;
+				}
+				else {
+					const valueStrings = lineText.split(",");
+					valueStrings.forEach( (valueStr, index) => {
+						const newParamNumberStr = sectionName + (((i - startLine)) * 10 + index);
+						paramValueMap?.set( newParamNumberStr, +valueStr );
+					});
+				}
+			}
+		}
+	}
+
+	value = paramValueMap?.get( paramNumberStr );
+
+	return value;
+}
+
 function getSectionNameFromLineNo( filePath: string, lineNo: integer ) {
 	const paramSection = getParameterSectionMap( filePath );
+
+	if(!paramSection) {
+		return "";
+	}
 
 	for( const [sectionName, section] of paramSection.sectionMap ){
 		if( lineNo >= section.range.start.line && lineNo < section.range.end.line ) {
@@ -370,7 +427,7 @@ function onHoverParam(hoverParams: HoverParams): Hover | null {
 		const filePath = URI.parse(hoverParams.textDocument.uri).fsPath;
 		const sectionName = getSectionNameFromLineNo( filePath, pos.line );
 
-		const section = getParameterSectionMap( filePath ).sectionMap.get( sectionName );
+		const section = getParameterSectionMap( filePath )?.sectionMap.get( sectionName );
 
 		if( section ) {
 			const offset = pos.line - section.range.start.line;
@@ -392,13 +449,50 @@ function onHoverParam(hoverParams: HoverParams): Hover | null {
 }
 
 
+function onHoverPsc(hoverParams: HoverParams): Hover | null {
+	const document = documents.get(hoverParams.textDocument.uri);
+	const pos = hoverParams.position;
+	const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
+
+	let lineText: string;
+
+	if(document != null) {
+		const str = document.getText( lineRange );
+
+		const m = /^\s*([^,\s]+)\s*,\s*([0-9]+)\s*,/.exec(str);
+
+		if( m ) {
+			const paramType = m[1];
+			const paramNumber = +m[2];
+			const paramValue = getParameterValue( URI.parse(hoverParams.textDocument.uri).fsPath, paramType, paramNumber );
+
+			if( paramValue ) {
+				return {
+					contents: [`${paramType + paramNumber}: ${paramValue}`]
+				};
+			}
+		}
+		else {
+			// console.log("parameter not match: " + str);
+
+		}
+
+	}
+
+	return null;
+}
+
 connection.onHover( 
 	(hoverParams: HoverParams): Hover | null  => {
 		const filePath = URI.parse( hoverParams.textDocument.uri ).fsPath.replace( /\\/g, "/" );
 		const fileName = path.basename( filePath );
 
-		if( path.extname(fileName) === ".PRM" ) {
+		const extname = path.extname(fileName).toUpperCase();
+		if( extname === ".PRM" ) {
 			return onHoverParam( hoverParams );
+		}
+		else if( extname == ".PSC") {
+			return onHoverPsc(hoverParams);
 		}
 
 		return null;

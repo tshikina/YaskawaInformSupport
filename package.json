@@ -32,7 +32,8 @@
     ],
     "activationEvents": [
         "onLanguage:inform",
-        "onLanguage:generaldat"
+        "onLanguage:generaldat",
+        "onLanguage:pscfile"
     ],
 	"main": "./client/out/extension",
     "contributes": {

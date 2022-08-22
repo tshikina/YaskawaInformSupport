@@ -40,7 +40,8 @@ export function activate(context: ExtensionContext) {
 		// Register the server for plain text documents
 		documentSelector: [
 			{ scheme: 'file', language: 'inform' },
-			{ scheme: 'file', language: 'generaldat' }
+			{ scheme: 'file', language: 'generaldat' },
+			{ scheme: 'file', language: 'pscfile' }
 		],
 		synchronize: {
 			// Notify the server about file changes to '.clientrc files contained in the workspace

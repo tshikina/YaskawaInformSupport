@@ -21,6 +21,7 @@ import {
 	Range,
 	WorkspaceFolder,
 	Definition,
+	DefinitionParams,
 	Location,
 } from 'vscode-languageserver/node';
 
@@ -294,6 +295,38 @@ function getTextLines( filePath: string ) {
 	return lines;
 }
 
+function getTextLine( filePath: string, lineNo: number) {
+	let lineText: string | undefined;
+	const fileUri = URI.file(filePath).toString();
+
+	const document = documents.get(fileUri);
+
+	if( document ) {
+		const range = Range.create( lineNo, 0, lineNo + 1, 0);
+		lineText = document.getText( range ).replace(/[\r\n]/g,"");
+	}
+	else {
+		const lines = getTextLines( filePath );
+
+		if( lines && lines.length > lineNo ) {
+			lineText = lines[lineNo];
+		}
+	}
+	return lineText;
+}
+
+function getRangeAtIndex( lineText: string, index: number ): Range | undefined {
+	const pattern = new RegExp(`^(([^,]*,){${index}})([^,]*)`);
+
+	const m = pattern.exec( lineText );
+
+	if( m ) {
+		return Range.create(0, m[1].length, 0, m[1].length + m[3].length);
+	}
+
+	return undefined;
+}
+
 function extractSectionNameFromText( lineText: string ) {
 	const m = /^[/]*(\S*)/.exec(lineText);
 
@@ -499,77 +532,136 @@ connection.onHover(
 	}
 );
 
-connection.onDefinition(
-	(definitionParams ) : Definition | null => {
-		const document = documents.get(definitionParams.textDocument.uri);
-		const pos = definitionParams.position;
-		const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
+function onDefinitionJbi(definitionParams: DefinitionParams) {
+	const document = documents.get(definitionParams.textDocument.uri);
+	const pos = definitionParams.position;
+	const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
+
+	const filePath = URI.parse( definitionParams.textDocument.uri ).fsPath.replace( /\\/g, "/" );
+	const dirPath = path.dirname(filePath);
+
+
+	let lineText: string;
 	
-		const filePath = URI.parse( definitionParams.textDocument.uri ).fsPath.replace( /\\/g, "/" );
-		const dirPath = path.dirname(filePath);
+	if(document != null)
+	{
+		lineText = document.getText( lineRange );
+		let m: RegExpExecArray | null;
+		const posInLine = pos.character - lineRange.start.character;
 
-
-		let lineText: string;
-		
-		if(document != null)
-		{
-			lineText = document.getText( lineRange );
-			let m: RegExpExecArray | null;
-			const posInLine = pos.character - lineRange.start.character;
-
-			// search JobName
-			const jobNamePattern = createJobNamePattern();
-			while ((m = jobNamePattern.exec(lineText)) ) {
-				if( posInLine < m.index || m.index + m[0].length < posInLine ) {
-					continue;
-				}
-				const jobFileName = m[1] + ".JBI";
-				
-				const jobFilePath = path.join( dirPath, jobFileName );
-
-				if( fs.existsSync( jobFilePath ) ) {
-					return {
-						uri: URI.file(jobFilePath).toString(),
-						range: Range.create(0,0,0,0)
-					};
-				}
+		// search JobName
+		const jobNamePattern = createJobNamePattern();
+		while ((m = jobNamePattern.exec(lineText)) ) {
+			if( posInLine < m.index || m.index + m[0].length < posInLine ) {
+				continue;
 			}
+			const jobFileName = m[1] + ".JBI";
+			
+			const jobFilePath = path.join( dirPath, jobFileName );
 
-			// search Label
-			const labelPattern = createLabelPattern();
-			while ((m = labelPattern.exec(lineText)) ) {
-				if( posInLine < m.index || m.index + m[0].length < posInLine ) {
-					continue;
-				}
-				const label = m[1];
-				const escapedLabel = label.replace("*", "\\*");
+			if( fs.existsSync( jobFilePath ) ) {
+				return {
+					uri: URI.file(jobFilePath).toString(),
+					range: Range.create(0,0,0,0)
+				};
+			}
+		}
 
-				let isInstructionSection = false;
-				for( let i = 0; i< document.lineCount; i++ ) {
-					let str = document.getText(Range.create(i, 0, i+1, 0));
-					str = str.replace(/[\r\n]/g,"");
+		// search Label
+		const labelPattern = createLabelPattern();
+		while ((m = labelPattern.exec(lineText)) ) {
+			if( posInLine < m.index || m.index + m[0].length < posInLine ) {
+				continue;
+			}
+			const label = m[1];
+			const escapedLabel = label.replace("*", "\\*");
 
-					if( !isInstructionSection) {
-						if(str === "//INST") {
-							isInstructionSection = true;
-						}
+			let isInstructionSection = false;
+			for( let i = 0; i< document.lineCount; i++ ) {
+				let str = document.getText(Range.create(i, 0, i+1, 0));
+				str = str.replace(/[\r\n]/g,"");
+
+				if( !isInstructionSection) {
+					if(str === "//INST") {
+						isInstructionSection = true;
 					}
-					else {
-						const mm = str.match( `(?<=^\\s*)${escapedLabel}\\b` );
-						if( mm?.index != undefined ) {
-							return {
-								uri: definitionParams.textDocument.uri,
-								range: Range.create(i, mm.index, i, str.length)
-		
-							};
-						}
+				}
+				else {
+					const mm = str.match( `(?<=^\\s*)${escapedLabel}\\b` );
+					if( mm?.index != undefined ) {
+						return {
+							uri: definitionParams.textDocument.uri,
+							range: Range.create(i, mm.index, i, str.length)
+	
+						};
 					}
 				}
 			}
+		}
+	}
+	return null;
+}
 
+function onDefinitionPsc(definitionParams: DefinitionParams) {
+	const document = documents.get(definitionParams.textDocument.uri);
+	const pos = definitionParams.position;
+	const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
+
+	let lineText: string;
+
+	if(document != null) {
+		const str = document.getText( lineRange );
+		const filePath = URI.parse(definitionParams.textDocument.uri).fsPath;
+
+		const m = /^\s*([^,\s]+)\s*,\s*([0-9]+)\s*,/.exec(str);
+
+		if( m ) {
+			const paramType = m[1];
+			const paramNumber = +m[2];
+
+			const paramPath = path.join(path.dirname( filePath ), "ALL.PRM" );
+
+			const section = getParameterSectionMap( paramPath )?.sectionMap.get( paramType );
+
+			if( section ) {
+				const lineNo = section.range.start.line + Math.floor(paramNumber/10);
+				const lineText = getTextLine( paramPath, lineNo );
+				if( lineText ) {
+					const paramRange = getRangeAtIndex( lineText, paramNumber % 10 );
+					if( paramRange ) {
+						paramRange.start.line = lineNo;
+						paramRange.end.line = lineNo;
+
+						return {
+							uri: URI.file(paramPath).toString(),
+							range: paramRange
+						};
+	
+					}
+				}
+			}
 
 		}
+	}
+
+	return null;
+}
+
+connection.onDefinition(
+	(definitionParams ) : Definition | null => {
+		const filePath = URI.parse( definitionParams.textDocument.uri ).fsPath.toString();
+		const fileName = path.basename( filePath );
+
+		const extname = path.extname(fileName).toUpperCase();
+		if( extname === ".JBI" ) {
+			return onDefinitionJbi( definitionParams );
+		}
+		else if( extname === ".PSC" ) {
+			return onDefinitionPsc( definitionParams );
+		}
+
 		return null;
+
 	}
 );
 

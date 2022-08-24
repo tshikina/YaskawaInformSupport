@@ -2,6 +2,10 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
+## [0.3.1] - 2022-08-24
+### Fixed
+- Fixed showing wrong parameter type in Hover for ALL.PRM.
+
 ## [0.3.0] - 2022-08-15
 ### Added
 - Support Go to Definition to JOB

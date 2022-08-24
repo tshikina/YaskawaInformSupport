@@ -135,7 +135,7 @@ connection.onDidChangeConfiguration(change => {
 	}
 
 	// Revalidate all open text documents
-	// documents.all().forEach(validateTextDocument);
+	documents.all().forEach(validateFile);
 });
 
 function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
@@ -161,7 +161,7 @@ documents.onDidClose(e => {
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
-	// validateTextDocument(change.document);
+	validateFile( change.document );
 });
 
 // async function validateTextDocument(textDocument: TextDocument): Promise<void> {
@@ -448,6 +448,77 @@ function getSectionNameFromLineNo( filePath: string, lineNo: integer ) {
 	return "";
 }
 
+
+function validatePsc(textDocument: TextDocument) {
+
+	const filePath = URI.parse( textDocument.uri ).fsPath;
+
+	if( !fs.existsSync(filePath) ) {
+		return;
+	}
+
+	const diagnostics: Diagnostic[] = [];
+	const lineRange = Range.create(0,0,0,0);
+
+	for( let i = 0; i < textDocument.lineCount; i++ ) {
+		lineRange.start.line = i;
+		lineRange.end.line = i+1;
+
+		const lineText = textDocument.getText(lineRange);
+
+		const pattern = /^(\S+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)/;
+
+		const m = pattern.exec( lineText );
+
+		if( m ) {
+			const paramType = m[1];
+			const paramNumber = +m[2];
+			const paramValue = +m[3];
+
+			const expectedValue = getParameterValue( filePath, paramType, paramNumber );
+
+			const diagnosisRange = Range.create( i, m.index, i, m[0].length );
+
+			if( expectedValue == undefined ) {
+				diagnostics.push( {
+					severity: DiagnosticSeverity.Warning,
+					range: diagnosisRange,
+					message: `${paramType + paramNumber} is NOT found in ALL.PRM.`,
+					source: 'ex'
+				} );
+			}
+			else if( paramValue != expectedValue ) {
+				diagnostics.push( {
+					severity: DiagnosticSeverity.Warning,
+					range: diagnosisRange,
+					message: `${paramType + paramNumber} value '${paramValue}' is NOT match with ALL.PRM value '${expectedValue}.'`,
+					source: 'ex'
+				} );
+			}
+			else {
+				diagnostics.push( {
+					severity: DiagnosticSeverity.Information,
+					range: diagnosisRange,
+					message: `Matched with ALL.PRM`,
+					source: 'ex'
+				} );
+			}
+		}
+	}
+	// Send the computed diagnostics to VSCode.
+	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+}
+
+function validateFile(textDocument: TextDocument) {
+	const filePath = URI.parse( textDocument.uri ).fsPath;
+	const fileName = path.basename( filePath );
+
+	const extname = path.extname(fileName).toUpperCase();
+	if( extname === ".PSC" ) {
+		return validatePsc( textDocument );
+	}
+
+}
 
 function onHoverParam(hoverParams: HoverParams): Hover | null {
 	const document = documents.get(hoverParams.textDocument.uri);

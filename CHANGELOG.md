@@ -2,14 +2,18 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
+## [Unreleased]
+### Added
+- Support Go to Definiton to C-Var in JBI file.
+
 ## [0.3.1] - 2022-08-24
 ### Fixed
 - Fixed showing wrong parameter type in Hover for ALL.PRM.
 
 ## [0.3.0] - 2022-08-15
 ### Added
-- Support Go to Definition to JOB
-- Support Go to Definition to LABEL
+- Support Go to Definition to JOB in JBI file.
+- Support Go to Definition to LABEL in JBI file.
 - Support Hover to show parameter number in .PRM files
 
 ## [0.2.0] - 2022-05-15

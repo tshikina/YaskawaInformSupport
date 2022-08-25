@@ -43,6 +43,10 @@ function createLabelPattern() {
 	return /(?<=\s)(\*\S{1,8})\b/g;
 }
 
+function createCvarPattern() {
+	return /(?<=\s)C([0-9]+)\s/g;
+}
+
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -660,6 +664,37 @@ function onDefinitionJbi(definitionParams: DefinitionParams) {
 				else {
 					const mm = str.match( `(?<=^\\s*)${escapedLabel}\\b` );
 					if( mm?.index != undefined ) {
+						return {
+							uri: definitionParams.textDocument.uri,
+							range: Range.create(i, mm.index, i, str.length)
+	
+						};
+					}
+				}
+			}
+		}
+
+		// search C-Var
+		const cvarPattern = createCvarPattern();
+		while ((m = cvarPattern.exec(lineText)) ) {
+			if( posInLine < m.index || m.index + m[0].length < posInLine ) {
+				continue;
+			}
+			const cvarNumber = m[1];
+
+			let isPositionSection = false;
+			for( let i = 0; i< document.lineCount; i++ ) {
+				let str = document.getText(Range.create(i, 0, i+1, 0));
+				str = str.replace(/[\r\n]/g,"");
+
+				if( !isPositionSection ) {
+					if(str === "//POS") {
+						isPositionSection = true;
+					}
+				}
+				else {
+					const mm = str.match( /^C([0-9]+)=.*$/ );
+					if( mm?.index != undefined && mm[1] == cvarNumber ) {
 						return {
 							uri: definitionParams.textDocument.uri,
 							range: Range.create(i, mm.index, i, str.length)

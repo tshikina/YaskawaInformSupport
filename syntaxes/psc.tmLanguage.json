@@ -11,7 +11,7 @@
 			"name": "comment.line.pscfile"
 		},
 		"data": {
-			"match": "^(\\S+)\\s*,\\s*([0-9]+)\\s*,\\s*([0-9]+)\\s*,?(.*)$",
+			"match": "^(\\S+)\\s*,\\s*([0-9]+)\\s*,\\s*([-]?[0-9]+)\\s*,?(.*)$",
 			"captures": {
 				"1": { "name": "variable.other.pscfile" },
 				"2": { "name": "variable.other.pscfile"},

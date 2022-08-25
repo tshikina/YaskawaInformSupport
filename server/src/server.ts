@@ -466,7 +466,7 @@ function validatePsc(textDocument: TextDocument) {
 
 		const lineText = textDocument.getText(lineRange);
 
-		const pattern = /^(\S+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)/;
+		const pattern = /^(\S+)\s*,\s*([0-9]+)\s*,\s*([-]?[0-9]+)/;
 
 		const m = pattern.exec( lineText );
 

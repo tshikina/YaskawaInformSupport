@@ -41,6 +41,7 @@ export function activate(context: ExtensionContext) {
 		documentSelector: [
 			{ scheme: 'file', language: 'inform' },
 			{ scheme: 'file', language: 'generaldat' },
+			{ scheme: 'file', language: 'vardat' },
 			{ scheme: 'file', language: 'pscfile' }
 		],
 		synchronize: {

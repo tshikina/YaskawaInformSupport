@@ -33,6 +33,7 @@
     "activationEvents": [
         "onLanguage:inform",
         "onLanguage:generaldat",
+        "onLanguage:vardat",
         "onLanguage:pscfile"
     ],
 	"main": "./client/out/extension",

@@ -528,8 +528,10 @@ function getVarDatSectionNameFromLineNo( filePath: string, lineNo: integer ) {
 function validatePsc(textDocument: TextDocument) {
 
 	const filePath = URI.parse( textDocument.uri ).fsPath;
+	const folderPath = path.dirname(filePath);
+	const allParamPath = path.join(folderPath, "ALL.PRM");
 
-	if( !fs.existsSync(filePath) ) {
+	if( !fs.existsSync(allParamPath) ) {
 		return;
 	}
 

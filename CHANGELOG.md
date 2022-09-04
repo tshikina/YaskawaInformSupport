@@ -2,7 +2,7 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
-## [Unreleased]
+## [0.4.0] - 2022-09-04
 ### Added
 - Support Go to Definiton to C-Var in JBI file.
 - Support Hover to show variable number in VAR.DAT.

@@ -15,6 +15,12 @@ This extension support syntax highlight for YASKAWA Motoman Inform language as f
 
 ## Release Notes
 
+### [0.4.0]
+- Support Go to Definiton to C-Var in JBI file.
+- Support Hover to show variable number in VAR.DAT.
+- Support Hover to show io number in IONAME.DAT and EXIONAME.DAT.
+- Support Hover to show register number in IOMNAME.DAT.
+
 ### [0.3.0]
 - Support Go to Definition to JOB
 - Support Go to Definition to LABEL

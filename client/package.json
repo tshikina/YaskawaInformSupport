@@ -2,7 +2,7 @@
 	"name": "inform-job-support-client",
 	"description": "VSCode part of a language server",
 	"author": "Taku Shikina",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"publisher": "tshikina",
 	"repository": {
 		"type": "git",

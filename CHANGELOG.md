@@ -6,6 +6,7 @@ All notable changes to the "inform-job-support" extension will be documented in 
 ### Added
 - Support Go to Definiton to C-Var in JBI file.
 - Support Hover to show variable number in VAR.DAT.
+- Support Hover to show register number in IOMNAME.DAT.
 
 ## [0.3.1] - 2022-08-24
 ### Fixed

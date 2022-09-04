@@ -269,8 +269,13 @@ interface VarDatSection {
 	sectionMap: Map<string, Section>	// <variableType, section>
 }
 
+interface IomNameDatSection {
+	sectionMap: Map<string, Section>	// <iomType, section>
+}
+
 const paramSectionMap = new Map<string, ParamSection>(); // <filePath, paramSection>
 const varDatSectionMap = new Map<string, VarDatSection>(); // <filePath, VarDatSection>
+const iomNameDatSectionMap = new Map<string, VarDatSection>(); // <filePath, IomNameDatSection>
 const paramFileValueMap = new Map<string, Map<string, number>>(); // <filePath, <parameterNumber, value>>
 
 function getTextLines( filePath: string ) {
@@ -425,7 +430,7 @@ function getVarDatSectionMap( filePath: string ) {
 				continue;
 			}
 			else if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
-				console.log(`new section: ${currentSection} , from ${sectionRange.start.line} to ${sectionRange.end.line}`);
+				// console.log(`new section: ${currentSection} , from ${sectionRange.start.line} to ${sectionRange.end.line}`);
 				varDatSection.sectionMap.set( currentSection, {
 					range: sectionRange
 				} );
@@ -447,6 +452,62 @@ function getVarDatSectionMap( filePath: string ) {
 
 	return varDatSection;
 }
+
+function getIomNameDatSectionMap( filePath: string ) {
+	let iomNameDatSection = iomNameDatSectionMap.get(filePath);
+
+	if( iomNameDatSection ) {
+		return iomNameDatSection;
+	}
+
+	iomNameDatSection = {
+		sectionMap: new Map<string, Section>()
+	};
+
+	const lines = getTextLines( filePath );
+	let currentSection = "";
+	let sectionRange = Range.create(0,0,0,0);
+
+	if( !lines ) {
+		return undefined;
+	}
+
+	for( let i=0; i<lines.length; i++ ) {
+		const lineText = lines[i];
+		if( lineText.startsWith("/") ) {
+			const newSectionName = extractSectionNameFromText( lineText );
+			if(newSectionName.length == 0) {
+				continue;
+			}
+			else if( newSectionName == "NAME") {
+				sectionRange.start.line = i+1;
+				sectionRange.end.line = i+1;
+				continue;
+			}
+			else if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
+				console.log(`new section: ${currentSection} , from ${sectionRange.start.line} to ${sectionRange.end.line}`);
+				iomNameDatSection.sectionMap.set( currentSection, {
+					range: sectionRange
+				} );
+			}
+			sectionRange = Range.create(i+1,0,i+1,0);
+			currentSection = newSectionName;
+		}
+		else {
+			sectionRange.end.line = i+1;
+		}
+	}
+	if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
+		iomNameDatSection.sectionMap.set( currentSection, {
+			range: sectionRange
+		} );
+	}
+
+	varDatSectionMap.set(filePath, iomNameDatSection);
+
+	return iomNameDatSection;
+}
+
 
 function getParameterValue( filePath: string, parameterType: string, parameterNumber: number ) {
 	const paramPath = path.join( path.dirname(filePath), "ALL.PRM" );
@@ -516,6 +577,23 @@ function getVarDatSectionNameFromLineNo( filePath: string, lineNo: integer ) {
 	}
 
 	for( const [sectionName, section] of varDatSection.sectionMap ){
+		if( lineNo >= section.range.start.line && lineNo < section.range.end.line ) {
+			return sectionName;
+		}
+	}
+	
+	return "";
+}
+
+
+function getIomNameDatSectionNameFromLineNo( filePath: string, lineNo: integer ) {
+	const iomNameDatSection = getVarDatSectionMap( filePath );
+
+	if(!iomNameDatSection) {
+		return "";
+	}
+
+	for( const [sectionName, section] of iomNameDatSection.sectionMap ){
 		if( lineNo >= section.range.start.line && lineNo < section.range.end.line ) {
 			return sectionName;
 		}
@@ -673,12 +751,38 @@ function onHoverVarDat(hoverParams: HoverParams): Hover | null {
 	return null;
 }
 
+function onHoverIomNameDat(hoverParams: HoverParams): Hover | null {
+	const document = documents.get(hoverParams.textDocument.uri);
+	const pos = hoverParams.position;
+
+	if(document != null) {
+		const filePath = URI.parse(hoverParams.textDocument.uri).fsPath;
+		const sectionName = getIomNameDatSectionNameFromLineNo( filePath, pos.line );
+
+		const section = getIomNameDatSectionMap( filePath )?.sectionMap.get( sectionName );
+
+		if( section ) {
+			const offset = pos.line - section.range.start.line;
+			const str = document.getText( Range.create( pos.line, 0, pos.line, pos.character) );
+
+			return {
+				contents: [
+					`M ${offset}`
+				]
+			};
+		}
+		else {
+			return null;
+		}
+	}
+
+	return null;
+}
+
 function onHoverPsc(hoverParams: HoverParams): Hover | null {
 	const document = documents.get(hoverParams.textDocument.uri);
 	const pos = hoverParams.position;
 	const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
-
-	let lineText: string;
 
 	if(document != null) {
 		const str = document.getText( lineRange );
@@ -717,6 +821,9 @@ connection.onHover(
 		}
 		else if( fileName == "VAR.DAT") {
 			return onHoverVarDat(hoverParams);
+		}
+		else if( fileName == "IOMNAME.DAT") {
+			return onHoverIomNameDat(hoverParams);
 		}
 		else if( extname == ".PSC") {
 			return onHoverPsc(hoverParams);

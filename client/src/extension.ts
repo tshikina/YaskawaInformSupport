@@ -42,6 +42,7 @@ export function activate(context: ExtensionContext) {
 			{ scheme: 'file', language: 'inform' },
 			{ scheme: 'file', language: 'generaldat' },
 			{ scheme: 'file', language: 'vardat' },
+			{ scheme: 'file', language: 'iomnamedat' },
 			{ scheme: 'file', language: 'pscfile' }
 		],
 		synchronize: {

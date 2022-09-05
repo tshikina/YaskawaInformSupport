@@ -35,6 +35,8 @@ import path = require('path');
 import { MochaInstanceOptions } from 'mocha';
 import { integer } from 'vscode-languageclient';
 
+import * as Util from './Util';
+
 function createJobNamePattern() {
 	return /(?<=\s+JOB:)(\S+)/g;
 }
@@ -168,95 +170,6 @@ documents.onDidChangeContent(change => {
 	validateFile( change.document );
 });
 
-// async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-// 	// In this simple example we get the settings for every validate run.
-// 	const settings = await getDocumentSettings(textDocument.uri);
-
-// 	// The validator creates diagnostics for all uppercase words length 2 and more
-// 	const text = textDocument.getText();
-// 	const pattern = /\b[A-Z]{2,}\b/g;
-// 	let m: RegExpExecArray | null;
-
-// 	let problems = 0;
-// 	const diagnostics: Diagnostic[] = [];
-// 	while ((m = pattern.exec(text)) && problems < settings.maxNumberOfProblems) {
-// 		problems++;
-// 		const diagnostic: Diagnostic = {
-// 			severity: DiagnosticSeverity.Information,
-// 			range: {
-// 				start: textDocument.positionAt(m.index),
-// 				end: textDocument.positionAt(m.index + m[0].length)
-// 			},
-// 			message: `${m[0]} is all uppercase.`,
-// 			source: 'ex'
-// 		};
-// 		if (hasDiagnosticRelatedInformationCapability) {
-// 			diagnostic.relatedInformation = [
-// 				{
-// 					location: {
-// 						uri: textDocument.uri,
-// 						range: Object.assign({}, diagnostic.range)
-// 					},
-// 					message: 'Spelling matters'
-// 				},
-// 				{
-// 					location: {
-// 						uri: textDocument.uri,
-// 						range: Object.assign({}, diagnostic.range)
-// 					},
-// 					message: 'Particularly for names'
-// 				}
-// 			];
-// 		}
-// 		diagnostics.push(diagnostic);
-// 	}
-
-// 	// Send the computed diagnostics to VSCode.
-// 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-// }
-
-
-// connection.onDidChangeWatchedFiles(_change => {
-// 	// Monitored files have change in VSCode
-// 	connection.console.log('We received an file change event');
-// });
-
-// This handler provides the initial list of the completion items.
-// connection.onCompletion(
-// 	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-// 		// The pass parameter contains the position of the text document in
-// 		// which code complete got requested. For the example we ignore this
-// 		// info and always provide the same completion items.
-// 		return [
-// 			{
-// 				label: 'TypeScript',
-// 				kind: CompletionItemKind.Text,
-// 				data: 1
-// 			},
-// 			{
-// 				label: 'JavaScript',
-// 				kind: CompletionItemKind.Text,
-// 				data: 2
-// 			}
-// 		];
-// 	}
-// );
-
-// This handler resolves additional information for the item selected in
-// the completion list.
-// connection.onCompletionResolve(
-// 	(item: CompletionItem): CompletionItem => {
-// 		if (item.data === 1) {
-// 			item.detail = 'TypeScript details';
-// 			item.documentation = 'TypeScript documentation';
-// 		} else if (item.data === 2) {
-// 			item.detail = 'JavaScript details';
-// 			item.documentation = 'JavaScript documentation';
-// 		}
-// 		return item;
-// 	}
-// );
-
 interface Section {
 	range: Range
 }
@@ -334,27 +247,6 @@ function getTextLine( filePath: string, lineNo: number) {
 	return lineText;
 }
 
-function getRangeAtIndex( lineText: string, index: number ): Range | undefined {
-	const pattern = new RegExp(`^(([^,]*,){${index}})([^,]*)`);
-
-	const m = pattern.exec( lineText );
-
-	if( m ) {
-		return Range.create(0, m[1].length, 0, m[1].length + m[3].length);
-	}
-
-	return undefined;
-}
-
-function extractSectionNameFromText( lineText: string ) {
-	const m = /^[/]*(\S*)/.exec(lineText);
-
-	if( m ) {
-		return m[1];
-	}
-
-	return "";
-}
 
 function getParameterSectionMap( filePath: string ) {
 	let paramSection = paramSectionMap.get(filePath);
@@ -378,7 +270,7 @@ function getParameterSectionMap( filePath: string ) {
 	for( let i=0; i<lines.length; i++ ) {
 		const lineText = lines[i];
 		if( lineText.startsWith("/") ) {
-			const newSectionName = extractSectionNameFromText( lineText );
+			const newSectionName = Util.extractSectionNameFromText( lineText );
 			if(newSectionName.length == 0 || newSectionName == "CRC") {
 				sectionRange.start.line = i+1;
 				sectionRange.end.line = i+1;
@@ -430,7 +322,7 @@ function getVarDatSectionMap( filePath: string ) {
 	for( let i=0; i<lines.length; i++ ) {
 		const lineText = lines[i];
 		if( lineText.startsWith("/") ) {
-			const newSectionName = extractSectionNameFromText( lineText );
+			const newSectionName = Util.extractSectionNameFromText( lineText );
 			if(newSectionName.length == 0) {
 				continue;
 			}
@@ -480,7 +372,7 @@ function getIoNameDatSectionMap( filePath: string ) {
 	for( let i=0; i<lines.length; i++ ) {
 		const lineText = lines[i];
 		if( lineText.startsWith("/") ) {
-			const newSectionName = extractSectionNameFromText( lineText );
+			const newSectionName = Util.extractSectionNameFromText( lineText );
 			if(newSectionName.length == 0) {
 				continue;
 			}
@@ -530,7 +422,7 @@ function getIomNameDatSectionMap( filePath: string ) {
 	for( let i=0; i<lines.length; i++ ) {
 		const lineText = lines[i];
 		if( lineText.startsWith("/") ) {
-			const newSectionName = extractSectionNameFromText( lineText );
+			const newSectionName = Util.extractSectionNameFromText( lineText );
 			if(newSectionName.length == 0) {
 				continue;
 			}
@@ -583,7 +475,7 @@ function getParameterValue( filePath: string, parameterType: string, parameterNu
 			let startLine = 0;
 			for( let i = 0; i < textLines.length; i++) {
 				const lineText = textLines[i];
-				const newSectionName = extractSectionNameFromText( lineText );
+				const newSectionName = Util.extractSectionNameFromText( lineText );
 				if( lineText.startsWith("/") ) {
 					startLine = i+1;
 					if(newSectionName.length == 0 || newSectionName == "CRC") {
@@ -749,9 +641,6 @@ function validateFile(textDocument: TextDocument) {
 function onHoverParam(hoverParams: HoverParams): Hover | null {
 	const document = documents.get(hoverParams.textDocument.uri);
 	const pos = hoverParams.position;
-	const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
-
-	let lineText: string;
 
 	if(document != null) {
 		const filePath = URI.parse(hoverParams.textDocument.uri).fsPath;
@@ -761,9 +650,9 @@ function onHoverParam(hoverParams: HoverParams): Hover | null {
 
 		if( section ) {
 			const offset = pos.line - section.range.start.line;
-			const str = document.getText( Range.create( pos.line, 0, pos.line, pos.character) );
-			let index = str.match(/,/g)?.length;
-			index = index ? index : 0;
+			const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
+			const lineText = document.getText( lineRange );
+			const index = Util.getIndexAtPosition( lineText, pos.character );
 			return {
 				contents: [
 					`${sectionName} ${offset*10 + index}`
@@ -782,9 +671,6 @@ function onHoverParam(hoverParams: HoverParams): Hover | null {
 function onHoverVarDat(hoverParams: HoverParams): Hover | null {
 	const document = documents.get(hoverParams.textDocument.uri);
 	const pos = hoverParams.position;
-	const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
-
-	let lineText: string;
 
 	if(document != null) {
 		const filePath = URI.parse(hoverParams.textDocument.uri).fsPath;
@@ -797,8 +683,9 @@ function onHoverVarDat(hoverParams: HoverParams): Hover | null {
 			const str = document.getText( Range.create( pos.line, 0, pos.line, pos.character) );
 
 			if( sectionName == "B" || sectionName == "I" || sectionName == "D" || sectionName == "R") {
-				let index = str.match(/,/g)?.length;
-				index = index ? index : 0;
+				const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
+				const lineText = document.getText( lineRange );
+				const index = Util.getIndexAtPosition( lineText, pos.character );
 				return {
 					contents: [
 						`${sectionName} ${offset*10 + index}`
@@ -833,10 +720,10 @@ function onHoverIoNameDat(hoverParams: HoverParams): Hover | null {
 
 		if( section ) {
 			const offset = pos.line - section.range.start.line;
-			const str = document.getText( Range.create( pos.line, 0, pos.line, pos.character) );
 
-			let index = str.match(/,/g)?.length;
-			index = index ? index : 0;
+			const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
+			const lineText = document.getText( lineRange );
+			const index = Util.getIndexAtPosition( lineText, pos.character );
 			return {
 				contents: [
 					`${sectionName} ${offset*4 + index + 1}`
@@ -1062,7 +949,7 @@ function onDefinitionPsc(definitionParams: DefinitionParams) {
 				const lineNo = section.range.start.line + Math.floor(paramNumber/10);
 				const lineText = getTextLine( paramPath, lineNo );
 				if( lineText ) {
-					const paramRange = getRangeAtIndex( lineText, paramNumber % 10 );
+					const paramRange = Util.getRangeAtIndex( lineText, paramNumber % 10 );
 					if( paramRange ) {
 						paramRange.start.line = lineNo;
 						paramRange.end.line = lineNo;

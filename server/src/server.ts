@@ -36,6 +36,8 @@ import { MochaInstanceOptions } from 'mocha';
 import { integer } from 'vscode-languageclient';
 
 import * as Util from './Util';
+import { Workspace } from './Workspace';
+import { RobotController } from './RobotController';
 
 function createJobNamePattern() {
 	return /(?<=\s+JOB:)(\S+)/g;
@@ -55,6 +57,9 @@ const connection = createConnection(ProposedFeatures.all);
 
 // Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
+const workspace = new Workspace( documents );
+
+const robotControllerMap = new Map<string, RobotController>();
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
@@ -190,114 +195,25 @@ interface IomNameDatSection {
 	sectionMap: Map<string, Section>	// <iomType, section>
 }
 
-const paramSectionMap = new Map<string, ParamSection>(); // <filePath, paramSection>
 const varDatSectionMap = new Map<string, VarDatSection>(); // <filePath, VarDatSection>
 const ioNameDatSectionMap = new Map<string, IoNameDatSection>(); // <filePath, IomNameDatSection>
 const iomNameDatSectionMap = new Map<string, IomNameDatSection>(); // <filePath, IomNameDatSection>
 const paramFileValueMap = new Map<string, Map<string, number>>(); // <filePath, <parameterNumber, value>>
 
-function getTextLines( filePath: string ) {
-	let lines : Array<string> | undefined;
-	const fileUri = URI.file(filePath).toString();
+function getRobotControllerFromFsPath( fsPath: string ) {
+	const folderPath = path.dirname( fsPath );
 
-	const document = documents.get(fileUri);
+	let robotController = robotControllerMap.get( folderPath );
 
-	if( document ) {
-		lines = new Array<string>(0);
-
-		const range = Range.create( 0, 0, 0, 0);
-		for( let i=0; i < document.lineCount; i++ ) {
-			range.start.line = i;
-			range.end.line = i+1;
-			const lineText = document.getText( range ).replace(/[\r\n]/g,"");
-			lines.push(lineText);
-		}
-	}
-	else {
-		try{
-			fs.readFileSync(filePath);
-			const text = fs.readFileSync(filePath, "utf-8");
-			lines = text.replace("\r\n","\n").split("\n");
-		}
-		catch(err) {
-			console.error( `cannot read file: ${filePath}` );
-		}
+	if( robotController ) {
+		return robotController;
 	}
 
-	return lines;
-}
+	robotController = new RobotController( workspace, folderPath );
 
-function getTextLine( filePath: string, lineNo: number) {
-	let lineText: string | undefined;
-	const fileUri = URI.file(filePath).toString();
-
-	const document = documents.get(fileUri);
-
-	if( document ) {
-		const range = Range.create( lineNo, 0, lineNo + 1, 0);
-		lineText = document.getText( range ).replace(/[\r\n]/g,"");
-	}
-	else {
-		const lines = getTextLines( filePath );
-
-		if( lines && lines.length > lineNo ) {
-			lineText = lines[lineNo];
-		}
-	}
-	return lineText;
-}
-
-
-function getParameterSectionMap( filePath: string ) {
-	let paramSection = paramSectionMap.get(filePath);
-
-	if( paramSection ) {
-		return paramSection;
-	}
-
-	paramSection = {
-		sectionMap: new Map<string, Section>()
-	};
-
-	const lines = getTextLines( filePath );
-	let currentSection = "";
-	let sectionRange = Range.create(0,0,0,0);
-
-	if( !lines ) {
-		return undefined;
-	}
-
-	for( let i=0; i<lines.length; i++ ) {
-		const lineText = lines[i];
-		if( lineText.startsWith("/") ) {
-			const newSectionName = Util.extractSectionNameFromText( lineText );
-			if(newSectionName.length == 0 || newSectionName == "CRC") {
-				sectionRange.start.line = i+1;
-				sectionRange.end.line = i+1;
-				continue;
-			}
-			else if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
-				// console.log(`new section: ${currentSection} , from ${sectionRange.start.line} to ${sectionRange.end.line}`);
-				paramSection.sectionMap.set( currentSection, {
-					range: sectionRange
-				} );
-			}
-			sectionRange = Range.create(i+1,0,i+1,0);
-			currentSection = newSectionName;
-		}
-		else {
-			sectionRange.end.line = i+1;
-		}
-	}
-	if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
-		paramSection.sectionMap.set( currentSection, {
-			range: sectionRange
-		} );
-	}
-
-	paramSectionMap.set(filePath, paramSection);
-
-	return paramSection;
+	robotControllerMap.set( folderPath, robotController );
+	
+	return robotController;
 }
 
 function getVarDatSectionMap( filePath: string ) {
@@ -311,7 +227,7 @@ function getVarDatSectionMap( filePath: string ) {
 		sectionMap: new Map<string, Section>()
 	};
 
-	const lines = getTextLines( filePath );
+	const lines = workspace.getTextLines( filePath );
 	let currentSection = "";
 	let sectionRange = Range.create(0,0,0,0);
 
@@ -361,7 +277,7 @@ function getIoNameDatSectionMap( filePath: string ) {
 		sectionMap: new Map<string, Section>()
 	};
 
-	const lines = getTextLines( filePath );
+	const lines = workspace.getTextLines( filePath );
 	let currentSection = "";
 	let sectionRange = Range.create(0,0,0,0);
 
@@ -411,7 +327,7 @@ function getIomNameDatSectionMap( filePath: string ) {
 		sectionMap: new Map<string, Section>()
 	};
 
-	const lines = getTextLines( filePath );
+	const lines = workspace.getTextLines( filePath );
 	let currentSection = "";
 	let sectionRange = Range.create(0,0,0,0);
 
@@ -466,7 +382,7 @@ function getParameterValue( filePath: string, parameterType: string, parameterNu
 
 	if( !paramValueMap ) {
 		// update value
-		const textLines = getTextLines( paramPath );
+		const textLines = workspace.getTextLines( paramPath );
 
 		if( textLines && textLines.length > 0 ) {
 			paramValueMap = new Map<string, number>();
@@ -497,22 +413,6 @@ function getParameterValue( filePath: string, parameterType: string, parameterNu
 	value = paramValueMap?.get( paramNumberStr );
 
 	return value;
-}
-
-function getParameterSectionNameFromLineNo( filePath: string, lineNo: integer ) {
-	const paramSection = getParameterSectionMap( filePath );
-
-	if(!paramSection) {
-		return "";
-	}
-
-	for( const [sectionName, section] of paramSection.sectionMap ){
-		if( lineNo >= section.range.start.line && lineNo < section.range.end.line ) {
-			return sectionName;
-		}
-	}
-	
-	return "";
 }
 
 
@@ -636,35 +536,6 @@ function validateFile(textDocument: TextDocument) {
 		return validatePsc( textDocument );
 	}
 
-}
-
-function onHoverParam(hoverParams: HoverParams): Hover | null {
-	const document = documents.get(hoverParams.textDocument.uri);
-	const pos = hoverParams.position;
-
-	if(document != null) {
-		const filePath = URI.parse(hoverParams.textDocument.uri).fsPath;
-		const sectionName = getParameterSectionNameFromLineNo( filePath, pos.line );
-
-		const section = getParameterSectionMap( filePath )?.sectionMap.get( sectionName );
-
-		if( section ) {
-			const offset = pos.line - section.range.start.line;
-			const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
-			const lineText = document.getText( lineRange );
-			const index = Util.getIndexAtPosition( lineText, pos.character );
-			return {
-				contents: [
-					`${sectionName} ${offset*10 + index}`
-				]
-			};
-		}
-		else {
-			return null;
-		}
-	}
-
-	return null;
 }
 
 
@@ -799,12 +670,17 @@ function onHoverPsc(hoverParams: HoverParams): Hover | null {
 
 connection.onHover( 
 	(hoverParams: HoverParams): Hover | null  => {
-		const filePath = URI.parse( hoverParams.textDocument.uri ).fsPath.replace( /\\/g, "/" );
+		const filePath = Util.uriStringToFsPath( hoverParams.textDocument.uri );
 		const fileName = path.basename( filePath );
+		const robotController = getRobotControllerFromFsPath( filePath );
 
 		const extname = path.extname(fileName).toUpperCase();
 		if( extname === ".PRM" ) {
-			return onHoverParam( hoverParams );
+			const parameterFile = robotController.getParameterFile(filePath);
+			if( parameterFile ) {
+				return parameterFile.onHover( hoverParams );
+			}
+			return null;
 		}
 		else if( fileName == "VAR.DAT") {
 			return onHoverVarDat(hoverParams);
@@ -941,28 +817,9 @@ function onDefinitionPsc(definitionParams: DefinitionParams) {
 			const paramType = m[1];
 			const paramNumber = +m[2];
 
-			const paramPath = path.join(path.dirname( filePath ), "ALL.PRM" );
+			const robotController = getRobotControllerFromFsPath( filePath );
 
-			const section = getParameterSectionMap( paramPath )?.sectionMap.get( paramType );
-
-			if( section ) {
-				const lineNo = section.range.start.line + Math.floor(paramNumber/10);
-				const lineText = getTextLine( paramPath, lineNo );
-				if( lineText ) {
-					const paramRange = Util.getRangeAtIndex( lineText, paramNumber % 10 );
-					if( paramRange ) {
-						paramRange.start.line = lineNo;
-						paramRange.end.line = lineNo;
-
-						return {
-							uri: URI.file(paramPath).toString(),
-							range: paramRange
-						};
-	
-					}
-				}
-			}
-
+			return robotController.getParameterLocation( paramType, paramNumber );
 		}
 	}
 

@@ -2,6 +2,8 @@ import {
 	Range,
 } from 'vscode-languageserver/node';
 
+import { URI } from 'vscode-uri';
+
 
 /**
  * extract section name from line text
@@ -58,4 +60,13 @@ export function extractSectionNameFromText( lineText: string ) {
 	index = index ? index : 0;
 
 	return index;
+}
+
+
+export function uriStringToFsPath( uri: string ): string {
+	return URI.parse(uri).fsPath;
+}
+
+export function fsPathToUriString( fsPath: string ): string {
+	return URI.file( fsPath ).toString();
 }

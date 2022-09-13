@@ -72,6 +72,27 @@ export class ParameterFile {
 	}	
 
 
+	isParameterExist(parameterType: string, parameterNumber: number): boolean {
+		const sectionedDocument = this.updateSection();
+		if( !sectionedDocument ) {
+			return false;
+		}
+
+		const section = sectionedDocument.getSection( parameterType );
+
+		if( !section ) {
+			return false;
+		}
+
+		const valueRange = (section.range.end.line - section.range.start.line) * 10;
+
+		if( parameterNumber < 0 || parameterNumber >= valueRange ) {
+			return false;
+		}
+
+		return true;
+	}
+
 	getParameterRange(parameterType: string, parameterNumber: number) : Range | null {
 		const sectionedDocument = this.updateSection();
 		if( !sectionedDocument ) {
@@ -97,6 +118,39 @@ export class ParameterFile {
 		}
 		
 		return null;
+	}
+
+	getParameterValueMap() {
+		const textLines = this.workspace.getTextLines( this.filePath );
+
+		if( !textLines  || textLines.length <= 0 ) {
+			return null;
+		}
+
+		const parameterValueMap = new Map<string, number>();
+
+		let sectionName = "";
+		let startLine = 0;
+		for( let i = 0; i < textLines.length; i++) {
+			const lineText = textLines[i];
+			const newSectionName = Util.extractSectionNameFromText( lineText );
+			if( lineText.startsWith("/") ) {
+				startLine = i+1;
+				if(newSectionName.length == 0 || newSectionName == "CRC") {
+					continue;
+				}
+				sectionName = newSectionName;
+			}
+			else {
+				const valueStrings = lineText.split(",");
+				valueStrings.forEach( (valueStr, index) => {
+					const newParamNumberStr = sectionName + (((i - startLine)) * 10 + index);
+					parameterValueMap.set( newParamNumberStr, +valueStr );
+				});
+			}
+		}
+		
+		return parameterValueMap;
 	}
 
 	onHover(hoverParams: HoverParams): Hover | null {

@@ -179,10 +179,6 @@ interface Section {
 	range: Range
 }
 
-interface ParamSection {
-	sectionMap: Map<string, Section>	// <parameter, section>
-}
-
 interface VarDatSection {
 	sectionMap: Map<string, Section>	// <variableType, section>
 }
@@ -198,7 +194,6 @@ interface IomNameDatSection {
 const varDatSectionMap = new Map<string, VarDatSection>(); // <filePath, VarDatSection>
 const ioNameDatSectionMap = new Map<string, IoNameDatSection>(); // <filePath, IomNameDatSection>
 const iomNameDatSectionMap = new Map<string, IomNameDatSection>(); // <filePath, IomNameDatSection>
-const paramFileValueMap = new Map<string, Map<string, number>>(); // <filePath, <parameterNumber, value>>
 
 function getRobotControllerFromFsPath( fsPath: string ) {
 	const folderPath = path.dirname( fsPath );
@@ -372,50 +367,6 @@ function getIomNameDatSectionMap( filePath: string ) {
 }
 
 
-function getParameterValue( filePath: string, parameterType: string, parameterNumber: number ) {
-	const paramPath = path.join( path.dirname(filePath), "ALL.PRM" );
-
-	let value: undefined | number = undefined;
-	let paramValueMap = paramFileValueMap.get( paramPath );
-
-	const paramNumberStr = parameterType + parameterNumber;
-
-	if( !paramValueMap ) {
-		// update value
-		const textLines = workspace.getTextLines( paramPath );
-
-		if( textLines && textLines.length > 0 ) {
-			paramValueMap = new Map<string, number>();
-			paramFileValueMap.set( paramPath, paramValueMap );
-			let sectionName = "";
-			let startLine = 0;
-			for( let i = 0; i < textLines.length; i++) {
-				const lineText = textLines[i];
-				const newSectionName = Util.extractSectionNameFromText( lineText );
-				if( lineText.startsWith("/") ) {
-					startLine = i+1;
-					if(newSectionName.length == 0 || newSectionName == "CRC") {
-						continue;
-					}
-					sectionName = newSectionName;
-				}
-				else {
-					const valueStrings = lineText.split(",");
-					valueStrings.forEach( (valueStr, index) => {
-						const newParamNumberStr = sectionName + (((i - startLine)) * 10 + index);
-						paramValueMap?.set( newParamNumberStr, +valueStr );
-					});
-				}
-			}
-		}
-	}
-
-	value = paramValueMap?.get( paramNumberStr );
-
-	return value;
-}
-
-
 function getVarDatSectionNameFromLineNo( filePath: string, lineNo: integer ) {
 	const varDatSection = getVarDatSectionMap( filePath );
 
@@ -465,77 +416,23 @@ function getIomNameDatSectionNameFromLineNo( filePath: string, lineNo: integer )
 }
 
 
-function validatePsc(textDocument: TextDocument) {
-
-	const filePath = URI.parse( textDocument.uri ).fsPath;
-	const folderPath = path.dirname(filePath);
-	const allParamPath = path.join(folderPath, "ALL.PRM");
-
-	if( !fs.existsSync(allParamPath) ) {
-		return;
-	}
-
-	const diagnostics: Diagnostic[] = [];
-	const lineRange = Range.create(0,0,0,0);
-
-	for( let i = 0; i < textDocument.lineCount; i++ ) {
-		lineRange.start.line = i;
-		lineRange.end.line = i+1;
-
-		const lineText = textDocument.getText(lineRange);
-
-		const pattern = /^(\S+)\s*,\s*([0-9]+)\s*,\s*([-]?[0-9]+)/;
-
-		const m = pattern.exec( lineText );
-
-		if( m ) {
-			const paramType = m[1];
-			const paramNumber = +m[2];
-			const paramValue = +m[3];
-
-			const expectedValue = getParameterValue( filePath, paramType, paramNumber );
-
-			const diagnosisRange = Range.create( i, m.index, i, m[0].length );
-
-			if( expectedValue == undefined ) {
-				diagnostics.push( {
-					severity: DiagnosticSeverity.Warning,
-					range: diagnosisRange,
-					message: `${paramType + paramNumber} is NOT found in ALL.PRM.`,
-					source: 'ex'
-				} );
-			}
-			else if( paramValue != expectedValue ) {
-				diagnostics.push( {
-					severity: DiagnosticSeverity.Warning,
-					range: diagnosisRange,
-					message: `${paramType + paramNumber} value '${paramValue}' is NOT match with ALL.PRM value '${expectedValue}.'`,
-					source: 'ex'
-				} );
-			}
-			else {
-				diagnostics.push( {
-					severity: DiagnosticSeverity.Information,
-					range: diagnosisRange,
-					message: `Matched with ALL.PRM`,
-					source: 'ex'
-				} );
-			}
-		}
-	}
-	// Send the computed diagnostics to VSCode.
-	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-}
-
 function validateFile(textDocument: TextDocument) {
 	const filePath = URI.parse( textDocument.uri ).fsPath;
 	const fileName = path.basename( filePath );
+	const robotController = getRobotControllerFromFsPath( filePath );
 
 	const extname = path.extname(fileName).toUpperCase();
 	if( extname === ".PSC" ) {
-		return validatePsc( textDocument );
+		const file = robotController.getPscFile( fileName );
+		if( file ) {
+			const diagnostics = file.validate();
+			if( diagnostics ) {
+				connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+			}
+		}
 	}
 
+	return;
 }
 
 
@@ -637,36 +534,6 @@ function onHoverIomNameDat(hoverParams: HoverParams): Hover | null {
 	return null;
 }
 
-function onHoverPsc(hoverParams: HoverParams): Hover | null {
-	const document = documents.get(hoverParams.textDocument.uri);
-	const pos = hoverParams.position;
-	const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
-
-	if(document != null) {
-		const str = document.getText( lineRange );
-
-		const m = /^\s*([^,\s]+)\s*,\s*([0-9]+)\s*,/.exec(str);
-
-		if( m ) {
-			const paramType = m[1];
-			const paramNumber = +m[2];
-			const paramValue = getParameterValue( URI.parse(hoverParams.textDocument.uri).fsPath, paramType, paramNumber );
-
-			if( paramValue ) {
-				return {
-					contents: [`${paramType + paramNumber}: ${paramValue}`]
-				};
-			}
-		}
-		else {
-			// console.log("parameter not match: " + str);
-
-		}
-
-	}
-
-	return null;
-}
 
 connection.onHover( 
 	(hoverParams: HoverParams): Hover | null  => {
@@ -692,7 +559,11 @@ connection.onHover(
 			return onHoverIomNameDat(hoverParams);
 		}
 		else if( extname == ".PSC") {
-			return onHoverPsc(hoverParams);
+			const pscFile = robotController.getPscFile( filePath );
+			if( pscFile ) {
+				return pscFile.onHover( hoverParams );
+			}
+			return null;
 		}
 
 		return null;

@@ -10,6 +10,7 @@ import * as Util from './Util';
 
 import { ParameterFile } from './ParameterFile';
 import { VarDatFile } from './VarDatFile';
+import { IoNameDatFile } from './IoNameDatFile';
 import { PscFile } from './PscFile';
 
 export class RobotController {
@@ -19,6 +20,7 @@ export class RobotController {
 	// files
 	private parameterFiles = new Map<string, ParameterFile>();
 	private varDatFiles = new Map<string, VarDatFile>();
+	private ioNameDatFiles = new Map<string, IoNameDatFile>();
 	private pscFiles = new Map<string, PscFile>();
 
 	constructor( workspace: Workspace, folderPath: string ) {
@@ -110,6 +112,24 @@ export class RobotController {
 
 	}
 
+	getIoNameDatFile( filePath: string ) {
+		let file = this.ioNameDatFiles.get( filePath );
+
+		if( file ) {
+			return file; // return cache
+		}
+
+		if( !fs.existsSync(filePath) ) {
+			return undefined;
+		}
+
+		file = new IoNameDatFile( this.workspace, filePath );
+
+		this.ioNameDatFiles.set( filePath, file );
+
+		return file;
+
+	}
 
 	getPscFile( filePath: string ) {
 		let file = this.pscFiles.get( filePath );

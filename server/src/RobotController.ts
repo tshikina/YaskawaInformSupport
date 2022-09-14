@@ -9,15 +9,17 @@ import { Workspace } from "./Workspace";
 import * as Util from './Util';
 
 import { ParameterFile } from './ParameterFile';
+import { VarDatFile } from './VarDatFile';
 import { PscFile } from './PscFile';
 
 export class RobotController {
-	workspace: Workspace;
-	folderPath: string;
+	private workspace: Workspace;
+	private folderPath: string;
 
 	// files
-	parameterFiles = new Map<string, ParameterFile>();
-	pscFiles = new Map<string, PscFile>();
+	private parameterFiles = new Map<string, ParameterFile>();
+	private varDatFiles = new Map<string, VarDatFile>();
+	private pscFiles = new Map<string, PscFile>();
 
 	constructor( workspace: Workspace, folderPath: string ) {
 		this.workspace = workspace;
@@ -88,6 +90,26 @@ export class RobotController {
 
 		return file;
 	}
+
+	getVarDatFile( filePath: string ) {
+		let file = this.varDatFiles.get( filePath );
+
+		if( file ) {
+			return file; // return cache
+		}
+
+		if( !fs.existsSync(filePath) ) {
+			return undefined;
+		}
+
+		file = new VarDatFile( this.workspace, filePath );
+
+		this.varDatFiles.set( filePath, file );
+
+		return file;
+
+	}
+
 
 	getPscFile( filePath: string ) {
 		let file = this.pscFiles.get( filePath );

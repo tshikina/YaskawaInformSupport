@@ -175,15 +175,6 @@ documents.onDidChangeContent(change => {
 	validateFile( change.document );
 });
 
-interface Section {
-	range: Range
-}
-
-interface IomNameDatSection {
-	sectionMap: Map<string, Section>	// <iomType, section>
-}
-
-const iomNameDatSectionMap = new Map<string, IomNameDatSection>(); // <filePath, IomNameDatSection>
 
 function getRobotControllerFromFsPath( fsPath: string ) {
 	const folderPath = path.dirname( fsPath );
@@ -199,79 +190,6 @@ function getRobotControllerFromFsPath( fsPath: string ) {
 	robotControllerMap.set( folderPath, robotController );
 	
 	return robotController;
-}
-
-
-function getIomNameDatSectionMap( filePath: string ) {
-	let iomNameDatSection = iomNameDatSectionMap.get(filePath);
-
-	if( iomNameDatSection ) {
-		return iomNameDatSection;
-	}
-
-	iomNameDatSection = {
-		sectionMap: new Map<string, Section>()
-	};
-
-	const lines = workspace.getTextLines( filePath );
-	let currentSection = "";
-	let sectionRange = Range.create(0,0,0,0);
-
-	if( !lines ) {
-		return undefined;
-	}
-
-	for( let i=0; i<lines.length; i++ ) {
-		const lineText = lines[i];
-		if( lineText.startsWith("/") ) {
-			const newSectionName = Util.extractSectionNameFromText( lineText );
-			if(newSectionName.length == 0) {
-				continue;
-			}
-			else if( newSectionName == "NAME") {
-				sectionRange.start.line = i+1;
-				sectionRange.end.line = i+1;
-				continue;
-			}
-			else if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
-				console.log(`new section: ${currentSection} , from ${sectionRange.start.line} to ${sectionRange.end.line}`);
-				iomNameDatSection.sectionMap.set( currentSection, {
-					range: sectionRange
-				} );
-			}
-			sectionRange = Range.create(i+1,0,i+1,0);
-			currentSection = newSectionName;
-		}
-		else {
-			sectionRange.end.line = i+1;
-		}
-	}
-	if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
-		iomNameDatSection.sectionMap.set( currentSection, {
-			range: sectionRange
-		} );
-	}
-
-	iomNameDatSectionMap.set(filePath, iomNameDatSection);
-
-	return iomNameDatSection;
-}
-
-
-function getIomNameDatSectionNameFromLineNo( filePath: string, lineNo: integer ) {
-	const iomNameDatSection = getIomNameDatSectionMap( filePath );
-
-	if(!iomNameDatSection) {
-		return "";
-	}
-
-	for( const [sectionName, section] of iomNameDatSection.sectionMap ){
-		if( lineNo >= section.range.start.line && lineNo < section.range.end.line ) {
-			return sectionName;
-		}
-	}
-	
-	return "";
 }
 
 
@@ -292,35 +210,6 @@ function validateFile(textDocument: TextDocument) {
 	}
 
 	return;
-}
-
-
-function onHoverIomNameDat(hoverParams: HoverParams): Hover | null {
-	const document = documents.get(hoverParams.textDocument.uri);
-	const pos = hoverParams.position;
-
-	if(document != null) {
-		const filePath = URI.parse(hoverParams.textDocument.uri).fsPath;
-		const sectionName = getIomNameDatSectionNameFromLineNo( filePath, pos.line );
-
-		const section = getIomNameDatSectionMap( filePath )?.sectionMap.get( sectionName );
-
-		if( section ) {
-			const offset = pos.line - section.range.start.line;
-			const str = document.getText( Range.create( pos.line, 0, pos.line, pos.character) );
-
-			return {
-				contents: [
-					`M ${offset}`
-				]
-			};
-		}
-		else {
-			return null;
-		}
-	}
-
-	return null;
 }
 
 
@@ -353,7 +242,11 @@ connection.onHover(
 			return null;
 		}
 		else if( fileName == "IOMNAME.DAT") {
-			return onHoverIomNameDat(hoverParams);
+			const ioMNameDatFile = robotController.getIoMNameDatFile(filePath);
+			if( ioMNameDatFile ) {
+				return ioMNameDatFile.onHover( hoverParams );
+			}
+			return null;
 		}
 		else if( extname == ".PSC") {
 			const pscFile = robotController.getPscFile( filePath );

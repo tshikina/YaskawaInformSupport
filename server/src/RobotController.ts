@@ -15,8 +15,6 @@ export class RobotController {
 	workspace: Workspace;
 	folderPath: string;
 
-	parameterValueMap: Map<string, number> | null = null; // <parameterNumber, value>
-
 	// files
 	parameterFiles = new Map<string, ParameterFile>();
 	pscFiles = new Map<string, PscFile>();
@@ -48,17 +46,7 @@ export class RobotController {
 			return null;
 		}
 
-		if( !this.parameterValueMap ) {
-			this.parameterValueMap = file.getParameterValueMap();		
-		}
-
-		if( !file.isParameterExist( parameterType, parameterNumber ) ) {
-			return undefined;
-		}
-		
-		const value = this.parameterValueMap?.get( parameterType + parameterNumber );
-
-		return value ? value : 0;
+		return file.getParameterValue( parameterType, parameterNumber );
 	}
 
 	getParameterLocation( parameterType: string, parameterNumber: number ): Location | null {

@@ -20,6 +20,9 @@ export class ParameterFile {
 	sectionedDocument: SectionedDocument | undefined;
 	filePath: string;
 
+	parameterValueMap: Map<string, number> | null = null; // <parameterNumber, value>
+
+
 	constructor( workspace: Workspace, filePath: string ) {
 		this.workspace = workspace;
 		this.filePath = filePath;
@@ -120,7 +123,11 @@ export class ParameterFile {
 		return null;
 	}
 
-	getParameterValueMap() {
+	updateParameterValue() {
+		if( this.parameterValueMap ) {
+			return this.parameterValueMap;
+		}
+
 		const textLines = this.workspace.getTextLines( this.filePath );
 
 		if( !textLines  || textLines.length <= 0 ) {
@@ -149,9 +156,37 @@ export class ParameterFile {
 				});
 			}
 		}
+
+		this.parameterValueMap = parameterValueMap;
 		
 		return parameterValueMap;
 	}
+
+	/**
+	 * Get parameter value
+	 * 
+	 * @param parameterType 
+	 * @param parameterNumber 
+	 * @returns number: parameter value
+	 * @return undefined: out of range
+	 * @return null: file is not found
+	 */
+	getParameterValue( parameterType: string, parameterNumber: number ): number | null | undefined {
+		const parameterValueMap = this.updateParameterValue();
+
+		if( !parameterValueMap ) {
+			return null;
+		}
+
+		if( !this.isParameterExist( parameterType, parameterNumber ) ) {
+			return undefined;
+		}
+		
+		const value = parameterValueMap.get( parameterType + parameterNumber );
+
+		return value ? value : 0;
+	}
+
 
 	onHover(hoverParams: HoverParams): Hover | null {
 		const sectionedDocument = this.updateSection();

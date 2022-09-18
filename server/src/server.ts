@@ -250,32 +250,6 @@ connection.onHover(
 );
 
 
-function onDefinitionPsc(definitionParams: DefinitionParams) {
-	const document = documents.get(definitionParams.textDocument.uri);
-	const pos = definitionParams.position;
-	const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
-
-	let lineText: string;
-
-	if(document != null) {
-		const str = document.getText( lineRange );
-		const filePath = URI.parse(definitionParams.textDocument.uri).fsPath;
-
-		const m = /^\s*([^,\s]+)\s*,\s*([0-9]+)\s*,/.exec(str);
-
-		if( m ) {
-			const paramType = m[1];
-			const paramNumber = +m[2];
-
-			const robotController = getRobotControllerFromFsPath( filePath );
-
-			return robotController.getParameterLocation( paramType, paramNumber );
-		}
-	}
-
-	return null;
-}
-
 connection.onDefinition(
 	( definitionParams ) : Definition | null => {
 		const filePath = URI.parse( definitionParams.textDocument.uri ).fsPath.toString();
@@ -291,7 +265,11 @@ connection.onDefinition(
 			return null;
 		}
 		else if( extname === ".PSC" ) {
-			return onDefinitionPsc( definitionParams );
+			const pscFile = robotController.getPscFile( filePath );
+			if( pscFile ) {
+				return pscFile.onDefinition( definitionParams );
+			}
+			return null;
 		}
 
 		return null;

@@ -4,6 +4,8 @@ import {
 	HoverParams,
 	Diagnostic,
 	DiagnosticSeverity,
+	DefinitionParams,
+	Location,
 } from 'vscode-languageserver/node';
 
 import {
@@ -53,6 +55,31 @@ export class PscFile {
 	
 		return null;
 	}
+
+	/**
+	 * on definition
+	 */
+	onDefinition(definitionParams: DefinitionParams): Location | null {
+		const pos = definitionParams.position;
+		const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
+		
+		const lineText = this.workspace.getTextLine( this.filePath, pos.line );
+
+		if( !lineText ) {
+			return null;
+		}
+
+		const m = /^\s*([^,\s]+)\s*,\s*([0-9]+)\s*,/.exec(lineText);
+
+		if( m ) {
+			const paramType = m[1];
+			const paramNumber = +m[2];
+
+			return this.robotController.getParameterLocation( paramType, paramNumber );
+		}
+
+		return null;
+	}	
 
 
 	validate(): Diagnostic[] | null {

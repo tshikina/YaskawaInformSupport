@@ -8,6 +8,7 @@ import * as path from 'path';
 import { Workspace } from "./Workspace";
 import * as Util from './Util';
 
+import { JbiFile } from './JbiFile';
 import { ParameterFile } from './ParameterFile';
 import { VarDatFile } from './VarDatFile';
 import { IoNameDatFile } from './IoNameDatFile';
@@ -19,6 +20,7 @@ export class RobotController {
 	private folderPath: string;
 
 	// files
+	private jbiFiles = new Map<string, JbiFile>();
 	private parameterFiles = new Map<string, ParameterFile>();
 	private varDatFiles = new Map<string, VarDatFile>();
 	private ioNameDatFiles = new Map<string, IoNameDatFile>();
@@ -30,10 +32,19 @@ export class RobotController {
 		this.folderPath = folderPath;
 	}
 
+	isJbiFileExist( jobName: string ) {
+		return fs.existsSync( this.getJbiFilePath(jobName) );
+	}
+
 	isParameterFileExist() {
 		const parameterFilePath = path.join(this.folderPath, 'ALL.PRM');
 		return fs.existsSync( parameterFilePath );
 	}
+
+	getJbiFilePath( jobName: string ) {
+		return path.join(this.folderPath, jobName + ".JBI");
+	}
+
 
 	/**
 	 * Get parameter value
@@ -76,6 +87,25 @@ export class RobotController {
 		};
 	}
 
+
+	// files
+	getJbiFile( filePath: string ) {
+		let file = this.jbiFiles.get( filePath );
+
+		if( file ) {
+			return file; // return cache
+		}
+
+		if( !fs.existsSync(filePath) ) {
+			return undefined;
+		}
+
+		file = new JbiFile( this.workspace, this, filePath );
+
+		this.jbiFiles.set( filePath, file );
+
+		return file;
+	}
 
 	getParameterFile( filePath: string ) {
 		let file = this.parameterFiles.get( filePath );

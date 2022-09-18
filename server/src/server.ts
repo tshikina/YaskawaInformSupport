@@ -39,17 +39,6 @@ import * as Util from './Util';
 import { Workspace } from './Workspace';
 import { RobotController } from './RobotController';
 
-function createJobNamePattern() {
-	return /(?<=\s+JOB:)(\S+)/g;
-}
-
-function createLabelPattern() {
-	return /(?<=\s)(\*\S{1,8})\b/g;
-}
-
-function createCvarPattern() {
-	return /(?<=\s)C([0-9]+)\s/g;
-}
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -260,106 +249,6 @@ connection.onHover(
 	}
 );
 
-function onDefinitionJbi(definitionParams: DefinitionParams) {
-	const document = documents.get(definitionParams.textDocument.uri);
-	const pos = definitionParams.position;
-	const lineRange = Range.create( pos.line, 0, pos.line+1, 0 );
-
-	const filePath = URI.parse( definitionParams.textDocument.uri ).fsPath.replace( /\\/g, "/" );
-	const dirPath = path.dirname(filePath);
-
-
-	let lineText: string;
-	
-	if(document != null)
-	{
-		lineText = document.getText( lineRange );
-		let m: RegExpExecArray | null;
-		const posInLine = pos.character - lineRange.start.character;
-
-		// search JobName
-		const jobNamePattern = createJobNamePattern();
-		while ((m = jobNamePattern.exec(lineText)) ) {
-			if( posInLine < m.index || m.index + m[0].length < posInLine ) {
-				continue;
-			}
-			const jobFileName = m[1] + ".JBI";
-			
-			const jobFilePath = path.join( dirPath, jobFileName );
-
-			if( fs.existsSync( jobFilePath ) ) {
-				return {
-					uri: URI.file(jobFilePath).toString(),
-					range: Range.create(0,0,0,0)
-				};
-			}
-		}
-
-		// search Label
-		const labelPattern = createLabelPattern();
-		while ((m = labelPattern.exec(lineText)) ) {
-			if( posInLine < m.index || m.index + m[0].length < posInLine ) {
-				continue;
-			}
-			const label = m[1];
-			const escapedLabel = label.replace("*", "\\*");
-
-			let isInstructionSection = false;
-			for( let i = 0; i< document.lineCount; i++ ) {
-				let str = document.getText(Range.create(i, 0, i+1, 0));
-				str = str.replace(/[\r\n]/g,"");
-
-				if( !isInstructionSection) {
-					if(str === "//INST") {
-						isInstructionSection = true;
-					}
-				}
-				else {
-					const mm = str.match( `(?<=^\\s*)${escapedLabel}\\b` );
-					if( mm?.index != undefined ) {
-						return {
-							uri: definitionParams.textDocument.uri,
-							range: Range.create(i, mm.index, i, str.length)
-	
-						};
-					}
-				}
-			}
-		}
-
-		// search C-Var
-		const cvarPattern = createCvarPattern();
-		while ((m = cvarPattern.exec(lineText)) ) {
-			if( posInLine < m.index || m.index + m[0].length < posInLine ) {
-				continue;
-			}
-			const cvarNumber = m[1];
-
-			let isPositionSection = false;
-			for( let i = 0; i< document.lineCount; i++ ) {
-				let str = document.getText(Range.create(i, 0, i+1, 0));
-				str = str.replace(/[\r\n]/g,"");
-
-				if( !isPositionSection ) {
-					if(str === "//POS") {
-						isPositionSection = true;
-					}
-				}
-				else {
-					const mm = str.match( /^C([0-9]+)=.*$/ );
-					if( mm?.index != undefined && mm[1] == cvarNumber ) {
-						return {
-							uri: definitionParams.textDocument.uri,
-							range: Range.create(i, mm.index, i, str.length)
-	
-						};
-					}
-				}
-			}
-		}
-	}
-	return null;
-}
 
 function onDefinitionPsc(definitionParams: DefinitionParams) {
 	const document = documents.get(definitionParams.textDocument.uri);
@@ -388,13 +277,18 @@ function onDefinitionPsc(definitionParams: DefinitionParams) {
 }
 
 connection.onDefinition(
-	(definitionParams ) : Definition | null => {
+	( definitionParams ) : Definition | null => {
 		const filePath = URI.parse( definitionParams.textDocument.uri ).fsPath.toString();
 		const fileName = path.basename( filePath );
+		const robotController = getRobotControllerFromFsPath( filePath );
 
 		const extname = path.extname(fileName).toUpperCase();
 		if( extname === ".JBI" ) {
-			return onDefinitionJbi( definitionParams );
+			const jbiFile = robotController.getJbiFile( filePath );
+			if( jbiFile ) {
+				return jbiFile.onDefinition( definitionParams );
+			}
+			return null;
 		}
 		else if( extname === ".PSC" ) {
 			return onDefinitionPsc( definitionParams );

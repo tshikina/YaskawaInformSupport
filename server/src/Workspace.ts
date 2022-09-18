@@ -10,6 +10,7 @@ import {
 import { URI } from 'vscode-uri';
 import * as fs from "fs";
 import * as path from 'path';
+import { start } from 'repl';
 
 
 export class Workspace {
@@ -68,5 +69,65 @@ export class Workspace {
 			}
 		}
 		return lineText;
+	}
+
+	/**
+	 *  search text
+	 * @returns Range: searched text range
+	 * @return undefined: text is not found
+	 * @return null: file is not found
+	 */
+	searchText( filePath: string, regexp: RegExp, startLine?: number, endLine?: number ):Range | null | undefined {
+		const fileUri = URI.file(filePath).toString();
+	
+		const document = this.documents.get(fileUri);
+		let range: Range | null | undefined;
+	
+		if( document ) {
+			startLine = startLine != undefined ? startLine : 0;
+			endLine = endLine != undefined ? endLine : document.lineCount;
+
+			const range = Range.create( 0, 0, 0, 0);
+
+			for( let i = startLine; i < endLine; i++ ) {
+				range.start.line = i;
+				range.end.line = i+1;
+
+				const text = document.getText( range );
+
+				const m = text.match( regexp );
+
+				if( m ) {
+					const index = ( m.index != undefined ? m.index : 0 );
+					return Range.create( i, index, i, index + m[0].length );
+				}
+			}
+		}
+		else if( fs.existsSync( filePath ) ) {
+			const lines = this.getTextLines( filePath );
+
+			if( !lines ) {
+				return undefined;
+			}
+
+			startLine = startLine != undefined ? startLine : 0;
+			endLine = endLine != undefined ? endLine : lines.length;
+
+			for( let i = startLine; i < endLine; i++ ) {
+				const text = lines[i];
+
+				const m = text.match( regexp );
+
+				if( m ) {
+					const index = ( m.index != undefined ? m.index : 0 );
+					return Range.create( i, index, i, index + m[0].length );
+				}
+			}
+
+		}
+		else {
+			return null;
+		}
+		return undefined;
 	}
 }

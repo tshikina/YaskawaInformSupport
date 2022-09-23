@@ -201,4 +201,30 @@ export class RobotController {
 
 	}
 
+	clearFileCache( filePath: string ){
+		const fileName = path.basename( filePath );
+
+		const extname = path.extname(fileName).toUpperCase();
+
+		if( extname === ".JBI" ) {
+			this.jbiFiles.delete( filePath );
+		}
+		else if( extname === ".PRM" ) {
+			this.parameterFiles.delete( filePath );
+		}
+		else if( fileName == "VAR.DAT") {
+			this.varDatFiles.delete( filePath );
+		}
+		else if( fileName == "IONAME.DAT" || fileName == "EXIONAME.DAT" ) {
+			this.ioNameDatFiles.delete( filePath );
+		}
+		else if( fileName == "IOMNAME.DAT") {
+			this.ioMNameDatFiles.delete( filePath );
+		}
+		else if( extname == ".PSC") {
+			this.pscFiles.delete( filePath );
+		}
+
+	}
+
 }

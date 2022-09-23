@@ -161,7 +161,12 @@ documents.onDidClose(e => {
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
-	validateFile( change.document );
+	const filePath = Util.uriStringToFsPath( change.document.uri );
+	const robotController = getRobotControllerFromFsPath( filePath );
+
+	robotController.clearFileCache(filePath);
+
+	requestValidation( filePath );
 });
 
 
@@ -187,9 +192,11 @@ function validateFile(textDocument: TextDocument) {
 	const fileName = path.basename( filePath );
 	const robotController = getRobotControllerFromFsPath( filePath );
 
+	// console.log(`update validation: ${fileName}`);
+
 	const extname = path.extname(fileName).toUpperCase();
 	if( extname === ".PSC" ) {
-		const file = robotController.getPscFile( fileName );
+		const file = robotController.getPscFile( filePath );
 		if( file ) {
 			const diagnostics = file.validate();
 			if( diagnostics ) {
@@ -201,6 +208,31 @@ function validateFile(textDocument: TextDocument) {
 	return;
 }
 
+
+const validationTimer = setTimeout( validateRequestedFiles, 5000 );
+const updateDocumentSet: Set<TextDocument> = new Set<TextDocument>();
+function validateRequestedFiles() {
+	// console.log("update validation");
+	updateDocumentSet.forEach( document => {
+		validateFile( document );
+	} );
+	updateDocumentSet.clear();
+}
+
+function requestValidation( filePath: string ) {
+	const folderPath = path.dirname( filePath );
+
+	documents.all().forEach( document => {
+		const documentPath = Util.uriStringToFsPath(document.uri);
+		const documentFolder = path.dirname( documentPath );
+		
+		if( documentFolder == folderPath ) {
+			updateDocumentSet.add( document );
+		}
+	});
+
+	validationTimer.refresh();
+}
 
 connection.onHover( 
 	(hoverParams: HoverParams): Hover | null  => {

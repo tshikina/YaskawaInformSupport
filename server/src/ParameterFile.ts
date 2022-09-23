@@ -2,6 +2,8 @@ import {
 	Range,
 	Hover,
 	HoverParams,
+	FoldingRangeParams,
+	FoldingRange,
 } from 'vscode-languageserver/node';
 
 import {
@@ -220,5 +222,21 @@ export class ParameterFile {
 		}
 	
 		return null;
+	}
+
+	onFoldingRanges( foldingRangeParam: FoldingRangeParams ) {
+		const foldingRanges: FoldingRange[] = [];
+
+		const sectionedDocument = this.updateSection();
+		if( !sectionedDocument ) {
+			return null;
+		}
+
+		sectionedDocument.sectionMap.forEach((value, key) => {
+			const foldingRange = FoldingRange.create( value.range.start.line-1, value.range.end.line-1 );
+			foldingRanges.push(foldingRange);
+		});
+
+		return foldingRanges;
 	}
 }

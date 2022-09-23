@@ -23,6 +23,8 @@ import {
 	Definition,
 	DefinitionParams,
 	Location,
+	FoldingRangeParams,
+	FoldingRange,
 } from 'vscode-languageserver/node';
 
 import {
@@ -84,7 +86,8 @@ connection.onInitialize((params: InitializeParams) => {
 			// 	resolveProvider: true
 			// },
 			hoverProvider: true,
-			definitionProvider: true
+			definitionProvider: true,
+			foldingRangeProvider: true
 		}
 	};
 	if (hasWorkspaceFolderCapability) {
@@ -309,6 +312,24 @@ connection.onDefinition(
 	}
 );
 
+
+connection.onFoldingRanges( foldingRangeParam => {
+	const filePath = URI.parse( foldingRangeParam.textDocument.uri ).fsPath.toString();
+	const fileName = path.basename( filePath );
+	const robotController = getRobotControllerFromFsPath( filePath );
+
+	const extname = path.extname(fileName).toUpperCase();
+
+	if( extname === ".PRM" ) {
+		const parameterFile = robotController.getParameterFile(filePath);
+		if( parameterFile ) {
+			return parameterFile.onFoldingRanges( foldingRangeParam );
+		}
+		return null;
+	}
+
+	return null;
+} );
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events

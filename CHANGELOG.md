@@ -2,6 +2,12 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
+## [Unreleased]
+### Added
+- Support Folding range for PRM files.
+### Fixed
+- Fix problem that Hover/Go to Definition is not updated after editing file.
+
 ## [0.4.0] - 2022-09-04
 ### Added
 - Support Go to Definiton to C-Var in JBI file.

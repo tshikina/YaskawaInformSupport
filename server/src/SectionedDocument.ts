@@ -3,7 +3,8 @@ import {
 } from 'vscode-languageserver/node';
 
 export interface Section {
-	range: Range
+	header: Range,
+	contents: Range,
 }
 
 
@@ -24,7 +25,7 @@ export class SectionedDocument {
 
 	getSectionNameFromLine( lineNo: number ){
 		for( const [sectionName, section] of this.sectionMap ){
-			if( lineNo >= section.range.start.line && lineNo < section.range.end.line ) {
+			if( lineNo >= section.contents.start.line && lineNo < section.contents.end.line ) {
 				return sectionName;
 			}
 		}

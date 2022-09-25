@@ -37,7 +37,8 @@ export class ParameterFile {
 		
 		const lines = this.workspace.getTextLines( this.filePath );
 		let currentSection = "";
-		let sectionRange = Range.create(0,0,0,0);
+		let headerRange = Range.create(0,0,0,0);
+		let contentsRange = Range.create(0,0,0,0);
 	
 		if( !lines ) {
 			return undefined;
@@ -50,26 +51,30 @@ export class ParameterFile {
 			if( lineText.startsWith("/") ) {
 				const newSectionName = Util.extractSectionNameFromText( lineText );
 				if(newSectionName.length == 0 || newSectionName == "CRC") {
-					sectionRange.start.line = i+1;
-					sectionRange.end.line = i+1;
+					headerRange.end.line = i;
+					contentsRange.start.line = i+1;
+					contentsRange.end.line = i+1;
 					continue;
 				}
-				else if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
+				else if( currentSection.length > 0 && contentsRange.start.line != contentsRange.end.line ) {
 					// console.log(`new section: ${currentSection} , from ${sectionRange.start.line} to ${sectionRange.end.line}`);
 					this.sectionedDocument.setSectionRange( currentSection, {
-						range: sectionRange
+						header: headerRange,
+						contents: contentsRange
 					} );
 				}
-				sectionRange = Range.create(i+1,0,i+1,0);
+				headerRange = Range.create(i,0,i,0);
+				contentsRange = Range.create(i+1,0,i+1,0);
 				currentSection = newSectionName;
 			}
 			else {
-				sectionRange.end.line = i+1;
+				contentsRange.end.line = i+1;
 			}
 		}
-		if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
+		if( currentSection.length > 0 && contentsRange.start.line != contentsRange.end.line ) {
 			this.sectionedDocument.setSectionRange( currentSection, {
-				range: sectionRange
+				header: headerRange,
+				contents: contentsRange
 			} );
 		}
 		
@@ -89,7 +94,7 @@ export class ParameterFile {
 			return false;
 		}
 
-		const valueRange = (section.range.end.line - section.range.start.line) * 10;
+		const valueRange = (section.contents.end.line - section.contents.start.line) * 10;
 
 		if( parameterNumber < 0 || parameterNumber >= valueRange ) {
 			return false;
@@ -110,7 +115,7 @@ export class ParameterFile {
 			return null;
 		} 
 
-		const lineNo = section.range.start.line + Math.floor(parameterNumber/10);
+		const lineNo = section.contents.start.line + Math.floor(parameterNumber/10);
 		const lineText = this.workspace.getTextLine( this.filePath, lineNo );
 		if( lineText ) {
 			const parameterRange = Util.getRangeAtIndex( lineText, parameterNumber % 10 );
@@ -209,7 +214,7 @@ export class ParameterFile {
 			return null;
 		}
 
-		const offset = pos.line - section.range.start.line;
+		const offset = pos.line - section.contents.start.line;
 		const lineText = this.workspace.getTextLine( filePath, pos.line );
 
 		if( lineText ) {
@@ -233,7 +238,7 @@ export class ParameterFile {
 		}
 
 		sectionedDocument.sectionMap.forEach((value, key) => {
-			const foldingRange = FoldingRange.create( value.range.start.line-1, value.range.end.line-1 );
+			const foldingRange = FoldingRange.create( value.header.start.line, value.contents.end.line-1 );
 			foldingRanges.push(foldingRange);
 		});
 

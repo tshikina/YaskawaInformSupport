@@ -49,7 +49,8 @@ export class IoNameDatFile {
 				else if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
 					// console.log(`new section: ${currentSection} , from ${sectionRange.start.line} to ${sectionRange.end.line}`);
 					this.sectionedDocument.setSectionRange( currentSection, {
-						range: sectionRange
+						header: sectionRange,
+						contents: sectionRange
 					} );
 				}
 				sectionRange = Range.create(i+1,0,i+1,0);
@@ -61,7 +62,8 @@ export class IoNameDatFile {
 		}
 		if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
 			this.sectionedDocument.setSectionRange( currentSection, {
-				range: sectionRange
+				header: sectionRange,
+				contents: sectionRange
 			} );
 		}
 		
@@ -94,7 +96,7 @@ export class IoNameDatFile {
 			return null;
 		}
 
-		const offset = pos.line - section.range.start.line;
+		const offset = pos.line - section.contents.start.line;
 		const index = Util.getIndexAtPosition( lineText, pos.character );
 		
 		return {

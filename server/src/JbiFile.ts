@@ -55,7 +55,8 @@ export class JbiFile {
 				else if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
 					// console.log(`new section: ${currentSection} , from ${sectionRange.start.line} to ${sectionRange.end.line}`);
 					this.sectionedDocument.setSectionRange( currentSection, {
-						range: sectionRange
+						header: sectionRange,
+						contents: sectionRange
 					} );
 				}
 				sectionRange = Range.create(i+1,0,i+1,0);
@@ -67,7 +68,8 @@ export class JbiFile {
 		}
 		if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
 			this.sectionedDocument.setSectionRange( currentSection, {
-				range: sectionRange
+				header: sectionRange,
+				contents: sectionRange
 			} );
 		}
 		
@@ -107,7 +109,7 @@ export class JbiFile {
 
 		const escapedLabel = label.replace("*", "\\*");
 
-		const range = this.workspace.searchText( this.filePath, new RegExp(`(?<=^\\s*)${escapedLabel}\\b`), section.range.start.line, section.range.end.line );
+		const range = this.workspace.searchText( this.filePath, new RegExp(`(?<=^\\s*)${escapedLabel}\\b`), section.contents.start.line, section.contents.end.line );
 
 		if( !range ) {
 			return undefined;
@@ -134,7 +136,7 @@ export class JbiFile {
 			return undefined;
 		}
 
-		const range = this.workspace.searchText( this.filePath, new RegExp(`^C0*${cVarNumber}\\b.*`), section.range.start.line, section.range.end.line );
+		const range = this.workspace.searchText( this.filePath, new RegExp(`^C0*${cVarNumber}\\b.*`), section.contents.start.line, section.contents.end.line );
 
 		if( !range ) {
 			return undefined;

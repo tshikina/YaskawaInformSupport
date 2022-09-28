@@ -2,6 +2,8 @@ import {
 	Range,
 	Hover,
 	HoverParams,
+	FoldingRangeParams,
+	FoldingRange,
 } from 'vscode-languageserver/node';
 
 import {
@@ -31,7 +33,8 @@ export class IoMNameDatFile {
 		
 		const lines = this.workspace.getTextLines( this.filePath );
 		let currentSection = "";
-		let sectionRange = Range.create(0,0,0,0);
+		let headerRange = Range.create(0,0,0,0);
+		let contentsRange = Range.create(0,0,0,0);
 	
 		if( !lines ) {
 			return undefined;
@@ -47,28 +50,30 @@ export class IoMNameDatFile {
 					continue;
 				}
 				else if( newSectionName == "NAME") {
-					sectionRange.start.line = i+1;
-					sectionRange.end.line = i+1;
+					headerRange.end.line = i;
+					contentsRange.start.line = i+1;
+					contentsRange.end.line = i+1;
 					continue;
 				}
-				else if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
+				else if( currentSection.length > 0 && contentsRange.start.line != contentsRange.end.line ) {
 					// console.log(`new section: ${currentSection} , from ${sectionRange.start.line} to ${sectionRange.end.line}`);
 					this.sectionedDocument.setSectionRange( currentSection, {
-						header: sectionRange,
-						contents: sectionRange
+						header: headerRange,
+						contents: contentsRange
 					} );
 				}
-				sectionRange = Range.create(i+1,0,i+1,0);
+				headerRange = Range.create(i,0,i,0);
+				contentsRange = Range.create(i+1,0,i+1,0);
 				currentSection = newSectionName;
 			}
 			else {
-				sectionRange.end.line = i+1;
+				contentsRange.end.line = i+1;
 			}
 		}
-		if( currentSection.length > 0 && sectionRange.start.line != sectionRange.end.line ) {
+		if( currentSection.length > 0 && contentsRange.start.line != contentsRange.end.line ) {
 			this.sectionedDocument.setSectionRange( currentSection, {
-				header: sectionRange,
-				contents: sectionRange
+				header: headerRange,
+				contents: contentsRange
 			} );
 		}
 		
@@ -108,5 +113,22 @@ export class IoMNameDatFile {
 				`M ${offset}`
 			]
 		};
-}
+	}
+
+
+	onFoldingRanges( foldingRangeParam: FoldingRangeParams ) {
+		const foldingRanges: FoldingRange[] = [];
+
+		const sectionedDocument = this.updateSection();
+		if( !sectionedDocument ) {
+			return null;
+		}
+
+		sectionedDocument.sectionMap.forEach((value, key) => {
+			const foldingRange = FoldingRange.create( value.header.start.line, value.contents.end.line-1 );
+			foldingRanges.push(foldingRange);
+		});
+
+		return foldingRanges;
+	}
 }

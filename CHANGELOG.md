@@ -7,6 +7,7 @@ All notable changes to the "inform-job-support" extension will be documented in 
 - Support Folding range for PRM files.
 - Support Folding range for VAR.DAT file.
 - Support Folding range for IONAME.DAT and EXIONAME.DAT.
+- Support Folding range for IOMNAME.DAT.
 ### Fixed
 - Fix problem that Hover/Go to Definition is not updated after editing file.
 

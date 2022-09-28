@@ -341,6 +341,13 @@ connection.onFoldingRanges( foldingRangeParam => {
 		}
 		return null;
 	}
+	else if( fileName == "IOMNAME.DAT") {
+		const ioMNameDatFile = robotController.getIoMNameDatFile(filePath);
+		if( ioMNameDatFile ) {
+			return ioMNameDatFile.onFoldingRanges( foldingRangeParam );
+		}
+		return null;
+	}
 
 	return null;
 } );

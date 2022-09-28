@@ -5,6 +5,7 @@ All notable changes to the "inform-job-support" extension will be documented in 
 ## [Unreleased]
 ### Added
 - Support Folding range for PRM files.
+- Support Folding range for VAR.DAT file.
 ### Fixed
 - Fix problem that Hover/Go to Definition is not updated after editing file.
 

@@ -327,6 +327,13 @@ connection.onFoldingRanges( foldingRangeParam => {
 		}
 		return null;
 	}
+	else if( fileName == "VAR.DAT") {
+		const varDatFile = robotController.getVarDatFile(filePath);
+		if( varDatFile ) {
+			return varDatFile.onFoldingRanges( foldingRangeParam );
+		}
+		return null;
+	}
 
 	return null;
 } );

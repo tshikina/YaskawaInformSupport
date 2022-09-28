@@ -334,6 +334,13 @@ connection.onFoldingRanges( foldingRangeParam => {
 		}
 		return null;
 	}
+	else if( fileName == "IONAME.DAT" || fileName == "EXIONAME.DAT" ) {
+		const ioNameDatFile = robotController.getIoNameDatFile(filePath);
+		if( ioNameDatFile ) {
+			return ioNameDatFile.onFoldingRanges( foldingRangeParam );
+		}
+		return null;
+	}
 
 	return null;
 } );

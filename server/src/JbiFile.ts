@@ -14,23 +14,14 @@ import {
 
 import { Workspace } from "./Workspace";
 import { RobotController } from './RobotController';
+import { RobotControllerFile } from './RobotControllerFile';
 
 import * as Util from './Util';
 
 /**
  * JBI file
  */
-export class JbiFile {
-	workspace: Workspace;
-	robotController: RobotController;
-	sectionedDocument: SectionedDocument | undefined;
-	filePath: string;
-
-	constructor( workspace: Workspace, robotController: RobotController, filePath: string ) {
-		this.workspace = workspace;
-		this.robotController = robotController;
-		this.filePath = filePath;
-	}
+export class JbiFile extends RobotControllerFile {
 
 	updateSection() {
 		if( this.sectionedDocument ) {
@@ -225,21 +216,4 @@ export class JbiFile {
 		}
 		return null;
 	}	
-
-	onFoldingRanges( foldingRangeParam: FoldingRangeParams ) {
-		const foldingRanges: FoldingRange[] = [];
-
-		const sectionedDocument = this.updateSection();
-		if( !sectionedDocument ) {
-			return null;
-		}
-
-		sectionedDocument.sectionMap.forEach((value, key) => {
-			const foldingRange = FoldingRange.create( value.header.start.line, value.contents.end.line-1 );
-			foldingRanges.push(foldingRange);
-		});
-
-		return foldingRanges;
-	}
-
 }

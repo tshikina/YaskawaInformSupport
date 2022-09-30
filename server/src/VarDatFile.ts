@@ -15,17 +15,11 @@ import {
 	Workspace,
 } from "./Workspace";
 
+import { RobotControllerFile } from './RobotControllerFile';
+
 import * as Util from './Util';
 
-export class VarDatFile {
-	workspace: Workspace;
-	sectionedDocument: SectionedDocument | undefined;
-	filePath: string;
-
-	constructor( workspace: Workspace, filePath: string ) {
-		this.workspace = workspace;
-		this.filePath = filePath;
-	}
+export class VarDatFile extends RobotControllerFile {
 
 	updateSection() {
 		if( this.sectionedDocument ) {
@@ -117,22 +111,5 @@ export class VarDatFile {
 				`${sectionName} ${offset}`
 			]
 		};
-	}
-
-
-	onFoldingRanges( foldingRangeParam: FoldingRangeParams ) {
-		const foldingRanges: FoldingRange[] = [];
-
-		const sectionedDocument = this.updateSection();
-		if( !sectionedDocument ) {
-			return null;
-		}
-
-		sectionedDocument.sectionMap.forEach((value, key) => {
-			const foldingRange = FoldingRange.create( value.header.start.line, value.contents.end.line-1 );
-			foldingRanges.push(foldingRange);
-		});
-
-		return foldingRanges;
 	}
 }

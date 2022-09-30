@@ -6,6 +6,8 @@ import {
 	DiagnosticSeverity,
 	DefinitionParams,
 	Location,
+	FoldingRange,
+	FoldingRangeParams,
 } from 'vscode-languageserver/node';
 
 import {
@@ -13,17 +15,9 @@ import {
 } from "./Workspace";
 
 import { RobotController } from './RobotController';
+import { RobotControllerFile } from './RobotControllerFile';
 
-export class PscFile {
-	workspace: Workspace;
-	robotController: RobotController;
-	filePath: string;
-
-	constructor( workspace: Workspace, robotController: RobotController, filePath: string ) {
-		this.workspace = workspace;
-		this.robotController = robotController;
-		this.filePath = filePath;
-	}
+export class PscFile extends RobotControllerFile {
 
 	onHover(hoverParams: HoverParams): Hover | null {
 		const pos = hoverParams.position;
@@ -135,5 +129,9 @@ export class PscFile {
 	
 	
 		return diagnostics;
+	}
+
+	onFoldingRanges(foldingRangeParam: FoldingRangeParams): FoldingRange[] | null {
+		return null;
 	}
 }

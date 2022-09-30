@@ -21,17 +21,15 @@ export class RobotController {
 	private folderPath: string;
 
 	// files
-	private jbiFiles = new Map<string, JbiFile>();
-	private parameterFiles = new Map<string, ParameterFile>();
-	private varDatFiles = new Map<string, VarDatFile>();
-	private ioNameDatFiles = new Map<string, IoNameDatFile>();
-	private ioMNameDatFiles = new Map<string, IoMNameDatFile>();
-	private pscFiles = new Map<string, PscFile>();
 	private robotControllerFiles = new Map<string, RobotControllerFile>();
 
 	constructor( workspace: Workspace, folderPath: string ) {
 		this.workspace = workspace;
 		this.folderPath = folderPath;
+	}
+
+	getWorkspace() : Workspace {
+		return this.workspace;
 	}
 
 	isJbiFileExist( jobName: string ) {
@@ -91,7 +89,7 @@ export class RobotController {
 
 
 	// files
-	getFile( filePath: string ) {
+	getFile( filePath: string ) : RobotControllerFile | undefined {
 		let file = this.robotControllerFiles.get( filePath );
 
 		if( file ) {
@@ -102,51 +100,51 @@ export class RobotController {
 			return undefined;
 		}
 
-		file = new RobotControllerFile( this.workspace, filePath );
+		file = new RobotControllerFile( this, filePath );
 
 		this.robotControllerFiles.set( filePath, file );
 
 		return file;
 	}
 
-	getJbiFile( filePath: string ) {
-		let file = this.jbiFiles.get( filePath );
+	getJbiFile( filePath: string ) : JbiFile | undefined {
+		let file = this.robotControllerFiles.get( filePath );
 
 		if( file ) {
-			return file; // return cache
+			return file as JbiFile; // return cache
 		}
 
 		if( !fs.existsSync(filePath) ) {
 			return undefined;
 		}
 
-		file = new JbiFile( this.workspace, this, filePath );
+		file = new JbiFile( this, filePath );
 
-		this.jbiFiles.set( filePath, file );
+		this.robotControllerFiles.set( filePath, file );
 
-		return file;
+		return file as JbiFile;
 	}
 
-	getParameterFile( filePath: string ) {
-		let file = this.parameterFiles.get( filePath );
+	getParameterFile( filePath: string ) : ParameterFile | undefined {
+		let file = this.robotControllerFiles.get( filePath );
 
 		if( file ) {
-			return file; // return cache
+			return file as ParameterFile; // return cache
 		}
 
 		if( !fs.existsSync(filePath) ) {
 			return undefined;
 		}
 
-		file = new ParameterFile( this.workspace, filePath );
+		file = new ParameterFile( this, filePath );
 
-		this.parameterFiles.set( filePath, file );
+		this.robotControllerFiles.set( filePath, file );
 
-		return file;
+		return file as ParameterFile;
 	}
 
-	getVarDatFile( filePath: string ) {
-		let file = this.varDatFiles.get( filePath );
+	getVarDatFile( filePath: string ) : VarDatFile | undefined {
+		let file = this.robotControllerFiles.get( filePath );
 
 		if( file ) {
 			return file; // return cache
@@ -156,95 +154,73 @@ export class RobotController {
 			return undefined;
 		}
 
-		file = new VarDatFile( this.workspace, filePath );
+		file = new VarDatFile( this, filePath );
 
-		this.varDatFiles.set( filePath, file );
+		this.robotControllerFiles.set( filePath, file );
 
-		return file;
-
-	}
-
-	getIoNameDatFile( filePath: string ) {
-		let file = this.ioNameDatFiles.get( filePath );
-
-		if( file ) {
-			return file; // return cache
-		}
-
-		if( !fs.existsSync(filePath) ) {
-			return undefined;
-		}
-
-		file = new IoNameDatFile( this.workspace, filePath );
-
-		this.ioNameDatFiles.set( filePath, file );
-
-		return file;
+		return file as VarDatFile;
 
 	}
 
-	getIoMNameDatFile( filePath: string ) {
-		let file = this.ioMNameDatFiles.get( filePath );
+	getIoNameDatFile( filePath: string ) : IoNameDatFile | undefined {
+		let file = this.robotControllerFiles.get( filePath );
 
 		if( file ) {
-			return file; // return cache
+			return file as IoNameDatFile; // return cache
 		}
 
 		if( !fs.existsSync(filePath) ) {
 			return undefined;
 		}
 
-		file = new IoMNameDatFile( this.workspace, filePath );
+		file = new IoNameDatFile( this, filePath );
 
-		this.ioMNameDatFiles.set( filePath, file );
+		this.robotControllerFiles.set( filePath, file );
 
-		return file;
+		return file as IoNameDatFile;
 
 	}
 
-	getPscFile( filePath: string ) {
-		let file = this.pscFiles.get( filePath );
+	getIoMNameDatFile( filePath: string ) : IoMNameDatFile | undefined {
+		let file = this.robotControllerFiles.get( filePath );
 
 		if( file ) {
-			return file; // return cache
+			return file as IoMNameDatFile; // return cache
 		}
 
 		if( !fs.existsSync(filePath) ) {
 			return undefined;
 		}
 
-		file = new PscFile( this.workspace, this, filePath );
+		file = new IoMNameDatFile( this, filePath );
 
-		this.pscFiles.set( filePath, file );
+		this.robotControllerFiles.set( filePath, file );
 
-		return file;
+		return file as IoMNameDatFile;
+
+	}
+
+	getPscFile( filePath: string ) : PscFile | undefined {
+		let file = this.robotControllerFiles.get( filePath );
+
+		if( file ) {
+			return file as PscFile; // return cache
+		}
+
+		if( !fs.existsSync(filePath) ) {
+			return undefined;
+		}
+
+		file = new PscFile( this, filePath );
+
+		this.robotControllerFiles.set( filePath, file );
+
+		return file as PscFile;
 
 	}
 
 	clearFileCache( filePath: string ){
-		const fileName = path.basename( filePath );
-
-		const extname = path.extname(fileName).toUpperCase();
-
-		if( extname === ".JBI" ) {
-			this.jbiFiles.delete( filePath );
-		}
-		else if( extname === ".PRM" ) {
-			this.parameterFiles.delete( filePath );
-		}
-		else if( fileName == "VAR.DAT") {
-			this.varDatFiles.delete( filePath );
-		}
-		else if( fileName == "IONAME.DAT" || fileName == "EXIONAME.DAT" ) {
-			this.ioNameDatFiles.delete( filePath );
-		}
-		else if( fileName == "IOMNAME.DAT") {
-			this.ioMNameDatFiles.delete( filePath );
-		}
-		else if( extname == ".PSC") {
-			this.pscFiles.delete( filePath );
-		}
-
+		this.robotControllerFiles.delete( filePath );
 	}
 
 }

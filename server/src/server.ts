@@ -192,19 +192,14 @@ function getRobotControllerFromFsPath( fsPath: string ) {
 
 function validateFile(textDocument: TextDocument) {
 	const filePath = URI.parse( textDocument.uri ).fsPath;
-	const fileName = path.basename( filePath );
 	const robotController = getRobotControllerFromFsPath( filePath );
 
-	// console.log(`update validation: ${fileName}`);
+	const file = robotController.getFile(filePath);
 
-	const extname = path.extname(fileName).toUpperCase();
-	if( extname === ".PSC" ) {
-		const file = robotController.getPscFile( filePath );
-		if( file ) {
-			const diagnostics = file.validate();
-			if( diagnostics ) {
-				connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-			}
+	if( file ) {
+		const diagnostics = file.validate();
+		if( diagnostics ) {
+			connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 		}
 	}
 
@@ -240,44 +235,12 @@ function requestValidation( filePath: string ) {
 connection.onHover( 
 	(hoverParams: HoverParams): Hover | null  => {
 		const filePath = Util.uriStringToFsPath( hoverParams.textDocument.uri );
-		const fileName = path.basename( filePath );
 		const robotController = getRobotControllerFromFsPath( filePath );
 
-		const extname = path.extname(fileName).toUpperCase();
-		if( extname === ".PRM" ) {
-			const parameterFile = robotController.getParameterFile(filePath);
-			if( parameterFile ) {
-				return parameterFile.onHover( hoverParams );
-			}
-			return null;
-		}
-		else if( fileName == "VAR.DAT") {
-			const varDatFile = robotController.getVarDatFile(filePath);
-			if( varDatFile ) {
-				return varDatFile.onHover( hoverParams );
-			}
-			return null;
-		}
-		else if( fileName == "IONAME.DAT" || fileName == "EXIONAME.DAT" ) {
-			const ioNameDatFile = robotController.getIoNameDatFile(filePath);
-			if( ioNameDatFile ) {
-				return ioNameDatFile.onHover( hoverParams );
-			}
-			return null;
-		}
-		else if( fileName == "IOMNAME.DAT") {
-			const ioMNameDatFile = robotController.getIoMNameDatFile(filePath);
-			if( ioMNameDatFile ) {
-				return ioMNameDatFile.onHover( hoverParams );
-			}
-			return null;
-		}
-		else if( extname == ".PSC") {
-			const pscFile = robotController.getPscFile( filePath );
-			if( pscFile ) {
-				return pscFile.onHover( hoverParams );
-			}
-			return null;
+		const file = robotController.getFile(filePath);
+
+		if( file ) {
+			return file.onHover( hoverParams );
 		}
 
 		return null;
@@ -288,23 +251,12 @@ connection.onHover(
 connection.onDefinition(
 	( definitionParams ) : Definition | null => {
 		const filePath = URI.parse( definitionParams.textDocument.uri ).fsPath.toString();
-		const fileName = path.basename( filePath );
 		const robotController = getRobotControllerFromFsPath( filePath );
 
-		const extname = path.extname(fileName).toUpperCase();
-		if( extname === ".JBI" ) {
-			const jbiFile = robotController.getJbiFile( filePath );
-			if( jbiFile ) {
-				return jbiFile.onDefinition( definitionParams );
-			}
-			return null;
-		}
-		else if( extname === ".PSC" ) {
-			const pscFile = robotController.getPscFile( filePath );
-			if( pscFile ) {
-				return pscFile.onDefinition( definitionParams );
-			}
-			return null;
+		const file = robotController.getFile(filePath);
+
+		if( file ) {
+			return file.onDefinition( definitionParams );
 		}
 
 		return null;
@@ -315,53 +267,12 @@ connection.onDefinition(
 
 connection.onFoldingRanges( foldingRangeParam => {
 	const filePath = URI.parse( foldingRangeParam.textDocument.uri ).fsPath.toString();
-	const fileName = path.basename( filePath );
 	const robotController = getRobotControllerFromFsPath( filePath );
 
-	const extname = path.extname(fileName).toUpperCase();
+	const file = robotController.getFile(filePath);
 
-	if( extname === ".JBI" ) {
-		const jbiFile = robotController.getJbiFile( filePath );
-		if( jbiFile ) {
-			return jbiFile.onFoldingRanges( foldingRangeParam );
-		}
-		return null;
-}
-	else if( extname === ".PRM" ) {
-		const parameterFile = robotController.getParameterFile(filePath);
-		if( parameterFile ) {
-			return parameterFile.onFoldingRanges( foldingRangeParam );
-		}
-		return null;
-	}
-	else if( fileName == "VAR.DAT") {
-		const varDatFile = robotController.getVarDatFile(filePath);
-		if( varDatFile ) {
-			return varDatFile.onFoldingRanges( foldingRangeParam );
-		}
-		return null;
-	}
-	else if( fileName == "IONAME.DAT" || fileName == "EXIONAME.DAT" ) {
-		const ioNameDatFile = robotController.getIoNameDatFile(filePath);
-		if( ioNameDatFile ) {
-			return ioNameDatFile.onFoldingRanges( foldingRangeParam );
-		}
-		return null;
-	}
-	else if( fileName == "IOMNAME.DAT") {
-		const ioMNameDatFile = robotController.getIoMNameDatFile(filePath);
-		if( ioMNameDatFile ) {
-			return ioMNameDatFile.onFoldingRanges( foldingRangeParam );
-		}
-		return null;
-	}
-	else {
-		const file = robotController.getFile(filePath);
-
-		if( file ) {
-			return file.onFoldingRanges( foldingRangeParam );
-		}
-		return null;
+	if( file ) {
+		return file.onFoldingRanges( foldingRangeParam );
 	}
 
 	return null;

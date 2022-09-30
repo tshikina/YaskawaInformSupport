@@ -2,8 +2,6 @@ import {
 	Range,
 	Hover,
 	HoverParams,
-	FoldingRangeParams,
-	FoldingRange,
 } from 'vscode-languageserver/node';
 
 import {
@@ -15,20 +13,12 @@ import {
 	Workspace,
 } from "./Workspace";
 
+import { RobotControllerFile } from './RobotControllerFile';
+
 import * as Util from './Util';
 
-export class ParameterFile {
-	workspace: Workspace;
-	sectionedDocument: SectionedDocument | undefined;
-	filePath: string;
-
+export class ParameterFile extends RobotControllerFile {
 	parameterValueMap: Map<string, number> | null = null; // <parameterNumber, value>
-
-
-	constructor( workspace: Workspace, filePath: string ) {
-		this.workspace = workspace;
-		this.filePath = filePath;
-	}
 
 	updateSection() {
 		if( this.sectionedDocument ) {
@@ -227,21 +217,5 @@ export class ParameterFile {
 		}
 	
 		return null;
-	}
-
-	onFoldingRanges( foldingRangeParam: FoldingRangeParams ) {
-		const foldingRanges: FoldingRange[] = [];
-
-		const sectionedDocument = this.updateSection();
-		if( !sectionedDocument ) {
-			return null;
-		}
-
-		sectionedDocument.sectionMap.forEach((value, key) => {
-			const foldingRange = FoldingRange.create( value.header.start.line, value.contents.end.line-1 );
-			foldingRanges.push(foldingRange);
-		});
-
-		return foldingRanges;
 	}
 }

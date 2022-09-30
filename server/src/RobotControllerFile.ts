@@ -2,6 +2,9 @@ import {
 	Range,
 	Hover,
 	HoverParams,
+	Diagnostic,
+	DefinitionParams,
+	Location,
 	FoldingRangeParams,
 	FoldingRange,
 } from 'vscode-languageserver/node';
@@ -10,15 +13,24 @@ import {
 	SectionedDocument
 } from "./SectionedDocument";
 
-import {
-	Workspace,
-} from "./Workspace";
+import { Workspace } from "./Workspace";
+import { RobotController } from './RobotController';
 
-import { RobotControllerFile } from './RobotControllerFile';
 
 import * as Util from './Util';
 
-export class IoMNameDatFile extends RobotControllerFile {
+export class RobotControllerFile {
+	workspace: Workspace;
+	robotController: RobotController;
+	filePath: string;
+
+	sectionedDocument: SectionedDocument | undefined;
+
+	constructor( robotController: RobotController, filePath: string ) {
+		this.workspace = robotController.getWorkspace();
+		this.robotController = robotController;
+		this.filePath = filePath;
+	}
 
 	updateSection() {
 		if( this.sectionedDocument ) {
@@ -39,14 +51,9 @@ export class IoMNameDatFile extends RobotControllerFile {
 		for( let i=0; i<lines.length; i++ ) {
 			const lineText = lines[i];
 			if( lineText.startsWith("/") ) {
-				const newSectionName = Util.extractSectionNameFromText( lineText );
+				const newSectionName = lineText;
 				if(newSectionName.length == 0) {
-					continue;
-				}
-				else if( newSectionName == "NAME") {
 					headerRange.end.line = i;
-					contentsRange.start.line = i+1;
-					contentsRange.end.line = i+1;
 					continue;
 				}
 				else if( currentSection.length > 0 && contentsRange.start.line != contentsRange.end.line ) {
@@ -74,38 +81,34 @@ export class IoMNameDatFile extends RobotControllerFile {
 		return this.sectionedDocument;
 	}
 
+	validate(): Diagnostic[] | null {
+		return null;
+	}
+
+	/**
+	 * on definition
+	 */
+	onDefinition(definitionParams: DefinitionParams): Location | null {
+		return null;
+	}	
 
 	onHover(hoverParams: HoverParams): Hover | null {
+		return null;
+	}
+
+	onFoldingRanges( foldingRangeParam: FoldingRangeParams ) {
+		const foldingRanges: FoldingRange[] = [];
+
 		const sectionedDocument = this.updateSection();
 		if( !sectionedDocument ) {
 			return null;
 		}
-		const pos = hoverParams.position;
-	
-		const filePath = Util.uriStringToFsPath( hoverParams.textDocument.uri );
-		const sectionName = sectionedDocument.getSectionNameFromLine( pos.line );
-		if( !sectionName ) {
-			return null;
-		}
 
-		const section = sectionedDocument.getSection( sectionName );
+		sectionedDocument.sectionMap.forEach((value, key) => {
+			const foldingRange = FoldingRange.create( value.header.start.line, value.contents.end.line-1 );
+			foldingRanges.push(foldingRange);
+		});
 
-		if( !section ) {
-			return null;
-		}
-
-		const lineText = this.workspace.getTextLine( filePath, pos.line );
-
-		if( !lineText ) {
-			return null;
-		}
-
-		const offset = pos.line - section.contents.start.line;
-		
-		return {
-			contents: [
-				`M ${offset}`
-			]
-		};
+		return foldingRanges;
 	}
 }

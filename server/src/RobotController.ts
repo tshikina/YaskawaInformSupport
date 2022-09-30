@@ -14,6 +14,7 @@ import { VarDatFile } from './VarDatFile';
 import { IoNameDatFile } from './IoNameDatFile';
 import { IoMNameDatFile } from './IoMNameDatFile';
 import { PscFile } from './PscFile';
+import { RobotControllerFile } from './RobotControllerFile';
 
 export class RobotController {
 	private workspace: Workspace;
@@ -26,6 +27,7 @@ export class RobotController {
 	private ioNameDatFiles = new Map<string, IoNameDatFile>();
 	private ioMNameDatFiles = new Map<string, IoMNameDatFile>();
 	private pscFiles = new Map<string, PscFile>();
+	private robotControllerFiles = new Map<string, RobotControllerFile>();
 
 	constructor( workspace: Workspace, folderPath: string ) {
 		this.workspace = workspace;
@@ -89,6 +91,24 @@ export class RobotController {
 
 
 	// files
+	getFile( filePath: string ) {
+		let file = this.robotControllerFiles.get( filePath );
+
+		if( file ) {
+			return file; // return cache
+		}
+
+		if( !fs.existsSync(filePath) ) {
+			return undefined;
+		}
+
+		file = new RobotControllerFile( this.workspace, filePath );
+
+		this.robotControllerFiles.set( filePath, file );
+
+		return file;
+	}
+
 	getJbiFile( filePath: string ) {
 		let file = this.jbiFiles.get( filePath );
 

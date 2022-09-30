@@ -355,6 +355,14 @@ connection.onFoldingRanges( foldingRangeParam => {
 		}
 		return null;
 	}
+	else {
+		const file = robotController.getFile(filePath);
+
+		if( file ) {
+			return file.onFoldingRanges( foldingRangeParam );
+		}
+		return null;
+	}
 
 	return null;
 } );

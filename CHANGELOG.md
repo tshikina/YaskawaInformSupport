@@ -4,6 +4,7 @@ All notable changes to the "inform-job-support" extension will be documented in 
 
 ## [Unreleased]
 ### Added
+- Support Folding range for JBI files.
 - Support Folding range for PRM files.
 - Support Folding range for VAR.DAT file.
 - Support Folding range for IONAME.DAT and EXIONAME.DAT.

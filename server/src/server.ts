@@ -320,7 +320,14 @@ connection.onFoldingRanges( foldingRangeParam => {
 
 	const extname = path.extname(fileName).toUpperCase();
 
-	if( extname === ".PRM" ) {
+	if( extname === ".JBI" ) {
+		const jbiFile = robotController.getJbiFile( filePath );
+		if( jbiFile ) {
+			return jbiFile.onFoldingRanges( foldingRangeParam );
+		}
+		return null;
+}
+	else if( extname === ".PRM" ) {
 		const parameterFile = robotController.getParameterFile(filePath);
 		if( parameterFile ) {
 			return parameterFile.onFoldingRanges( foldingRangeParam );

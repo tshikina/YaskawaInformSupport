@@ -2,7 +2,7 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
-## [Unreleased]
+## [0.5.0] - 2022-10-02
 ### Added
 - Support Folding range for JBI files.
 - Support Folding range for PRM files.

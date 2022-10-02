@@ -14,6 +14,13 @@ This extension support syntax highlight for YASKAWA Motoman Inform language as f
 
 
 ## Release Notes
+### [0.5.0]
+- Support Folding range for JBI files.
+- Support Folding range for PRM files.
+- Support Folding range for VAR.DAT file.
+- Support Folding range for IONAME.DAT and EXIONAME.DAT.
+- Support Folding range for IOMNAME.DAT.
+- Support Folding range for other files.
 
 ### [0.4.0]
 - Support Go to Definiton to C-Var in JBI file.

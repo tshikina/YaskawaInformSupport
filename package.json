@@ -13,6 +13,7 @@
         "vscode": "^1.63.0"
     },
     "dependencies": {
+        "js-yaml": "^4.1.0",
         "vscode-languageclient": "^7.0.0"
     },
     "devDependencies": {
@@ -41,47 +42,85 @@
         "onLanguage:macrodat",
         "onLanguage:pscfile"
     ],
-	"main": "./client/out/extension",
+    "main": "./client/out/extension",
     "contributes": {
         "languages": [
             {
                 "id": "inform",
-                "aliases": ["inform", "INFORM JBI for YASKAWA Motoman"],
-                "extensions": [".JBI"],
+                "aliases": [
+                    "inform",
+                    "INFORM JBI for YASKAWA Motoman"
+                ],
+                "extensions": [
+                    ".JBI"
+                ],
                 "configuration": "./language-configuration.json"
-            },{
+            },
+            {
+                "id": "informdat",
+                "aliases": [
+                    "informdat",
+                    "Informdat",
+                    "InformDat",
+                    "INFORMDAT"
+                ],
+                "filenames": [
+                    "VAR.DAT",
+                    "VARNAME.DAT"
+                ],
+                "configuration": "./language-configuration.json"
+            },
+            {
                 "id": "cioprglst",
-                "aliases": ["CIOPRG.LST", "CIOPRG.LST for YASKAWA Motoman"],
-                "filenames": ["CIOPRG.LST"],
+                "aliases": [
+                    "CIOPRG.LST",
+                    "CIOPRG.LST for YASKAWA Motoman"
+                ],
+                "filenames": [
+                    "CIOPRG.LST"
+                ],
                 "configuration": "./language-configuration.json"
-            },{
-                "id": "varnamedat",
-                "aliases": ["VARNAME.DAT", "VARNAME.DAT for YASKAWA Motoman"],
-                "filenames": ["VARNAME.DAT"],
-                "configuration": "./language-configuration.json"
-            },{
-                "id": "vardat",
-                "aliases": ["VAR.DAT", "VAR.DAT for YASKAWA Motoman"],
-                "filenames": ["VAR.DAT"],
-                "configuration": "./language-configuration.json"
-            },{
+            },
+            {
                 "id": "ionamedat",
-                "aliases": ["IONAME.DAT", "IONAME.DAT for YASKAWA Motoman"],
-                "filenames": ["IONAME.DAT", "EXIONAME.DAT"],
+                "aliases": [
+                    "IONAME.DAT",
+                    "IONAME.DAT for YASKAWA Motoman"
+                ],
+                "filenames": [
+                    "IONAME.DAT",
+                    "EXIONAME.DAT"
+                ],
                 "configuration": "./language-configuration.json"
-            },{
+            },
+            {
                 "id": "iomnamedat",
-                "aliases": ["IOMNAME.DAT", "IOMNAME.DAT for YASKAWA Motoman"],
-                "filenames": ["IOMNAME.DAT"],
+                "aliases": [
+                    "IOMNAME.DAT",
+                    "IOMNAME.DAT for YASKAWA Motoman"
+                ],
+                "filenames": [
+                    "IOMNAME.DAT"
+                ],
                 "configuration": "./language-configuration.json"
-            },{
+            },
+            {
                 "id": "macrodat",
-                "aliases": ["MACRO.DAT", "MACRO.DAT for YASKAWA Motoman"],
-                "filenames": ["MACRO.DAT"],
+                "aliases": [
+                    "MACRO.DAT",
+                    "MACRO.DAT for YASKAWA Motoman"
+                ],
+                "filenames": [
+                    "MACRO.DAT"
+                ],
                 "configuration": "./language-configuration.json"
-            },{
+            },
+            {
                 "id": "generaldat",
-                "aliases": ["DAT,PRM,CND", "DAT,PRM,CND files for YASKAWA Motoman"],
+                "aliases": [
+                    "DAT,PRM,CND",
+                    "DAT,PRM,CND files for YASKAWA Motoman"
+                ],
                 "filenames": [
                     "ABSO.DAT",
                     "ALMHIST.DAT",
@@ -158,10 +197,16 @@
                     "SVS.PRM"
                 ],
                 "configuration": "./language-configuration.json"
-            },{
+            },
+            {
                 "id": "pscfile",
-                "aliases": ["psc", "PSC file for YASKAWA Motoman"],
-                "extensions": [".psc"],
+                "aliases": [
+                    "psc",
+                    "PSC file for YASKAWA Motoman"
+                ],
+                "extensions": [
+                    ".psc"
+                ],
                 "configuration": "./language-configuration.json"
             }
         ],
@@ -170,35 +215,38 @@
                 "language": "inform",
                 "scopeName": "source.inform",
                 "path": "./syntaxes/inform.tmLanguage.json"
-            },{
+            },
+            {
+                "language": "informdat",
+                "scopeName": "source.informdat",
+                "path": "./syntaxes/informdat.tmLanguage.json"
+            },
+            {
                 "language": "cioprglst",
                 "scopeName": "source.cioprglst",
                 "path": "./syntaxes/cioprglst.tmLanguage.json"
-            },{
-                "language": "varnamedat",
-                "scopeName": "source.varnamedat",
-                "path": "./syntaxes/varnamedat.tmLanguage.json"
-            },{
-                "language": "vardat",
-                "scopeName": "source.vardat",
-                "path": "./syntaxes/vardat.tmLanguage.json"
-            },{
+            },
+            {
                 "language": "ionamedat",
                 "scopeName": "source.ionamedat",
                 "path": "./syntaxes/ionamedat.tmLanguage.json"
-            },{
+            },
+            {
                 "language": "iomnamedat",
                 "scopeName": "source.iomnamedat",
                 "path": "./syntaxes/iomnamedat.tmLanguage.json"
-                },{
-                    "language": "macrodat",
-                    "scopeName": "source.macrodat",
-                    "path": "./syntaxes/macrodat.tmLanguage.json"
-                },{
+            },
+            {
+                "language": "macrodat",
+                "scopeName": "source.macrodat",
+                "path": "./syntaxes/macrodat.tmLanguage.json"
+            },
+            {
                 "language": "generaldat",
                 "scopeName": "source.generaldat",
                 "path": "./syntaxes/generaldat.tmLanguage.json"
-            },{
+            },
+            {
                 "language": "pscfile",
                 "scopeName": "source.pscfile",
                 "path": "./syntaxes/psc.tmLanguage.json"
@@ -242,8 +290,8 @@
         "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
         "test": "sh ./scripts/e2e.sh",
         "esbuild": "npm run esbuild-client -- --sourcemap && npm run esbuild-server -- --sourcemap",
-		"esbuild-client": "esbuild ./client/src/extension.ts --bundle --outfile=./client/out/extension.js --external:vscode --format=cjs --platform=node",
-		"esbuild-server": "esbuild ./server/src/server.ts --bundle --outfile=./server/out/server.js --external:vscode --format=cjs --platform=node",
+        "esbuild-client": "esbuild ./client/src/extension.ts --bundle --outfile=./client/out/extension.js --external:vscode --format=cjs --platform=node",
+        "esbuild-server": "esbuild ./server/src/server.ts --bundle --outfile=./server/out/server.js --external:vscode --format=cjs --platform=node",
         "esbuild-watch": "npm run esbuild-client -- --sourcemap --watch && npm run esbuild-server -- --sourcemap --watch",
         "test-compile": "tsc -p ./"
     }

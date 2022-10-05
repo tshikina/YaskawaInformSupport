@@ -1,0 +1,138 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "INFORM data files for YASKAWA Motoman",
+	"patterns": [
+		{ "include": "#vardatfile" },
+		{ "include": "#varnamedatfile" },
+	],
+	"repository": {
+		# file types
+		# VAR.DAT
+		"vardatfile": {
+			"begin": "^(//VAR)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
+			"end": "\\z",
+			"patterns": [
+				{ "include": "#integervarsection" },
+				{ "include": "#floatvarsection" },
+				{ "include": "#stringvarsection" },
+				{ "include": "#positionvarsection" },
+				{ "include": "#metashare" },
+				{ "include": "#metaheader" }
+			]
+		},
+		# VARNAME.DAT
+		"varnamedatfile": {
+			"begin": "^(//VARNAME)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
+			"end": "\\z",
+			"patterns": [
+				{ "include": "#varnamesection" },
+				{ "include": "#metashare" },
+				{ "include": "#metaheader" }
+			]
+		},
+
+
+		# contents
+		"metaheader": {
+			"match": "^/.*",
+			"name": "meta.preprocessor.informdat"
+		},
+		"metashare": {
+			"match": "^(///SHARE)(.*)",
+			"captures": {
+				"1": { "name": "meta.preprocessor.share.informdat" },
+				"2": { "patterns": [{"include": "#decimalvalues"}]}
+			}
+		},
+		"integervarsection": {
+			"begin": "^(///(B|I|D))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [{"include": "#decimalvalues"}]
+				}
+			}
+		},
+		"floatvarsection": {
+			"begin": "^(///(R))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [{"include": "#floatvalues"}]
+				}
+			}
+		},
+		"stringvarsection": {
+			"begin": "^(///(S))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [{
+						"match": "^.{0,32}$",
+						"name": "string.other.stringvar.informdat"
+					},{
+						"match": "^.*$",
+						"name": "invalid.illegal.stringvar.informdat"
+					}]
+				}
+			}
+		},
+		"positionvarsection": {
+			"begin": "^(///(P))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [
+						{"include": "#quotedstrings"},
+						{"include": "#floatvalues"},
+						{"include": "#decimalvalues"}
+					]
+				}
+			}
+		},
+		"decimalvalues": {
+			"match": "\\b[-]?[1-9]*[0-9]+\\b",
+			"name": "constant.numeric.decimal.informdat"
+		},
+		"floatvalues": {
+			"match": "\\b[+-]?[0-9]+(\\.[0-9]+([eE][+-]?[0-9]+)?)?\\b",
+			"name": "constant.numeric.float.informdat"
+		},
+		"quotedstrings": {
+			"name": "string.quoted.double.informdat",
+			"begin": "\"",
+			"end": "\""
+		},
+		"varnamesection": {
+			"begin": "^(///(B|I|D|R|S|P|BP|EX))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.varname.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [ {
+						"match": "^([0-9]+)\\s+(1,0),(.{1,16})$",
+						"captures": {
+							"1": {"name": "variable.other.informdat"},
+							"2": {"name": "meta.preprocessor.varname.informdat"},
+							"3": {"name": "string.other.varname.informdat"}
+						}
+					},{
+						"match": "^([0-9]+)\\s+(1,0),(.*)$",
+						"captures": {
+							"1": {"name": "variable.other.informdat"},
+							"2": {"name": "meta.preprocessor.varname.informdat"},
+							"3": {"name": "invalid.illegal.varname.informdat"}
+						}
+					}]
+				}
+			}
+		},
+	},
+	"scopeName": "source.informdat"
+}

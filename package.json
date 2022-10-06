@@ -66,62 +66,7 @@
                 ],
                 "filenames": [
                     "VAR.DAT",
-                    "VARNAME.DAT"
-                ],
-                "configuration": "./language-configuration.json"
-            },
-            {
-                "id": "cioprglst",
-                "aliases": [
-                    "CIOPRG.LST",
-                    "CIOPRG.LST for YASKAWA Motoman"
-                ],
-                "filenames": [
-                    "CIOPRG.LST"
-                ],
-                "configuration": "./language-configuration.json"
-            },
-            {
-                "id": "ionamedat",
-                "aliases": [
-                    "IONAME.DAT",
-                    "IONAME.DAT for YASKAWA Motoman"
-                ],
-                "filenames": [
-                    "IONAME.DAT",
-                    "EXIONAME.DAT"
-                ],
-                "configuration": "./language-configuration.json"
-            },
-            {
-                "id": "iomnamedat",
-                "aliases": [
-                    "IOMNAME.DAT",
-                    "IOMNAME.DAT for YASKAWA Motoman"
-                ],
-                "filenames": [
-                    "IOMNAME.DAT"
-                ],
-                "configuration": "./language-configuration.json"
-            },
-            {
-                "id": "macrodat",
-                "aliases": [
-                    "MACRO.DAT",
-                    "MACRO.DAT for YASKAWA Motoman"
-                ],
-                "filenames": [
-                    "MACRO.DAT"
-                ],
-                "configuration": "./language-configuration.json"
-            },
-            {
-                "id": "generaldat",
-                "aliases": [
-                    "DAT,PRM,CND",
-                    "DAT,PRM,CND files for YASKAWA Motoman"
-                ],
-                "filenames": [
+                    "VARNAME.DAT",
                     "ABSO.DAT",
                     "ALMHIST.DAT",
                     "APPRBUZR.DAT",
@@ -199,6 +144,51 @@
                 "configuration": "./language-configuration.json"
             },
             {
+                "id": "cioprglst",
+                "aliases": [
+                    "CIOPRG.LST",
+                    "CIOPRG.LST for YASKAWA Motoman"
+                ],
+                "filenames": [
+                    "CIOPRG.LST"
+                ],
+                "configuration": "./language-configuration.json"
+            },
+            {
+                "id": "ionamedat",
+                "aliases": [
+                    "IONAME.DAT",
+                    "IONAME.DAT for YASKAWA Motoman"
+                ],
+                "filenames": [
+                    "IONAME.DAT",
+                    "EXIONAME.DAT"
+                ],
+                "configuration": "./language-configuration.json"
+            },
+            {
+                "id": "iomnamedat",
+                "aliases": [
+                    "IOMNAME.DAT",
+                    "IOMNAME.DAT for YASKAWA Motoman"
+                ],
+                "filenames": [
+                    "IOMNAME.DAT"
+                ],
+                "configuration": "./language-configuration.json"
+            },
+            {
+                "id": "macrodat",
+                "aliases": [
+                    "MACRO.DAT",
+                    "MACRO.DAT for YASKAWA Motoman"
+                ],
+                "filenames": [
+                    "MACRO.DAT"
+                ],
+                "configuration": "./language-configuration.json"
+            },
+            {
                 "id": "pscfile",
                 "aliases": [
                     "psc",
@@ -240,11 +230,6 @@
                 "language": "macrodat",
                 "scopeName": "source.macrodat",
                 "path": "./syntaxes/macrodat.tmLanguage.json"
-            },
-            {
-                "language": "generaldat",
-                "scopeName": "source.generaldat",
-                "path": "./syntaxes/generaldat.tmLanguage.json"
             },
             {
                 "language": "pscfile",

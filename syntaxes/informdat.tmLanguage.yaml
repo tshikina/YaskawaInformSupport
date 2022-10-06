@@ -4,6 +4,7 @@
 	"patterns": [
 		{ "include": "#vardatfile" },
 		{ "include": "#varnamedatfile" },
+		{ "include": "#generaldatfile" },
 	],
 	"repository": {
 		# file types
@@ -30,6 +31,16 @@
 				{ "include": "#varnamesection" },
 				{ "include": "#metashare" },
 				{ "include": "#metaheader" }
+			]
+		},
+		# other DAT,PRM,CND files
+		"generaldatfile": {
+			"begin": "^(/.*)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
+			"end": "\\z",
+			"patterns": [
+				{ "include": "#metaheader" },
+				{ "include": "#floatvalues" }
 			]
 		},
 

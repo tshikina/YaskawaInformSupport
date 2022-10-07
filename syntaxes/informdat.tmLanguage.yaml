@@ -4,6 +4,7 @@
 	"patterns": [
 		{ "include": "#vardatfile" },
 		{ "include": "#varnamedatfile" },
+		{ "include": "#ionamedatfile" },
 		{ "include": "#iomnamedatfile" },
 		{ "include": "#generaldatfile" },
 	],
@@ -31,6 +32,16 @@
 			"patterns": [
 				{ "include": "#varnamesection" },
 				{ "include": "#metashare" },
+				{ "include": "#metaheader" }
+			]
+		},
+		# IONAME.DAT
+		"ionamedatfile": {
+			"begin": "^(/IONAME)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
+			"end": "\\z",
+			"patterns": [
+				{ "include": "#ionamesection" },
 				{ "include": "#metaheader" }
 			]
 		},
@@ -154,6 +165,37 @@
 					}]
 				}
 			}
+		},
+		"ionamesection": {
+			"begin": "^(//(IN|OUT|EXIN|EXOUT))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.varname.informdat" } },
+			"while": "(^[^,]*,[^,]*,[^,]*,[^,]*$)",
+			"whileCaptures": { 
+				"1":{
+					"patterns": [{
+							"match": "^([^,]{0,16}),([^,]{0,16}),([^,]{0,16}),([^,]{0,16}$)",
+							"captures": {
+								"1": {"name": "string.other.ioname.informdat"},
+								"2": {"name": "string.other.ioname.informdat"},
+								"3": {"name": "string.other.ioname.informdat"},
+								"4": {"name": "string.other.ioname.informdat"}
+							}
+						},{
+							"match": "(.*)",
+							"name": "invalid.illegal.ioname.informdat"
+						}
+					]
+				}
+			}
+		},
+		"ioname":{
+			"patterns": [ {
+				"match": ".{0,16}",
+				"name": "string.other.varname.informdat"
+			},{
+				"match": ".*",
+				"name": "invalid.illegal.varname.informdat"
+			}]
 		},
 		"iomnamesection": {
 			"begin": "^(//(NAME))$",

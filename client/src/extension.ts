@@ -40,11 +40,10 @@ export function activate(context: ExtensionContext) {
 		// Register the server for plain text documents
 		documentSelector: [
 			{ scheme: 'file', language: 'inform' },
+			{ scheme: 'file', language: 'informdat' },
 			{ scheme: 'file', language: 'cioprglst' },
-			{ scheme: 'file', language: 'generaldat' },
 			{ scheme: 'file', language: 'vardat' },
 			{ scheme: 'file', language: 'varnamedat' },
-			{ scheme: 'file', language: 'ionamedat' },
 			{ scheme: 'file', language: 'macrodat' },
 			{ scheme: 'file', language: 'pscfile' }
 		],

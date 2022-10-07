@@ -33,11 +33,10 @@
     ],
     "activationEvents": [
         "onLanguage:inform",
+        "onLanguage:informdat",
         "onLanguage:cioprglst",
-        "onLanguage:generaldat",
         "onLanguage:vardat",
         "onLanguage:varnamedat",
-        "onLanguage:ionamedat",
         "onLanguage:macrodat",
         "onLanguage:pscfile"
     ],
@@ -66,6 +65,7 @@
                 "filenames": [
                     "VAR.DAT",
                     "VARNAME.DAT",
+                    "IONAME.DAT",
                     "IOMNAME.DAT",
                     "ABSO.DAT",
                     "ALMHIST.DAT",
@@ -155,18 +155,6 @@
                 "configuration": "./language-configuration.json"
             },
             {
-                "id": "ionamedat",
-                "aliases": [
-                    "IONAME.DAT",
-                    "IONAME.DAT for YASKAWA Motoman"
-                ],
-                "filenames": [
-                    "IONAME.DAT",
-                    "EXIONAME.DAT"
-                ],
-                "configuration": "./language-configuration.json"
-            },
-            {
                 "id": "macrodat",
                 "aliases": [
                     "MACRO.DAT",
@@ -204,16 +192,6 @@
                 "language": "cioprglst",
                 "scopeName": "source.cioprglst",
                 "path": "./syntaxes/cioprglst.tmLanguage.json"
-            },
-            {
-                "language": "ionamedat",
-                "scopeName": "source.ionamedat",
-                "path": "./syntaxes/ionamedat.tmLanguage.json"
-            },
-            {
-                "language": "iomnamedat",
-                "scopeName": "source.iomnamedat",
-                "path": "./syntaxes/iomnamedat.tmLanguage.json"
             },
             {
                 "language": "macrodat",

@@ -100,7 +100,31 @@ export class RobotController {
 			return undefined;
 		}
 
-		file = new RobotControllerFile( this, filePath );
+		const fileName = path.basename( filePath );
+		const extname = path.extname(fileName).toUpperCase();
+
+
+		if( extname === ".JBI" ) {
+			file = new JbiFile( this, filePath );
+		}
+		else if( extname === ".PRM" ) {
+			file = new ParameterFile( this, filePath );
+		}
+		else if( fileName == "VAR.DAT") {
+			file = new VarDatFile( this, filePath );
+		}
+		else if( fileName == "IONAME.DAT" || fileName == "EXIONAME.DAT" ) {
+			file = new IoNameDatFile( this, filePath );
+		}
+		else if( fileName == "IOMNAME.DAT") {
+			file = new IoMNameDatFile( this, filePath );
+		}
+		else if( extname == ".PSC") {
+			file = new PscFile( this, filePath );
+		}
+		else {
+			file = new RobotControllerFile( this, filePath );
+		}
 
 		this.robotControllerFiles.set( filePath, file );
 

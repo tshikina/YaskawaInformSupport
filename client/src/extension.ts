@@ -45,7 +45,6 @@ export function activate(context: ExtensionContext) {
 			{ scheme: 'file', language: 'vardat' },
 			{ scheme: 'file', language: 'varnamedat' },
 			{ scheme: 'file', language: 'ionamedat' },
-			{ scheme: 'file', language: 'iomnamedat' },
 			{ scheme: 'file', language: 'macrodat' },
 			{ scheme: 'file', language: 'pscfile' }
 		],

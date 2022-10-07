@@ -38,7 +38,6 @@
         "onLanguage:vardat",
         "onLanguage:varnamedat",
         "onLanguage:ionamedat",
-        "onLanguage:iomnamedat",
         "onLanguage:macrodat",
         "onLanguage:pscfile"
     ],
@@ -67,6 +66,7 @@
                 "filenames": [
                     "VAR.DAT",
                     "VARNAME.DAT",
+                    "IOMNAME.DAT",
                     "ABSO.DAT",
                     "ALMHIST.DAT",
                     "APPRBUZR.DAT",
@@ -163,17 +163,6 @@
                 "filenames": [
                     "IONAME.DAT",
                     "EXIONAME.DAT"
-                ],
-                "configuration": "./language-configuration.json"
-            },
-            {
-                "id": "iomnamedat",
-                "aliases": [
-                    "IOMNAME.DAT",
-                    "IOMNAME.DAT for YASKAWA Motoman"
-                ],
-                "filenames": [
-                    "IOMNAME.DAT"
                 ],
                 "configuration": "./language-configuration.json"
             },

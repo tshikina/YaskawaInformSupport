@@ -4,6 +4,7 @@
 	"patterns": [
 		{ "include": "#vardatfile" },
 		{ "include": "#varnamedatfile" },
+		{ "include": "#iomnamedatfile" },
 		{ "include": "#generaldatfile" },
 	],
 	"repository": {
@@ -30,6 +31,16 @@
 			"patterns": [
 				{ "include": "#varnamesection" },
 				{ "include": "#metashare" },
+				{ "include": "#metaheader" }
+			]
+		},
+		# IOMNAME.DAT
+		"iomnamedatfile": {
+			"begin": "^(/IOMMAME)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
+			"end": "\\z",
+			"patterns": [
+				{ "include": "#iomnamesection" },
 				{ "include": "#metaheader" }
 			]
 		},
@@ -140,6 +151,22 @@
 							"2": {"name": "meta.preprocessor.varname.informdat"},
 							"3": {"name": "invalid.illegal.varname.informdat"}
 						}
+					}]
+				}
+			}
+		},
+		"iomnamesection": {
+			"begin": "^(//(NAME))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.name.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [ {
+						"match": "^(.{0,16})$",
+						"name": "string.other.varname.informdat"
+					},{
+						"match": "^(.*)$",
+						"name": "invalid.illegal.varname.informdat"
 					}]
 				}
 			}

@@ -6,6 +6,7 @@
 		{ "include": "#varnamedatfile" },
 		{ "include": "#ionamedatfile" },
 		{ "include": "#iomnamedatfile" },
+		{ "include": "#cioprglstfile" },
 		{ "include": "#generaldatfile" },
 	],
 	"repository": {
@@ -52,6 +53,18 @@
 			"end": "\\z",
 			"patterns": [
 				{ "include": "#iomnamesection" },
+				{ "include": "#metaheader" }
+			]
+		},
+		# CIOPRG.LST
+		"cioprglstfile": {
+			"begin": "^(/CIOPRG.*)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
+			"end": "\\z",
+			"patterns": [
+				{ "include": "#msection" },
+				{ "include": "#ciosection" },
+				{ "include": "#iomessagesection" },
 				{ "include": "#metaheader" }
 			]
 		},
@@ -212,6 +225,82 @@
 					}]
 				}
 			}
+		},
+		"msection": {
+			"begin": "^(//\\$M)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.m.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [
+						{ "include": "#decimalvalues" }
+					]
+				}
+			}
+		},
+		"ciosection": {
+			"begin": "^(//KEY.*)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.cio.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [
+						{ "include": "#ciocontrol" },
+						{ "include": "#ciocommands"},
+						{ "include": "#mvariables" },
+						{ "include": "#decimalvalues" }
+					]
+				}
+			}
+		},
+		"iomessagesection":{
+			"begin": "^(//(ALARM|MESSAGE).*)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.iomessage.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1" : {
+					"patterns": [{
+						"match": "^.{0,32}$",
+						"name": "string.unquoted.iomessage.informdat"
+					},{
+						"match": "^.*$",
+						"name": "invalid.illegal.length.iomessage.informdat"
+					}
+					]
+				}
+			}
+		},
+		"ciocontrol": {
+			"patterns": [
+				{
+					"match": "^(PART.*)$",
+					"name": "keyword.control.general.informdat"
+				},
+				{
+					"match": "^END$",
+					"name": "keyword.control.general.informdat"
+				}
+			]
+		},
+		"ciocommands": {
+			"patterns": [
+				{
+					"match": "^\\s*[[:upper:]-]+\\b",
+					"name": "support.function.informdat"
+				}
+			]
+		},
+		"mvariables": {
+			"patterns": [
+				{
+					"match": "\\bM[0-9]+\\b",
+					"name": "variable.other.register.informdat"
+				},
+				{
+					"match": "#[0-9]+\\b",
+					"name": "variable.other.io.informdat"
+				}
+			]
 		},
 	},
 	"scopeName": "source.informdat"

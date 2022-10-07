@@ -41,9 +41,6 @@ export function activate(context: ExtensionContext) {
 		documentSelector: [
 			{ scheme: 'file', language: 'inform' },
 			{ scheme: 'file', language: 'informdat' },
-			{ scheme: 'file', language: 'cioprglst' },
-			{ scheme: 'file', language: 'vardat' },
-			{ scheme: 'file', language: 'varnamedat' },
 			{ scheme: 'file', language: 'macrodat' },
 			{ scheme: 'file', language: 'pscfile' }
 		],

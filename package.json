@@ -34,9 +34,6 @@
     "activationEvents": [
         "onLanguage:inform",
         "onLanguage:informdat",
-        "onLanguage:cioprglst",
-        "onLanguage:vardat",
-        "onLanguage:varnamedat",
         "onLanguage:macrodat",
         "onLanguage:pscfile"
     ],
@@ -67,6 +64,7 @@
                     "VARNAME.DAT",
                     "IONAME.DAT",
                     "IOMNAME.DAT",
+                    "CIOPRG.LST",
                     "ABSO.DAT",
                     "ALMHIST.DAT",
                     "APPRBUZR.DAT",
@@ -140,17 +138,6 @@
                     "SVM.PRM",
                     "SVP.PRM",
                     "SVS.PRM"
-                ],
-                "configuration": "./language-configuration.json"
-            },
-            {
-                "id": "cioprglst",
-                "aliases": [
-                    "CIOPRG.LST",
-                    "CIOPRG.LST for YASKAWA Motoman"
-                ],
-                "filenames": [
-                    "CIOPRG.LST"
                 ],
                 "configuration": "./language-configuration.json"
             },

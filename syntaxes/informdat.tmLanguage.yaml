@@ -11,6 +11,7 @@
 		{ "include": "#generaldatfile" },
 	],
 	"repository": {
+		#------------------------
 		# file types
 		# VAR.DAT
 		"vardatfile": {
@@ -37,9 +38,9 @@
 				{ "include": "#metaheader" }
 			]
 		},
-		# IONAME.DAT
+		# IONAME.DAT,EXIONAME.DAT
 		"ionamedatfile": {
-			"begin": "^(/IONAME)$",
+			"begin": "^(/IONAME|/EXIONAME)$",
 			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
 			"end": "\\z",
 			"patterns": [
@@ -95,18 +96,10 @@
 		},
 
 
-		# contents
-		"metaheader": {
-			"match": "^/.*",
-			"name": "meta.preprocessor.informdat"
-		},
-		"metashare": {
-			"match": "^(///SHARE)(.*)",
-			"captures": {
-				"1": { "name": "meta.preprocessor.share.informdat" },
-				"2": { "patterns": [{"include": "#decimalvalues"}]}
-			}
-		},
+		
+		#------------------------
+		# sections
+		# VAR.DAT/B,I,D
 		"integervarsection": {
 			"begin": "^(///(B|I|D))$",
 			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
@@ -117,6 +110,7 @@
 				}
 			}
 		},
+		# VAR.DAT/R
 		"floatvarsection": {
 			"begin": "^(///(R))$",
 			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
@@ -127,6 +121,7 @@
 				}
 			}
 		},
+		# VAR.DAT/S
 		"stringvarsection": {
 			"begin": "^(///(S))$",
 			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
@@ -143,6 +138,7 @@
 				}
 			}
 		},
+		# VAR.DAT/P
 		"positionvarsection": {
 			"begin": "^(///(P))$",
 			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
@@ -157,19 +153,7 @@
 				}
 			}
 		},
-		"decimalvalues": {
-			"match": "\\b[-]?[1-9]*[0-9]+\\b",
-			"name": "constant.numeric.decimal.informdat"
-		},
-		"floatvalues": {
-			"match": "\\b[+-]?[0-9]+(\\.[0-9]+([eE][+-]?[0-9]+)?)?\\b",
-			"name": "constant.numeric.float.informdat"
-		},
-		"quotedstrings": {
-			"name": "string.quoted.double.informdat",
-			"begin": "\"",
-			"end": "\""
-		},
+		# VARNAME.DAT
 		"varnamesection": {
 			"begin": "^(///(B|I|D|R|S|P|BP|EX))$",
 			"beginCaptures": { "1" : { "name": "meta.preprocessor.varname.informdat" } },
@@ -194,6 +178,7 @@
 				}
 			}
 		},
+		# IONAME.DAT
 		"ionamesection": {
 			"begin": "^(//(IN|OUT|EXIN|EXOUT))$",
 			"beginCaptures": { "1" : { "name": "meta.preprocessor.varname.informdat" } },
@@ -216,15 +201,7 @@
 				}
 			}
 		},
-		"ioname":{
-			"patterns": [ {
-				"match": ".{0,16}",
-				"name": "string.other.varname.informdat"
-			},{
-				"match": ".*",
-				"name": "invalid.illegal.varname.informdat"
-			}]
-		},
+		# IOMNAME
 		"iomnamesection": {
 			"begin": "^(//(NAME))$",
 			"beginCaptures": { "1" : { "name": "meta.preprocessor.name.informdat" } },
@@ -241,6 +218,7 @@
 				}
 			}
 		},
+		# CIOPRG.LST/$M
 		"msection": {
 			"begin": "^(//\\$M)$",
 			"beginCaptures": { "1" : { "name": "meta.preprocessor.m.informdat" } },
@@ -253,6 +231,7 @@
 				}
 			}
 		},
+		# VAR.DAT/KEY
 		"ciosection": {
 			"begin": "^(//KEY.*)$",
 			"beginCaptures": { "1" : { "name": "meta.preprocessor.cio.informdat" } },
@@ -268,6 +247,7 @@
 				}
 			}
 		},
+		# VAR.DAT/ALARM,MESSAGE
 		"iomessagesection":{
 			"begin": "^(//(ALARM|MESSAGE).*)$",
 			"beginCaptures": { "1" : { "name": "meta.preprocessor.iomessage.informdat" } },
@@ -284,6 +264,92 @@
 					]
 				}
 			}
+		},
+		# MACRO.DAT/COMMENT1,2
+		"macrocommentsection": {
+			"begin": "^(///COMMENT(1|2))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.comment.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1": {
+					"name": "string.other.arg.informdat"
+				}
+			}
+		},
+		# MACRO.DAT/TAGCOMM
+		"macrotagcommsection": {
+			"begin": "^(///TAGCOMM)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.tagcomm.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1": {
+					"name": "variable.other.informdat"
+				}
+			}
+		},
+		# MACRO.DAT/TAGINIT
+		"macrotaginitsection": {
+			"begin": "^(///TAGINIT)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.taginit.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1": {
+					"name": "meta.preprocessor.taginit.informdat"
+				}
+			}
+		},
+		# MACRO.DAT/JOB1,2
+		"macrometajobname": {
+			"match": "^///JOB(1|2)\\s+(\\S+)",
+			"name": "meta.preprocessor.jobname.informdat",
+			"captures": {
+				"2": { "name": "entity.name.function.jobname.informdat" }
+			}
+		},
+		# MACRO.DAT/ATTR,ARGSET,ARGTYPE,TAGDISP
+		"macrometaattr": {
+			"match": "^(///(ATTR|ARGSET|ARGTYPE|TAGDISP))\\s+(\\S+)",
+			"captures": {
+				"1": { "name": "meta.preprocessor.attr.informdat" },
+				"3": { "patterns": [{"include": "#decimalvalues"}] }
+			}
+		},
+
+
+		#------------------------
+		# contents
+		"metaheader": {
+			"match": "^/.*",
+			"name": "meta.preprocessor.informdat"
+		},
+		"metashare": {
+			"match": "^(///SHARE)(.*)",
+			"captures": {
+				"1": { "name": "meta.preprocessor.share.informdat" },
+				"2": { "patterns": [{"include": "#decimalvalues"}]}
+			}
+		},
+		"decimalvalues": {
+			"match": "\\b[-]?[1-9]*[0-9]+\\b",
+			"name": "constant.numeric.decimal.informdat"
+		},
+		"floatvalues": {
+			"match": "\\b[+-]?[0-9]+(\\.[0-9]+([eE][+-]?[0-9]+)?)?\\b",
+			"name": "constant.numeric.float.informdat"
+		},
+		"quotedstrings": {
+			"name": "string.quoted.double.informdat",
+			"begin": "\"",
+			"end": "\""
+		},
+		"ioname":{
+			"patterns": [ {
+				"match": ".{0,16}",
+				"name": "string.other.varname.informdat"
+			},{
+				"match": ".*",
+				"name": "invalid.illegal.varname.informdat"
+			}]
 		},
 		"ciocontrol": {
 			"patterns": [
@@ -316,50 +382,6 @@
 					"name": "variable.other.io.informdat"
 				}
 			]
-		},
-		"macrocommentsection": {
-			"begin": "^(///COMMENT(1|2))$",
-			"beginCaptures": { "1" : { "name": "meta.preprocessor.comment.informdat" } },
-			"while": "^([^/].*)$",
-			"whileCaptures": {
-				"1": {
-					"name": "string.other.arg.informdat"
-				}
-			}
-		},
-		"macrotagcommsection": {
-			"begin": "^(///TAGCOMM)$",
-			"beginCaptures": { "1" : { "name": "meta.preprocessor.tagcomm.informdat" } },
-			"while": "^([^/].*)$",
-			"whileCaptures": {
-				"1": {
-					"name": "variable.other.informdat"
-				}
-			}
-		},
-		"macrotaginitsection": {
-			"begin": "^(///TAGINIT)$",
-			"beginCaptures": { "1" : { "name": "meta.preprocessor.taginit.informdat" } },
-			"while": "^([^/].*)$",
-			"whileCaptures": {
-				"1": {
-					"name": "meta.preprocessor.taginit.informdat"
-				}
-			}
-		},
-		"macrometajobname": {
-			"match": "^///JOB(1|2)\\s+(\\S+)",
-			"name": "meta.preprocessor.jobname.informdat",
-			"captures": {
-				"2": { "name": "entity.name.function.jobname.informdat" }
-			}
-		},
-		"macrometaattr": {
-			"match": "^(///(ATTR|ARGSET|ARGTYPE|TAGDISP))\\s+(\\S+)",
-			"captures": {
-				"1": { "name": "meta.preprocessor.attr.informdat" },
-				"3": { "patterns": [{"include": "#decimalvalues"}] }
-			}
 		},
 	},
 	"scopeName": "source.informdat"

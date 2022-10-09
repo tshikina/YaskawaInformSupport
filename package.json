@@ -42,8 +42,11 @@
             {
                 "id": "inform",
                 "aliases": [
+                    "Inform",
                     "inform",
-                    "INFORM JBI for YASKAWA Motoman"
+                    "INFORM",
+                    "jbi",
+                    "JBI"
                 ],
                 "extensions": [
                     ".JBI"
@@ -53,8 +56,9 @@
             {
                 "id": "informdat",
                 "aliases": [
-                    "informdat",
+                    "Inform Data",
                     "Informdat",
+                    "informdat",
                     "InformDat",
                     "INFORMDAT"
                 ],
@@ -62,6 +66,7 @@
                     "VAR.DAT",
                     "VARNAME.DAT",
                     "IONAME.DAT",
+                    "EXIONAME.DAT",
                     "IOMNAME.DAT",
                     "CIOPRG.LST",
                     "MACRO.DAT",

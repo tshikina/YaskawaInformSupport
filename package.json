@@ -34,7 +34,6 @@
     "activationEvents": [
         "onLanguage:inform",
         "onLanguage:informdat",
-        "onLanguage:macrodat",
         "onLanguage:pscfile"
     ],
     "main": "./client/out/extension",
@@ -65,6 +64,7 @@
                     "IONAME.DAT",
                     "IOMNAME.DAT",
                     "CIOPRG.LST",
+                    "MACRO.DAT",
                     "ABSO.DAT",
                     "ALMHIST.DAT",
                     "APPRBUZR.DAT",
@@ -142,17 +142,6 @@
                 "configuration": "./language-configuration.json"
             },
             {
-                "id": "macrodat",
-                "aliases": [
-                    "MACRO.DAT",
-                    "MACRO.DAT for YASKAWA Motoman"
-                ],
-                "filenames": [
-                    "MACRO.DAT"
-                ],
-                "configuration": "./language-configuration.json"
-            },
-            {
                 "id": "pscfile",
                 "aliases": [
                     "psc",
@@ -174,16 +163,6 @@
                 "language": "informdat",
                 "scopeName": "source.informdat",
                 "path": "./syntaxes/informdat.tmLanguage.json"
-            },
-            {
-                "language": "cioprglst",
-                "scopeName": "source.cioprglst",
-                "path": "./syntaxes/cioprglst.tmLanguage.json"
-            },
-            {
-                "language": "macrodat",
-                "scopeName": "source.macrodat",
-                "path": "./syntaxes/macrodat.tmLanguage.json"
             },
             {
                 "language": "pscfile",

@@ -7,6 +7,7 @@
 		{ "include": "#ionamedatfile" },
 		{ "include": "#iomnamedatfile" },
 		{ "include": "#cioprglstfile" },
+		{ "include": "#macrodatfile"},
 		{ "include": "#generaldatfile" },
 	],
 	"repository": {
@@ -65,6 +66,20 @@
 				{ "include": "#msection" },
 				{ "include": "#ciosection" },
 				{ "include": "#iomessagesection" },
+				{ "include": "#metaheader" }
+			]
+		},
+		# MACRO.DAT
+		"macrodatfile": {
+			"begin": "^(//MACRO.*)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.informdat" } },
+			"end": "\\z",
+			"patterns": [
+				{ "include": "#macrocommentsection" },
+				{ "include": "#macrotagcommsection" },
+				{ "include": "#macrotaginitsection" },
+				{ "include": "#macrometajobname" },
+				{ "include": "#macrometaattr" },
 				{ "include": "#metaheader" }
 			]
 		},
@@ -301,6 +316,50 @@
 					"name": "variable.other.io.informdat"
 				}
 			]
+		},
+		"macrocommentsection": {
+			"begin": "^(///COMMENT(1|2))$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.comment.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1": {
+					"name": "string.other.arg.informdat"
+				}
+			}
+		},
+		"macrotagcommsection": {
+			"begin": "^(///TAGCOMM)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.tagcomm.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1": {
+					"name": "variable.other.informdat"
+				}
+			}
+		},
+		"macrotaginitsection": {
+			"begin": "^(///TAGINIT)$",
+			"beginCaptures": { "1" : { "name": "meta.preprocessor.taginit.informdat" } },
+			"while": "^([^/].*)$",
+			"whileCaptures": {
+				"1": {
+					"name": "meta.preprocessor.taginit.informdat"
+				}
+			}
+		},
+		"macrometajobname": {
+			"match": "^///JOB(1|2)\\s+(\\S+)",
+			"name": "meta.preprocessor.jobname.informdat",
+			"captures": {
+				"2": { "name": "entity.name.function.jobname.informdat" }
+			}
+		},
+		"macrometaattr": {
+			"match": "^(///(ATTR|ARGSET|ARGTYPE|TAGDISP))\\s+(\\S+)",
+			"captures": {
+				"1": { "name": "meta.preprocessor.attr.informdat" },
+				"3": { "patterns": [{"include": "#decimalvalues"}] }
+			}
 		},
 	},
 	"scopeName": "source.informdat"

@@ -28,6 +28,42 @@
 			"problemMatcher": [
 				"$tsc-watch"
 			]
+		},
+		{
+			"label": "makeInformSyntaxJson",
+			"type": "shell",
+			"command": "npx js-yaml syntaxes/inform.tmLanguage.yaml > syntaxes/inform.tmLanguage.json",
+			"presentation": {
+				"reveal": "silent",
+				"showReuseMessage": false,
+			}
+		},
+		{
+			"label": "makeInformDatSyntaxJson",
+			"type": "shell",
+			"command": "npx js-yaml syntaxes/informdat.tmLanguage.yaml > syntaxes/informdat.tmLanguage.json",
+			"presentation": {
+				"reveal": "silent",
+				"showReuseMessage": false,
+			}
+		},
+		{
+			"label": "makePscSyntaxJson",
+			"type": "shell",
+			"command": "npx js-yaml syntaxes/psc.tmLanguage.yaml > syntaxes/psc.tmLanguage.json",
+			"presentation": {
+				"reveal": "silent",
+				"showReuseMessage": false,
+			}
+		},
+		{
+			"label": "makeSyntaxJson",
+			"dependsOn": [
+				"makeInformSyntaxJson",
+				"makeInformDatSyntaxJson",
+				"makePscSyntaxJson"
+			],
+			"dependsOrder": "sequence"
 		}
 	]
 }

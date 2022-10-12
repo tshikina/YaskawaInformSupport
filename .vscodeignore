@@ -24,6 +24,8 @@ client/**
 server/**
 #server/out/test/**
 !server/out/*
+syntaxes/*.yaml
+!syntaxes/*.json
 
 node_modules/**
 

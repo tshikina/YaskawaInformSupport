@@ -4,5 +4,18 @@
 	"typescript.preferences.quoteStyle": "single",
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": true
+	},
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/CVS": true,
+		"**/.DS_Store": true,
+		"**/Thumbs.db": true,
+		"**.vsix": true,
+		"syntaxes/*.json": true,
+		"**/node_modules": true,
+		"client/out": true,
+		"server/out": true
 	}
 }

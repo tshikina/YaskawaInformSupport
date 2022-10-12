@@ -2,6 +2,15 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
+## [1.0.0] - 2022-10-10
+### Changed
+- Changed language id to
+	- inform
+	- informdat
+	- pscfile
+### Fixed
+- Fixed hover does not work.
+
 ## [0.5.0] - 2022-10-02
 ### Added
 - Support Folding range for JBI files.

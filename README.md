@@ -4,57 +4,51 @@ This is the README for vs code extension "YASKAWA Inform Support".
 
 ## Features
 
+### Syntax Highlight
 This extension support syntax highlight for YASKAWA Motoman Inform language as following image.
 
 
-![feature X](images/RunImage.png)
+<!-- width: 1099 -->
+<img src="images/RunImage.png" width="60%" alt="Syntax highlight imamge">
+
+This extension also support syntax highlight for other inform related files like VAR.DAT, ALL.PRM, and etc.
+
+### Go to Definition
+Go to definition to LABEL and JOBNAME is supported.
+
+<!-- width: 1833 -->
+<img src="images/GoToDefinition.png" alt="Go to definition image">
+
+### Folding Ranges
+Folding range for Inform, and other files is supported.
+
+<!-- width: 1591 -->
+<img src="images/FoldingRange.png" width="87%" alt="Folding range image">
+
+### Hover
+Hover parameter number in .PRM files.
+
+<!-- widht: 432 -->
+<img src="images/HoverParameterNumber.png" width="24%" alt="Hover paramter number">
+
+## Recommened Setting for Japanese Language User
+日本語を使用する場合は、Inform用の言語設定で、「auto guess encoding」をfalseに、「encoding」にshiftjisを設定してください。
+これらの設定は、以下で検索できます。
+````
+@id:files.autoGuessEncoding @id:files.encoding @lang:inform
+@id:files.autoGuessEncoding @id:files.encoding @lang:informdat
+@id:files.autoGuessEncoding @id:files.encoding @lang:pscfile
+````
+<!--  widht: 1447 -->
+<img src="images/EncodingSetting.png" width="79%" alt="Hover paramter number">
 
 
 ## Known Issues
 
 
 ## Release Notes
-### [0.5.0]
-- Support Folding range for JBI files.
-- Support Folding range for PRM files.
-- Support Folding range for VAR.DAT file.
-- Support Folding range for IONAME.DAT and EXIONAME.DAT.
-- Support Folding range for IOMNAME.DAT.
-- Support Folding range for other files.
+### [1.0.0]
+- Changed language id
 
-### [0.4.0]
-- Support Go to Definiton to C-Var in JBI file.
-- Support Hover to show variable number in VAR.DAT.
-- Support Hover to show io number in IONAME.DAT and EXIONAME.DAT.
-- Support Hover to show register number in IOMNAME.DAT.
-
-### [0.3.0]
-- Support Go to Definition to JOB
-- Support Go to Definition to LABEL
-- Support Hover to show parameter number in .PRM files
-
-### [0.2.0]
-- Support syntax highlight for MACRO.DAT
-- Update syntax highlight for EXIONAME.DAT
-
-### [0.1.0]
-- Support snippets for Inform
-
-### [0.0.4]
-Support syntax highlight of following files.
-- VAR.DAT
-- VARNAME.DAT
-- CIOPRG.LST
-- IONAME.DAT
-- IOMNAME.DAT
-
-Support minimum syntax highlight for other DAT, PRM, CND files.
-
-
-### [0.0.3]
-Add icon in extesion.
-
-### [0.0.1]
-
-Initial release of this extension.
+See [CHANGELOG](./CHANGELOG.md) for more informaiton.
 

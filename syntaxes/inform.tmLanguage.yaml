@@ -9,6 +9,7 @@
 		{ "include": "#metaheader" }
 	],
 	"repository": {
+		# meta header
 		"metaheader": {
 			"match": "^/.*",
 			"name": "meta.preprocessor.inform"
@@ -93,7 +94,7 @@
 					"name": "comment.line.inform"
 				},
 				{
-					"match": "(?<=^(MOVJ|MOVL|MOVC|IMOV)\\s+.*)\/\/.{0,32}$",
+					"match": "(?<=^(MOVJ|MOVL|MOVC|IMOV)\\s+.*)//.{0,32}$",
 					"name": "comment.line.move.inform"
 				},
 				{
@@ -101,7 +102,7 @@
 					"name": "invalid.illegal.comment.length.inform"
 				},
 				{
-					"match": "(?<=^(MOVJ|MOVL|MOVC|IMOV)\\s+.*)\/\/.*$",
+					"match": "(?<=^(MOVJ|MOVL|MOVC|IMOV)\\s+.*)//.*$",
 					"name": "invalid.illegal.comment.length.inform"
 				}
 			]

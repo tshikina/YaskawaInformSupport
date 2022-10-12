@@ -6,10 +6,12 @@
 		{ "include": "#data" }
 	],
 	"repository": {
+		# Comment
 		"comments": {
 			"match": "^'.*",
 			"name": "comment.line.pscfile"
 		},
+		# データ
 		"data": {
 			"match": "^(\\S+)\\s*,\\s*([0-9]+)\\s*,\\s*([-]?[0-9]+)\\s*,?(.*)$",
 			"captures": {

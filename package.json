@@ -185,6 +185,13 @@
             "type": "object",
             "title": "Example configuration",
             "properties": {
+                "yaskawaInformLanguageClient.locale": {
+                    "scope": "resource",
+                    "type": "string",
+                    "enum": ["auto", "en", "ja"],
+                    "default": "auto",
+                    "description": "Select Language locale to show description of inform."
+                },
                 "yaskawaInformLanguageClient.maxNumberOfProblems": {
                     "scope": "resource",
                     "type": "number",

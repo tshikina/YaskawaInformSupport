@@ -16,6 +16,7 @@ import {
 
 import { RobotController } from './RobotController';
 import { RobotControllerFile } from './RobotControllerFile';
+import { translate as tr } from './Translation';
 
 export class PscFile extends RobotControllerFile {
 
@@ -104,24 +105,24 @@ export class PscFile extends RobotControllerFile {
 					diagnostics.push( {
 						severity: DiagnosticSeverity.Warning,
 						range: diagnosisRange,
-						message: `${paramType + paramNumber} is NOT found in ALL.PRM.`,
-						source: 'ex'
+						message: tr('pscfile.diagnostic.paramNotFound', paramType + paramNumber),//`${paramType + paramNumber} is NOT found in ALL.PRM.`,
+						source: 'inform'
 					} );
 				}
 				else if( paramValue != expectedValue ) {
 					diagnostics.push( {
 						severity: DiagnosticSeverity.Warning,
 						range: diagnosisRange,
-						message: `${paramType + paramNumber} value '${paramValue}' is NOT match with ALL.PRM value '${expectedValue}.'`,
-						source: 'ex'
+						message: tr('pscfile.diagnostic.paramUnmatch', paramType + paramNumber, paramValue, expectedValue),
+						source: 'inform'
 					} );
 				}
 				else {
 					diagnostics.push( {
 						severity: DiagnosticSeverity.Information,
 						range: diagnosisRange,
-						message: `Matched with ALL.PRM`,
-						source: 'ex'
+						message: tr('pscfile.diagnostic.paramMatch'),
+						source: 'inform'
 					} );
 				}
 			}

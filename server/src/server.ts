@@ -40,6 +40,7 @@ import { integer } from 'vscode-languageclient';
 import * as Util from './Util';
 import { Workspace } from './Workspace';
 import { RobotController } from './RobotController';
+import * as Translation from './Translation';
 
 
 // Create a connection for the server, using Node's IPC as a transport.
@@ -62,7 +63,14 @@ connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
 
 	workspaceFolders = params.workspaceFolders;
-	
+
+	if( params.locale ) {
+		console.log( `locale: ${params.locale}`);
+		Translation.initTranslation(params.locale);
+	}
+	else {
+		Translation.initTranslation("en");
+	}
 
 	// Does the client support the `workspace/configuration` request?
 	// If not, we fall back using global settings.

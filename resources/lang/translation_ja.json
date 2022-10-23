@@ -1,0 +1,6 @@
+{
+	"pscfile.diagnostic.paramMatch": "ALL.PRMと一致しています。",
+	"pscfile.diagnostic.paramUnmatch": "{0} の値「{1}」 は、ALL.PRMの値 「{2}」 と一致していません。",
+	"pscfile.diagnostic.paramNotFound": "ALL.PRM内に {0} が見つかりません。",
+	"":""
+}

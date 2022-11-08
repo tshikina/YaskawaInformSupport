@@ -2,6 +2,10 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
+## [Unreleased]
+### Added
+- Support Japanese for validation message.
+
 ## [1.0.0] - 2022-10-10
 ### Changed
 - Changed language id to

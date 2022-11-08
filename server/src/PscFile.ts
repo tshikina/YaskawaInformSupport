@@ -16,7 +16,6 @@ import {
 
 import { RobotController } from './RobotController';
 import { RobotControllerFile } from './RobotControllerFile';
-import { translate as tr } from './Translation';
 
 export class PscFile extends RobotControllerFile {
 
@@ -105,7 +104,7 @@ export class PscFile extends RobotControllerFile {
 					diagnostics.push( {
 						severity: DiagnosticSeverity.Warning,
 						range: diagnosisRange,
-						message: tr('pscfile.diagnostic.paramNotFound', paramType + paramNumber),//`${paramType + paramNumber} is NOT found in ALL.PRM.`,
+						message: this.tr('pscfile.diagnostic.paramNotFound', paramType + paramNumber),//`${paramType + paramNumber} is NOT found in ALL.PRM.`,
 						source: 'inform'
 					} );
 				}
@@ -113,7 +112,7 @@ export class PscFile extends RobotControllerFile {
 					diagnostics.push( {
 						severity: DiagnosticSeverity.Warning,
 						range: diagnosisRange,
-						message: tr('pscfile.diagnostic.paramUnmatch', paramType + paramNumber, paramValue, expectedValue),
+						message: this.tr('pscfile.diagnostic.paramUnmatch', paramType + paramNumber, paramValue, expectedValue),
 						source: 'inform'
 					} );
 				}
@@ -121,7 +120,7 @@ export class PscFile extends RobotControllerFile {
 					diagnostics.push( {
 						severity: DiagnosticSeverity.Information,
 						range: diagnosisRange,
-						message: tr('pscfile.diagnostic.paramMatch'),
+						message: this.tr('pscfile.diagnostic.paramMatch'),
 						source: 'inform'
 					} );
 				}

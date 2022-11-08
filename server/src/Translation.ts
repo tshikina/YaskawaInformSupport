@@ -2,32 +2,22 @@ import * as fs from "fs";
 import path = require('path');
 
 
-let currentLocale = "";
-const tranlationTable = new Map<string, string>();
+const supportLocales = new Set(["en", "ja"]);
+const tranlationTable = new Map<string, Map<string, string>>(); // <lang, <key, value>>
 
-export function initTranslation( locale: string ) {
+export function initTranslation() {
 	const langFolderPath = path.join(__dirname, "..", "..", "resources", "lang");
-	currentLocale = locale;
-	const englishPath = path.join(langFolderPath, "translation" + "_" + "en" + ".json");
-	const translationPath = path.join(langFolderPath, "translation" + "_" + locale + ".json");
+	for( const locale of supportLocales.keys() ){
+		const translationPath = path.join(langFolderPath, "translation" + "_" + locale + ".json");
 
-	if( fs.existsSync(englishPath) ) {
-		try{
-			const obj = JSON.parse( fs.readFileSync( englishPath, "utf-8" ) );
-			updateTable(obj);
-		}
-		catch(err) {
-			console.error( `cannot read file: ${englishPath}` );
-		}
-	}
-	else
-		console.error( `translation file is not exist: ${englishPath}` );
-
-	if( englishPath != translationPath ) {
 		if( fs.existsSync(translationPath) ) {
+			if( !tranlationTable.get(locale) ) {
+				tranlationTable.set( locale, new Map<string, string>() );
+			}
+	
 			try{
 				const obj = JSON.parse( fs.readFileSync( translationPath, "utf-8" ) );
-				updateTable(obj);
+				updateTable(locale, obj);
 			}
 			catch(err) {
 				console.error( `cannot read file: ${translationPath}` );
@@ -35,14 +25,19 @@ export function initTranslation( locale: string ) {
 		}	
 		else
 			console.error( `translation file is not exist: ${translationPath}` );
+
 	}
 }
 
-function updateTable( obj : any ) {
+export function isLocaleSupported( locale: string ){
+	return supportLocales.has( locale );
+}
+
+function updateTable( locale: string, obj: any ) {
 	for( const [key, value] of Object.entries(obj) ) {
 		if( typeof(value) === "string" ) {
 			// console.log(`add translation: ${key}: ${value}`);
-			tranlationTable.set(key, value);
+			tranlationTable.get(locale)?.set(key, value);
 		}
 	}
 }
@@ -60,10 +55,15 @@ function format( str: string, ...values: any[]): string {
 	return formatStr;
 }
 
-export function translate( key: string, ...values: any[] ) : string {
-	const str = tranlationTable.get(key);
+export function translate( locale: string, key: string, ...values: any[] ) : string {
+	let str = tranlationTable.get(locale)?.get(key);
 
-	if( str ) {
+	// if str is not found, try to search in English
+	if( str == undefined ) {
+		str = tranlationTable.get("en")?.get(key);
+	}
+
+	if( str != undefined ) {
 		return format( str, ...values );
 	}
 

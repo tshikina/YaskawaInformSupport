@@ -15,6 +15,10 @@ import {
 
 import { Workspace } from "./Workspace";
 import { RobotController } from './RobotController';
+import { 
+	translate,
+	isLocaleSupported,
+} from './Translation';
 
 
 import * as Util from './Util';
@@ -23,6 +27,7 @@ export class RobotControllerFile {
 	workspace: Workspace;
 	robotController: RobotController;
 	filePath: string;
+	locale = "en";
 
 	sectionedDocument: SectionedDocument | undefined;
 
@@ -30,6 +35,21 @@ export class RobotControllerFile {
 		this.workspace = robotController.getWorkspace();
 		this.robotController = robotController;
 		this.filePath = filePath;
+		this.workspace.getDocumentSettings( Util.fsPathToUriString( this.filePath )).then( (settings) => {
+			if( settings ) {
+				if( !isLocaleSupported( settings.locale ) ) {
+					this.locale = this.workspace.defaultSettings.locale;
+				}
+				else {
+					this.locale = settings.locale.toString();
+				}
+			}
+		} );
+	}
+
+	/** translation with files locale */
+	tr( key: string, ...values: any[]) {
+		return translate( this.locale, key, ...values );
 	}
 
 	updateSection() {

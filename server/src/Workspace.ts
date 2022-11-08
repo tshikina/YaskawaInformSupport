@@ -1,6 +1,7 @@
 import {
 	TextDocuments,
 	Range,
+	ConfigurationItem,
 } from 'vscode-languageserver/node';
 
 import {
@@ -12,12 +13,37 @@ import * as fs from "fs";
 import * as path from 'path';
 import { start } from 'repl';
 
+// Extension settings
+interface InformExtensionSettings {
+	maxNumberOfProblems: number;
+	locale: string;
+}
+
 
 export class Workspace {
-	documents: TextDocuments<TextDocument>;
 
-	constructor( documents: TextDocuments<TextDocument> ) {
+	hasConfigurationCapability = false;
+	hasWorkspaceFolderCapability = false;
+	hasDiagnosticRelatedInformationCapability = false;
+
+	defaultSettings: InformExtensionSettings = {
+		maxNumberOfProblems: 1000,
+		locale: "en"
+	};
+	// The global settings, used when the `workspace/configuration` request is not supported by the client.
+	// Please note that this is not the case when using this server with the client provided in this example
+	// but could happen with other clients.
+	globalSettings: InformExtensionSettings = this.defaultSettings;
+
+	documents: TextDocuments<TextDocument>;
+	getConfigurationFunc: (item: ConfigurationItem) => Promise<any>;
+
+	// Cache the settings of all open documents
+	private documentSettings: Map<string, Thenable<InformExtensionSettings>> = new Map();
+
+	constructor( documents: TextDocuments<TextDocument>, getConfigurationFunc: (item: ConfigurationItem) => Promise<any> ) {
 		this.documents = documents;
+		this.getConfigurationFunc = getConfigurationFunc;
 	}
 
 	getTextLines( filePath: string ) {
@@ -130,4 +156,29 @@ export class Workspace {
 		}
 		return undefined;
 	}
+
+
+	clearDocumentSettingsCache() {
+		this.documentSettings.clear();
+	}
+
+	deleteDocumentSettingsCache( uri: string ) {
+		this.documentSettings.delete(uri);
+	}
+
+	getDocumentSettings(resource: string): Thenable<InformExtensionSettings> {
+		if (!this.hasConfigurationCapability) {
+			return Promise.resolve(this.globalSettings);
+		}
+		let result = this.documentSettings.get(resource);
+		if (!result) {
+			result = this.getConfigurationFunc({
+				scopeUri: resource,
+				section: 'yaskawaInformLanguageClient'
+			});
+			this.documentSettings.set(resource, result);
+		}
+		return result;
+	}
+	
 }

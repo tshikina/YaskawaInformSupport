@@ -3,6 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 import {
+	ConfigurationItem,
 	createConnection,
 	TextDocuments,
 	Diagnostic,
@@ -49,13 +50,9 @@ const connection = createConnection(ProposedFeatures.all);
 
 // Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
-const workspace = new Workspace( documents );
+const workspace = new Workspace( documents, (item: ConfigurationItem ) =>{ return connection.workspace.getConfiguration(item); } );
 
 const robotControllerMap = new Map<string, RobotController>();
-
-let hasConfigurationCapability = false;
-let hasWorkspaceFolderCapability = false;
-let hasDiagnosticRelatedInformationCapability = false;
 
 let workspaceFolders : WorkspaceFolder[] | null;
 
@@ -64,23 +61,21 @@ connection.onInitialize((params: InitializeParams) => {
 
 	workspaceFolders = params.workspaceFolders;
 
+	Translation.initTranslation();
 	if( params.locale ) {
 		console.log( `locale: ${params.locale}`);
-		Translation.initTranslation(params.locale);
-	}
-	else {
-		Translation.initTranslation("en");
+		workspace.defaultSettings.locale = params.locale;
 	}
 
 	// Does the client support the `workspace/configuration` request?
 	// If not, we fall back using global settings.
-	hasConfigurationCapability = !!(
+	workspace.hasConfigurationCapability = !!(
 		capabilities.workspace && !!capabilities.workspace.configuration
 	);
-	hasWorkspaceFolderCapability = !!(
+	workspace.hasWorkspaceFolderCapability = !!(
 		capabilities.workspace && !!capabilities.workspace.workspaceFolders
 	);
-	hasDiagnosticRelatedInformationCapability = !!(
+	workspace.hasDiagnosticRelatedInformationCapability = !!(
 		capabilities.textDocument &&
 		capabilities.textDocument.publishDiagnostics &&
 		capabilities.textDocument.publishDiagnostics.relatedInformation
@@ -98,7 +93,7 @@ connection.onInitialize((params: InitializeParams) => {
 			foldingRangeProvider: true
 		}
 	};
-	if (hasWorkspaceFolderCapability) {
+	if (workspace.hasWorkspaceFolderCapability) {
 		result.capabilities.workspace = {
 			workspaceFolders: {
 				supported: true
@@ -109,64 +104,32 @@ connection.onInitialize((params: InitializeParams) => {
 });
 
 connection.onInitialized(() => {
-	if (hasConfigurationCapability) {
+	if (workspace.hasConfigurationCapability) {
 		// Register for all configuration changes.
 		connection.client.register(DidChangeConfigurationNotification.type, undefined);
 	}
-	if (hasWorkspaceFolderCapability) {
+	if (workspace.hasWorkspaceFolderCapability) {
 		connection.workspace.onDidChangeWorkspaceFolders(_event => {
 			connection.console.log('Workspace folder change event received.');
 		});
 	}
 });
 
-// The example settings
-interface ExampleSettings {
-	maxNumberOfProblems: number;
-}
 
-
-// The global settings, used when the `workspace/configuration` request is not supported by the client.
-// Please note that this is not the case when using this server with the client provided in this example
-// but could happen with other clients.
-const defaultSettings: ExampleSettings = { maxNumberOfProblems: 1000 };
-let globalSettings: ExampleSettings = defaultSettings;
-
-// Cache the settings of all open documents
-const documentSettings: Map<string, Thenable<ExampleSettings>> = new Map();
-
-connection.onDidChangeConfiguration(change => {
-	if (hasConfigurationCapability) {
+connection.onDidChangeConfiguration(async change => {
+	if (workspace.hasConfigurationCapability) {
 		// Reset all cached document settings
-		documentSettings.clear();
-	} else {
-		globalSettings = <ExampleSettings>(
-			(change.settings.yaskawaInformLanguageClient || defaultSettings)
-		);
+		workspace.clearDocumentSettingsCache();
 	}
 
-	// Revalidate all open text documents
-	documents.all().forEach(validateFile);
+	clearRobotControllers();
+	requestValidationAll();
 });
 
-function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
-	if (!hasConfigurationCapability) {
-		return Promise.resolve(globalSettings);
-	}
-	let result = documentSettings.get(resource);
-	if (!result) {
-		result = connection.workspace.getConfiguration({
-			scopeUri: resource,
-			section: 'yaskawaInformLanguageClient'
-		});
-		documentSettings.set(resource, result);
-	}
-	return result;
-}
 
 // Only keep settings for open documents
 documents.onDidClose(e => {
-	documentSettings.delete(e.document.uri);
+	workspace.deleteDocumentSettingsCache(e.document.uri);
 });
 
 // The content of a text document has changed. This event is emitted
@@ -197,6 +160,9 @@ function getRobotControllerFromFsPath( fsPath: string ) {
 	return robotController;
 }
 
+function clearRobotControllers() {
+	robotControllerMap.clear();	
+}
 
 function validateFile(textDocument: TextDocument) {
 	const filePath = URI.parse( textDocument.uri ).fsPath;
@@ -235,6 +201,14 @@ function requestValidation( filePath: string ) {
 		if( documentFolder == folderPath ) {
 			updateDocumentSet.add( document );
 		}
+	});
+
+	validationTimer.refresh();
+}
+
+function requestValidationAll() {
+	documents.all().forEach( document => {
+		updateDocumentSet.add( document );
 	});
 
 	validationTimer.refresh();

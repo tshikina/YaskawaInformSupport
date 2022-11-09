@@ -45,6 +45,8 @@ export class JbiFile extends RobotControllerFile {
 				const newSectionName = Util.extractSectionNameFromText( lineText );
 				if(newSectionName.length == 0 || lineText.startsWith("///")) {
 					headerRange.end.line = i;
+					contentsRange.start.line = i + 1;
+					contentsRange.end.line = i + 1;
 					continue;
 				}
 				else if( currentSection.length > 0 && contentsRange.start.line != contentsRange.end.line ) {
@@ -216,4 +218,48 @@ export class JbiFile extends RobotControllerFile {
 		}
 		return null;
 	}	
+
+
+	onHover(hoverParams: HoverParams): Hover | null {
+		const sectionedDocument = this.updateSection();
+		if( !sectionedDocument ) {
+			return null;
+		}
+		const pos = hoverParams.position;
+	
+		const sectionName = sectionedDocument.getSectionNameFromLine( pos.line );
+		if( !sectionName ) {
+			return null;
+		}
+
+		const section = sectionedDocument.getSection( sectionName );
+
+		if( !section ) {
+			return null;
+		}
+
+		const lineText = this.workspace.getTextLine( this.filePath, pos.line );
+
+		if( !lineText ) {
+			return null;
+		}
+
+		const offset = pos.line - section.contents.start.line;
+
+		if( sectionName == "INST" ) {
+			const m = /^\s*([A-Z]+)\s*/.exec(lineText);
+
+			if( m ) {
+				if( m.index <= pos.character && pos.character <= (m.index + m[0].length) ) {
+					return {
+						contents: [
+							this.tr("jbifile.hover.lineNo" , offset)
+						]
+					};	
+				}	
+			}
+		}
+
+		return null;
+	}
 }

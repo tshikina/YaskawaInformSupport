@@ -1,4 +1,5 @@
 {
+	"jbifile.hover.lineNo": "Line #{0}",
 	"pscfile.diagnostic.paramMatch": "Matched with ALL.PRM",
 	"pscfile.diagnostic.paramUnmatch": "{0} value '{1}' is NOT match with ALL.PRM value '{2}'.",
 	"pscfile.diagnostic.paramNotFound": "{0} is NOT found in ALL.PRM.",

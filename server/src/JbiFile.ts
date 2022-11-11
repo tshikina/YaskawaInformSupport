@@ -6,6 +6,8 @@ import {
 	Location,
 	FoldingRangeParams,
 	FoldingRange,
+	Diagnostic,
+	DiagnosticSeverity,
 } from 'vscode-languageserver/node';
 
 import {
@@ -261,5 +263,69 @@ export class JbiFile extends RobotControllerFile {
 		}
 
 		return null;
+	}
+
+
+	validate(): Diagnostic[] | null {
+		const sectionedDocument = this.updateSection();
+		if( !sectionedDocument ) {
+			return null;
+		}
+	
+		const diagnostics: Diagnostic[] = [];
+
+		const textLines = this.workspace.getTextLines( this.filePath );
+
+		textLines?.forEach( ( lineText, i ) => {
+
+			const sectionName = sectionedDocument.getSectionNameFromLine( i );
+			if( !sectionName ) {
+				return;
+			}
+
+			switch( sectionName ) {
+				case "INST": {
+					// check timer
+					const pattern = /(?<=\s)T=([-]?[0-9]+(.([0-9]+))?)\b/;
+	
+					const m = pattern.exec( lineText );
+			
+					if( m ) {
+						const timerValue = +m[1];
+						const decimalStr = m[3];
+		
+						const diagnosisRange = Range.create( i, m.index, i, m.index + m[0].length );
+
+						if( timerValue < 0 || timerValue > 655.35 ) {
+							diagnostics.push( {
+								severity: DiagnosticSeverity.Error,
+								range: diagnosisRange,
+								message: this.tr('jbifile.diagnostic.tag.T=.invalidValueRange'),
+							} );
+						}
+						else if( timerValue > 65.535 ) {
+							diagnostics.push( {
+								severity: DiagnosticSeverity.Information,
+								range: diagnosisRange,
+								message: this.tr('jbifile.diagnostic.tag.T=.warningValueRange'),
+							} );
+						}
+						if( decimalStr?.length >= 3 ) {
+							diagnostics.push( {
+								severity: DiagnosticSeverity.Information,
+								range: diagnosisRange,
+								message: this.tr('jbifile.diagnostic.tag.T=.warningDecimalRange'),
+							} );
+						}
+			
+					}
+		
+				} break;
+			}
+	
+		} );
+	
+	
+		return diagnostics;
 	}
 }

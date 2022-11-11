@@ -6,6 +6,7 @@ All notable changes to the "inform-job-support" extension will be documented in 
 ### Added
 - Support Japanese for validation message.
 - Support hover to show line # for JBI files.
+- Support Diagnosis tos check Timer value for JBI files.
 
 ## [1.0.0] - 2022-10-10
 ### Changed

@@ -1,5 +1,8 @@
 {
 	"jbifile.hover.lineNo": "行 #{0}",
+	"jbifile.diagnostic.tag.T=.invalidValueRange": "Tの値は0 ～ 655.35の範囲である必要があります。",
+	"jbifile.diagnostic.tag.T=.warningValueRange": "YRC1000microでは、Tの値は65.535以下である必要があります。",
+	"jbifile.diagnostic.tag.T=.warningDecimalRange": "YRC1000では、Tの値は小数点2桁以下である必要があります。",
 	"pscfile.diagnostic.paramMatch": "ALL.PRMと一致しています。",
 	"pscfile.diagnostic.paramUnmatch": "{0} の値「{1}」 は、ALL.PRMの値 「{2}」 と一致していません。",
 	"pscfile.diagnostic.paramNotFound": "ALL.PRM内に {0} が見つかりません。",

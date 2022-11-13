@@ -76,16 +76,20 @@ export class JbiFile extends RobotControllerFile {
 		return this.sectionedDocument;
 	}
 
-	private createJobNamePattern() {
+	private static createJobNamePattern() {
 		return /(?<=\s+JOB:)(\S+)/g;
 	}
 
-	private createLabelPattern() {
+	private static createLabelPattern() {
 		return /(?<=\s)(\*\S{1,8})\b/g;
 	}
 	
-	private createCvarPattern() {
+	private static createCvarPattern() {
 		return /(?<=\s)C([0-9]+)\s/g;
+	}
+
+	private static createCommandPattern() {
+		return /(^\s*)([A-Z0-9]+)(\s|$)/g;
 	}
 
 
@@ -161,7 +165,7 @@ export class JbiFile extends RobotControllerFile {
 		const posInLine = pos.character - lineRange.start.character;
 
 		// search JobName
-		const jobNamePattern = this.createJobNamePattern();
+		const jobNamePattern = JbiFile.createJobNamePattern();
 		while ((m = jobNamePattern.exec(lineText)) ) {
 			if( posInLine < m.index || m.index + m[0].length < posInLine ) {
 				continue;
@@ -177,7 +181,7 @@ export class JbiFile extends RobotControllerFile {
 		}
 
 		// search Label
-		const labelPattern = this.createLabelPattern();
+		const labelPattern = JbiFile.createLabelPattern();
 		while ((m = labelPattern.exec(lineText)) ) {
 			if( posInLine < m.index || m.index + m[0].length < posInLine ) {
 				continue;
@@ -198,7 +202,7 @@ export class JbiFile extends RobotControllerFile {
 		}
 
 		// search C-Var
-		const cvarPattern = this.createCvarPattern();
+		const cvarPattern = JbiFile.createCvarPattern();
 		while ((m = cvarPattern.exec(lineText)) ) {
 			if( posInLine < m.index || m.index + m[0].length < posInLine ) {
 				continue;
@@ -249,10 +253,10 @@ export class JbiFile extends RobotControllerFile {
 		const offset = pos.line - section.contents.start.line;
 
 		if( sectionName == "INST" ) {
-			const m = /^\s*([A-Z]+)\s*/.exec(lineText);
+			const m = /^\s*(\S+)/.exec(lineText);
 
 			if( m ) {
-				if( m.index <= pos.character && pos.character <= (m.index + m[0].length) ) {
+				if( m.index <= pos.character && pos.character < (m.index + m[1].length) ) {
 					return {
 						contents: [
 							this.tr("jbifile.hover.lineNo" , offset)

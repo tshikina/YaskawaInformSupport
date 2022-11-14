@@ -2,7 +2,7 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
-## [Unreleased]
+## [1.1.0] - 2022-11-13
 ### Added
 - Support Japanese for validation message.
 - Support hover to show line # for JBI files.

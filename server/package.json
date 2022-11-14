@@ -1,7 +1,7 @@
 {
 	"name": "inform-job-support-server",
 	"description": "Support INFORM JOB JBI for YASKAWA Motoman server in node.",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"author": "Taku Shikina",
 	"engines": {
 		"node": "*"

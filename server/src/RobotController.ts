@@ -45,6 +45,22 @@ export class RobotController {
 		return path.join(this.folderPath, jobName + ".JBI");
 	}
 
+	/**
+	 * Get Job Names in the controller
+	 * @returns job names
+	 */
+	getJobNameList() : string[] {
+		const jbiFiles = fs.readdirSync( this.folderPath ).filter( (name) => {
+			return fs.statSync( path.join( this.folderPath, name ) ).isFile()
+				&& path.extname( name ).toUpperCase() == ".JBI";
+		} );
+
+		const jobNames = jbiFiles.map( name => {
+			return path.parse( name ).name;
+		});
+
+		return jobNames;
+	}
 
 	/**
 	 * Get parameter value

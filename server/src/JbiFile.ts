@@ -8,6 +8,10 @@ import {
 	FoldingRange,
 	Diagnostic,
 	DiagnosticSeverity,
+	CompletionParams,
+	CompletionItem,
+	CompletionItemKind,
+	CompletionTriggerKind,
 } from 'vscode-languageserver/node';
 
 import {
@@ -19,6 +23,7 @@ import { RobotController } from './RobotController';
 import { RobotControllerFile } from './RobotControllerFile';
 
 import * as Util from './Util';
+import { Position } from 'vscode';
 
 /**
  * JBI file
@@ -331,5 +336,44 @@ export class JbiFile extends RobotControllerFile {
 	
 	
 		return diagnostics;
+	}
+
+	onCompletion( completionParams: CompletionParams ): CompletionItem[] | null {
+		const pos = completionParams.position;
+		const lineText = this.workspace.getTextLine( this.filePath, pos.line );
+
+		if( !lineText ) {
+			return null;
+		}
+
+		const posInLine = pos.character;
+
+		const isJobTagPos = (text: string, posInLine: number) => {
+			const jobTagPattern = /(?<=\sJOB):\S*/g;
+			let m: RegExpExecArray | null;
+			while ((m = jobTagPattern.exec(text)) ) {
+				if( m.index <= posInLine && posInLine <= m.index + m[0].length ) {
+					return true;
+				}
+			}
+			return false;
+		}; 
+
+
+		// JOB: tag
+		// show job names
+		// e.g. CALL JOB:<JOBNAME>
+		if( isJobTagPos( lineText, posInLine ) ) {
+			const jobNames = this.robotController.getJobNameList();
+
+			return jobNames.map( jobName => {
+				return {
+					label: jobName,	
+					kind: CompletionItemKind.Function,
+				};
+			} );	
+		}
+
+		return null;
 	}
 }

@@ -7,6 +7,8 @@ import {
 	Location,
 	FoldingRangeParams,
 	FoldingRange,
+	CompletionParams,
+	CompletionItem,
 } from 'vscode-languageserver/node';
 
 import {
@@ -130,5 +132,9 @@ export class RobotControllerFile {
 		});
 
 		return foldingRanges;
+	}
+
+	onCompletion( completionParams: CompletionParams ): CompletionItem[] | null {
+		return null;
 	}
 }

@@ -90,7 +90,10 @@ connection.onInitialize((params: InitializeParams) => {
 			// },
 			hoverProvider: true,
 			definitionProvider: true,
-			foldingRangeProvider: true
+			foldingRangeProvider: true,
+			completionProvider: {
+				triggerCharacters: [":"],
+			}
 		}
 	};
 	if (workspace.hasWorkspaceFolderCapability) {
@@ -258,6 +261,17 @@ connection.onFoldingRanges( foldingRangeParam => {
 	}
 
 	return null;
+} );
+
+connection.onCompletion( completionParams => {
+	const filePath = URI.parse( completionParams.textDocument.uri ).fsPath.toString();
+	const robotController = getRobotControllerFromFsPath( filePath );
+
+	const file = robotController.getFile(filePath);
+
+	if( file ) {
+		return file.onCompletion( completionParams );
+	}
 } );
 
 // Make the text document manager listen on the connection

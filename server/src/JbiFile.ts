@@ -24,6 +24,7 @@ import { RobotControllerFile } from './RobotControllerFile';
 
 import * as Util from './Util';
 import { Position } from 'vscode';
+import * as Inform from './Inform';
 
 /**
  * JBI file
@@ -261,11 +262,19 @@ export class JbiFile extends RobotControllerFile {
 			const m = /^\s*(\S+)/.exec(lineText);
 
 			if( m ) {
+				// command
 				if( m.index <= pos.character && pos.character < (m.index + m[1].length) ) {
+					let str = this.tr("jbifile.hover.lineNo" , offset);
+					
+					if( Inform.isCommandStr( m[1] ) ){
+						str += "\n\n" + Inform.getCommandDescription( this.locale, m[1] );
+					}
+
 					return {
-						contents: [
-							this.tr("jbifile.hover.lineNo" , offset)
-						]
+						contents: {
+							kind: "markdown",
+							value: str
+						}
 					};	
 				}	
 			}

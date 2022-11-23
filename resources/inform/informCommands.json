@@ -1,0 +1,25 @@
+{
+	"MOVJ": {
+		"detail": "MoveJoint"
+	},
+	"MOVL": {
+		"detail": "MoveLinear"
+	},
+	"MOVC": {
+		"detail": "MoveCircle"
+	},
+	"MOVS": {
+		"detail": "MoveSpline"
+	},
+	"IMOV": {
+		"detail": "IncrementalMove"
+	},
+	"SPEED": {
+		"detail": "Speed"
+	},
+	"REFP": {
+		"detail": "ReferencePoint"
+	},
+
+	"": {}
+}

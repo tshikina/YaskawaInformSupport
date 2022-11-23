@@ -1,10 +1,20 @@
 {
+	"inform.description.MOVJ": "Moves to the teaching position by joint interpolation.",
+	"inform.description.MOVL": "Moves to the teaching position by linear interpolation.",
+	"inform.description.MOVC": "Moves to the teaching position by circular interpolation.",
+	"inform.description.MOVS": "Moves to the teaching position by spline interpolation.",
+	"inform.description.IMOV": "Moves by linear interpolation from the current position for the specified incremental value.",
+	"inform.description.SPEED": "Sets the playback speed. The manipulator operates at the speed specified in the SPEED instruction when the speed is not specified in the move instruction.",
+	"inform.description.REFP": "It is an instruction which has the position data by which a supplementary point of the wall point, etc. for weaving is set.",
+
 	"jbifile.hover.lineNo": "Line #{0}",
+
 	"jbifile.diagnostic.tag.T=.invalidValueRange": "T value should be 0 to 655.35.",
 	"jbifile.diagnostic.tag.T=.warningValueRange": "T value should be equal or less than 65.535 in YRC1000micro.",
 	"jbifile.diagnostic.tag.T=.warningDecimalRange": "T value's decimal place should be up to 2 in YRC1000.",
 	"pscfile.diagnostic.paramMatch": "Matched with ALL.PRM",
 	"pscfile.diagnostic.paramUnmatch": "{0} value '{1}' is NOT match with ALL.PRM value '{2}'.",
 	"pscfile.diagnostic.paramNotFound": "{0} is NOT found in ALL.PRM.",
+
 	"":""
 }

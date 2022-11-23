@@ -42,7 +42,7 @@ import * as Util from './Util';
 import { Workspace } from './Workspace';
 import { RobotController } from './RobotController';
 import * as Translation from './Translation';
-
+import * as Inform from './Inform';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -66,6 +66,8 @@ connection.onInitialize((params: InitializeParams) => {
 		console.log( `locale: ${params.locale}`);
 		workspace.defaultSettings.locale = params.locale;
 	}
+
+	Inform.initInform();
 
 	// Does the client support the `workspace/configuration` request?
 	// If not, we fall back using global settings.

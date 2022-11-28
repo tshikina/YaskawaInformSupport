@@ -21,5 +21,304 @@
 		"detail": "ReferencePoint"
 	},
 
+	"SFTON": {
+		"detail": "ShiftOn"
+	},
+	"SFTOF": {
+		"detail": "ShiftOff"
+	},
+	"MSHIFT": {
+		"detail": "MakeShift"
+	},
+	"SFTON3D": {
+		"detail": "ShiftOn3D"
+	},
+	"SFTOF3D": {
+		"detail": "ShiftOff3D"
+	},
+
+	"DOUT": {
+		"detail": "DigitalOutput"
+	},
+	"DIN": {
+		"detail": "DigitalInput"
+	},
+	"WAIT": {
+		"detail": "Wait"
+	},
+	"PULSE": {
+		"detail": "Pulse"
+	},
+	"AOUT": {
+		"detail": "AnalogOutput"
+	},
+	"ARATION": {
+		"detail": "AnalogRatioOn"
+	},
+	"ARATIOF": {
+		"detail": "AnalogRatioOff"
+	},
+	"ANTOUT": {
+		"detail": "AnticipationOutput"
+	},
+
+	"JUMP": {
+		"detail": "Jump"
+	},
+	"CALL": {
+		"detail": "Call"
+	},
+	"TIMER": {
+		"detail": "Timer"
+	},
+	"RET": {
+		"detail": "Return"
+	},
+	"NOP": {
+		"detail": "NoOperation"
+	},
+	"PAUSE": {
+		"detail": "Pause"
+	},
+	"CWAIT": {
+		"detail": "CancelNoWaitTag"
+	},
+	"MSG": {
+		"detail": "Message"
+	},
+	"INPUT": {
+		"detail": "Input"
+	},
+	"ADVINIT": {
+		"detail": "AdvancedInit"
+	},
+	"ADVSTOP": {
+		"detail": "AdvancedStop"
+	},
+	"PRINT": {
+		"detail": "Print"
+	},
+	"CLS": {
+		"detail": "ClearScreen"
+	},
+	"ABORT": {
+		"detail": "Abort"
+	},
+	"SETUALM": {
+		"detail": "SetUserAlarm"
+	},
+	"DIALOG": {
+		"detail": "Dialog"
+	},
+	"SWITCH": {
+		"detail": "Switch"
+	},
+	"CASE": {
+		"detail": "Case"
+	},
+	"DEFAULT": {
+		"detail": "Default"
+	},
+	"WHILE": {
+		"detail": "While"
+	},
+	"FOR": {
+		"detail": "For"
+	},
+	"IFTHEN": {
+		"detail": "IfThen"
+	},
+	"ELSEIF": {
+		"detail": "ElseIf"
+	},
+	"ELSE": {
+		"detail": "Else"
+	},
+	"SETTM": {
+		"detail": "SetTimer"
+	},
+	"EI": {
+		"detail": "EnableInterrupt"
+	},
+	"DI": {
+		"detail": "DisableInterrupt"
+	},
+
+	"CLEAR": {
+		"detail": "Clear"
+	},
+	"INC": {
+		"detail": "Increment"
+	},
+	"DEC": {
+		"detail": "Decrement"
+	},
+	"SET": {
+		"detail": "Set"
+	},
+	"ADD": {
+		"detail": "Add"
+	},
+	"SUB": {
+		"detail": "Substruct"
+	},
+	"MUL": {
+		"detail": "Multiply"
+	},
+	"DIV": {
+		"detail": "Divide"
+	},
+	"CNVRT": {
+		"detail": "Convert"
+	},
+	"AND": {
+		"detail": "And"
+	},
+	"OR": {
+		"detail": "Or"
+	},
+	"NOT": {
+		"detail": "Not"
+	},
+	"XOR": {
+		"detail": "ExclusiveOr"
+	},
+	"MFRAME": {
+		"detail": "MakeFrame"
+	},
+	"SETE": {
+		"detail": "SetElement"
+	},
+	"GETE": {
+		"detail": "GetElement"
+	},
+	"GETS": {
+		"detail": "GetSystemValue"
+	},
+	"SQRT": {
+		"detail": "SquareRoot"
+	},
+	"SIN": {
+		"detail": "Sin"
+	},
+	"COS": {
+		"detail": "Cos"
+	},
+	"ATAN": {
+		"detail": "Atan"
+	},
+	"MULMAT": {
+		"detail": "MultiplyMatrix"
+	},
+	"INVMAT": {
+		"detail": "InverseMatrix"
+	},
+	"GETPOS": {
+		"detail": "GetPosition"
+	},
+	"VAL": {
+		"detail": "StringToValue"
+	},
+	"VAL2STR": {
+		"detail": "ValueToString"
+	},
+	"ASC": {
+		"detail": "CharactorToAsciiCode"
+	},
+	"CHR$": {
+		"detail": "AsciiCodeToCharactor"
+	},
+	"MID$": {
+		"detail": "MiddleString"
+	},
+	"LEN": {
+		"detail": "Length"
+	},
+	"CAT$": {
+		"detail": "Concatenate"
+	},
+	"STRSTR": {
+		"detail": "SearchString"
+	},
+	"GETARG": {
+		"detail": "GetArgument"
+	},
+	"GETNAME": {
+		"detail": "GetName"
+	},
+	"SETFILE": {
+		"detail": "SetFile"
+	},
+	"GETFILE": {
+		"detail": "GetFile"
+	},
+	"SETREG": {
+		"detail": "SetRegister"
+	},
+	"GETREG": {
+		"detail": "GetRegister"
+	},
+	"GETPRM": {
+		"detail": "GetParameter"
+	},
+	"SETPRM": {
+		"detail": "SetParameter"
+	},
+
+	"ARCON": {
+		"detail": "ArcOn"
+	},
+	"ARCOF": {
+		"detail": "ArcOff"
+	},
+	"VWELD": {
+		"detail": "VoltageWelding"
+	},
+	"AWELD": {
+		"detail": "AmpereWelding"
+	},
+	"ARCSET": {
+		"detail": "ArcSet"
+	},
+	"WVON": {
+		"detail": "WeavingOn"
+	},
+	"WVOF": {
+		"detail": "WeavingOff"
+	},
+	"ARCCTS": {
+		"detail": "ArcCTStart"
+	},
+	"ARCCTE": {
+		"detail": "ArcCTEnd"
+	},
+
+	"HAND": {
+		"detail": "Hand"
+	},
+	"HSEN": {
+		"detail": "HandSensor"
+	},
+
+	"TOOLON": {
+		"detail": "ToolOn"
+	},
+	"TOOLOF": {
+		"detail": "ToolOff"
+	},
+
+	"GUNCL": {
+		"detail": "GunClose"
+	},
+	"SPOT": {
+		"detail": "Spot"
+	},
+	"STROKE": {
+		"detail": "Stroke"
+	},
+	"STRWAIT": {
+		"detail": "StrokeWait"
+	},
+
 	"": {}
 }

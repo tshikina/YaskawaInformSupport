@@ -68,6 +68,7 @@
 			"endCaptures": { "1":{"name":"keyword.control.inform"} },
 			"patterns": [
 				{ "include": "#invalidline" },
+				{ "include": "#editlockcomm" },
 				{ "include": "#COMMENT" },
 				{ "include": "#LABEL" },
 				{ "include": "#JUMP" },
@@ -199,10 +200,26 @@
 				}
 			]
 		},
+		"editlockcomm": {
+			"patterns": [
+				{
+					"match": "^(EDTLCK\\s+)(COMM\\s+).*",
+					"name": "meta.preprocessor.inst.inform"
+				},
+				{
+					"match": "^(EDTLCK\\s+).*",
+					"name": "meta.preprocessor.inst.inform"
+				},
+				{
+					"match": "^(COMM\\s+).*",
+					"name": "meta.preprocessor.inst.inform"
+				},
+			]
+		},
 		"generalcommands": {
 			"patterns": [
 				{
-					"match": "^\\s*[[:upper:][0-9]]+\\b",
+					"match": "^\\s*([A-Z0-9]+\\$?)(\\s|$)",
 					"name": "support.function.inform"
 				}
 			]

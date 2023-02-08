@@ -175,7 +175,7 @@
 					"name": "keyword.control.general.inform"
 				},
 				{
-					"match": "^\\s*(IFTHENEXP|ELSEIFEXP|ELSE|ENDIF)\\b",
+					"match": "^\\s*(IFTHEN|IFTHENEXP|ELSEIFEXP|ELSE|ENDIF)\\b",
 					"name": "keyword.control.general.inform"
 				},
 				{
@@ -183,7 +183,7 @@
 					"name": "keyword.control.general.inform"
 				},
 				{
-					"match": "^\\s*(FOR|NEXT|WHILEEXP|ENDWHILE)\\b",
+					"match": "^\\s*(FOR|NEXT|WHILE|WHILEEXP|ENDWHILE)\\b",
 					"name": "keyword.control.general.inform"
 				},
 				{

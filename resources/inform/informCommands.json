@@ -20,6 +20,27 @@
 	"REFP": {
 		"detail": "ReferencePoint"
 	},
+	"HTRAJON": {
+		"detail": "HighAccuracyTrajectoryOn"
+	},
+	"HTRAJOF": {
+		"detail": "HighAccuracyTrajectoryOff"
+	},
+	"HPVELON": {
+		"detail": "HighPriorityVelocityOn"
+	},
+	"HPVELOF": {
+		"detail": "HighPriorityVelocityOff"
+	},
+	"HPMMVON": {
+		"detail": "HighPriorityMultiMoveOn"
+	},
+	"HPMMVOF": {
+		"detail": "HighPriorityMultiMoveOff"
+	},
+	"SMOOTH": {
+		"detail": "Smooth"
+	},
 
 	"SFTON": {
 		"detail": "ShiftOn"
@@ -77,6 +98,10 @@
 	"NOP": {
 		"detail": "NoOperation"
 	},
+	"END": {
+		"detail": "End",
+		"showDescription": false
+	},
 	"PAUSE": {
 		"detail": "Pause"
 	},
@@ -119,20 +144,45 @@
 	"DEFAULT": {
 		"detail": "Default"
 	},
+	"ENDSWITCH": {	
+		"detail": "EndSwitch",
+		"showDescription": false
+	},
 	"WHILE": {
 		"detail": "While"
+	},
+	"WHILEEXP": {
+		"detail": "While"
+	},
+	"ENDWHILE": {
+		"detail": "EndWhile",
+		"showDescription": false
 	},
 	"FOR": {
 		"detail": "For"
 	},
+	"NEXT": {
+		"detail": "Next",
+		"showDescription": false
+	},
 	"IFTHEN": {
+		"detail": "IfThen"
+	},
+	"IFTHENEXP": {
 		"detail": "IfThen"
 	},
 	"ELSEIF": {
 		"detail": "ElseIf"
 	},
+	"ELSEIFEXP": {
+		"detail": "ElseIf"
+	},
 	"ELSE": {
 		"detail": "Else"
+	},
+	"ENDIF": {
+		"detail": "EndIf",
+		"showDescription": false
 	},
 	"SETTM": {
 		"detail": "SetTimer"
@@ -143,6 +193,31 @@
 	"DI": {
 		"detail": "DisableInterrupt"
 	},
+	"MACRO1": {
+		"detail": "Macro",
+		"showDescription": false
+	},
+	"MACRO2": {
+		"detail": "Macro",
+		"showDescription": false
+	},
+	"PSTART": {
+		"detail": "StartParallelTask",
+		"showDescription": false
+	},
+	"PWAIT": {
+		"detail": "WaitParallelTask",
+		"showDescription": false
+	},
+	"TSYNC": {
+		"detail": "SyncParallelTask",
+		"showDescription": false
+	},
+	"SKILLSND": {
+		"detail": "SkillSend",
+		"showDescription": false
+	},
+	
 
 	"CLEAR": {
 		"detail": "Clear"
@@ -263,6 +338,42 @@
 	},
 	"SETPRM": {
 		"detail": "SetParameter"
+	},
+	"LATESTJOB": {
+		"detail": "LatestJob",
+		"showDescription": false
+	},
+	"LOADJ": {
+		"detail": "LoadJob",
+		"showDescription": false
+	},
+	"SAVEJ": {
+		"detail": "SaveJob",
+		"showDescription": false
+	},
+	"DELETEJ": {
+		"detail": "DeleteJob",
+		"showDescription": false
+	},
+	"LOADV": {
+		"detail": "LoadVariable",
+		"showDescription": false
+	},
+	"SAVEV": {
+		"detail": "SaveVariable",
+		"showDescription": false
+	},
+	"SWAIT": {
+		"detail": "SWait",
+		"showDescription": false
+	},
+	"SHCKSET": {
+		"detail": "SetShockDetectionLevel",
+		"showDescription": false
+	},
+	"SHCKRST": {
+		"detail": "ResetShockDetectionLevel",
+		"showDescription": false
 	},
 
 	"ARCON": {

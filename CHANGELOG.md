@@ -2,10 +2,11 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
-## [Unreleased]
+## [1.2.0] - 2023-02-08
 ### Added
 - Support Completion job name for JBI files.
-- Support Hove to show inform description for JBI files.
+- Support Hover to show inform description for JBI files.
+- Support EDTLCK and COMM tag for JBI files.
 
 ## [1.1.0] - 2022-11-13
 ### Added

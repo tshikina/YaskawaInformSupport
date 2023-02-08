@@ -5,11 +5,13 @@ vsc-extension-quickstart.md
 .vscode/**
 **/*.ts
 **/*.map
+**/*.pdf
 **/tsconfig.json
 **/tsconfig.base.json
 contributing.md
 .travis.yml
 client/node_modules/**
+.eslintignore
 # !client/node_modules/vscode-jsonrpc/**
 # !client/node_modules/vscode-languageclient/**
 # !client/node_modules/vscode-languageserver-protocol/**
@@ -20,12 +22,13 @@ client/node_modules/**
 node_modules/**
 client/**
 #client/out/test/**
-!client/out/*
+!client/out/*.js
 server/**
 #server/out/test/**
-!server/out/*
+!server/out/*.js
 syntaxes/*.yaml
 !syntaxes/*.json
+testjob/**
 
 node_modules/**
 

@@ -33,6 +33,20 @@ export function isLocaleSupported( locale: string ){
 	return supportLocales.has( locale );
 }
 
+export function getSupportedLocales(): string[] {
+	return [...supportLocales];
+}
+
+export function hasTranslation( locale: string, key: string ): boolean {
+	const table = tranlationTable.get(locale);
+
+	if( !table ) {
+		return false;
+	}
+
+	return table.has(key);
+}
+
 function updateTable( locale: string, obj: any ) {
 	for( const [key, value] of Object.entries(obj) ) {
 		if( typeof(value) === "string" ) {

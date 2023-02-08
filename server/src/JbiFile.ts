@@ -1,4 +1,5 @@
 import {
+	Position,
 	Range,
 	Hover,
 	HoverParams,
@@ -23,13 +24,26 @@ import { RobotController } from './RobotController';
 import { RobotControllerFile } from './RobotControllerFile';
 
 import * as Util from './Util';
-import { Position } from 'vscode';
+// import { Position } from 'vscode';
 import * as Inform from './Inform';
 
 /**
  * JBI file
  */
 export class JbiFile extends RobotControllerFile {
+	unknownCommandErrorLevel: DiagnosticSeverity | undefined = undefined;
+
+
+	constructor( robotController: RobotController, filePath: string ) {
+		super( robotController, filePath );
+
+		this.workspace.getDocumentSettings( Util.fsPathToUriString( this.filePath )).then( (settings) => {
+			if( settings ) {
+				this.unknownCommandErrorLevel = Util.stringToDiagnosticSeverity( settings.unknownCommands.diagnosisLevel );
+			}
+		} );
+	}
+
 
 	updateSection() {
 		if( this.sectionedDocument ) {
@@ -259,15 +273,18 @@ export class JbiFile extends RobotControllerFile {
 		const offset = pos.line - section.contents.start.line;
 
 		if( sectionName == "INST" ) {
-			const m = /^\s*(\S+)/.exec(lineText);
+			const m = /^((EDTLCK\s+)?(COMM\s+)?(\t*|\t\s*))([A-Z0-9]+\$?)(\s|$)/.exec(lineText);
 
 			if( m ) {
 				// command
-				if( m.index <= pos.character && pos.character < (m.index + m[1].length) ) {
+				const commandStr = m[5];
+				const commandRange = Range.create( Position.create(pos.line, m.index + m[1].length), Position.create(pos.line, m.index + m[1].length + commandStr.length) );
+				if( Util.isPositionInRange(commandRange, pos) ) {
 					let str = this.tr("jbifile.hover.lineNo" , offset);
 					
-					if( Inform.isCommandStr( m[1] ) ){
-						str += "\n\n" + Inform.getCommandDescription( this.locale, m[1] );
+					if( Inform.isCommandStr( commandStr ) ){
+						str += " " + Inform.getDetailCommand( commandStr );
+						str += "\n\n" + Inform.getCommandDescription( this.locale, commandStr );
 					}
 
 					return {
@@ -283,6 +300,75 @@ export class JbiFile extends RobotControllerFile {
 		return null;
 	}
 
+	validateInstTimer( lineNo: number, lineText: string ) {
+		const diagnostics: Diagnostic[] = [];
+
+		const pattern = /(?<=\s)T=([-]?[0-9]+(.([0-9]+))?)\b/;
+	
+		const m = pattern.exec( lineText );
+
+		if( m ) {
+			const timerValue = +m[1];
+			const decimalStr = m[3];
+
+			const diagnosisRange = Range.create( lineNo, m.index, lineNo, m.index + m[0].length );
+
+			if( timerValue < 0 || timerValue > 655.35 ) {
+				diagnostics.push( {
+					severity: DiagnosticSeverity.Error,
+					range: diagnosisRange,
+					message: this.tr('jbifile.diagnostic.tag.T=.invalidValueRange'),
+				} );
+			}
+			else if( timerValue > 65.535 ) {
+				diagnostics.push( {
+					severity: DiagnosticSeverity.Information,
+					range: diagnosisRange,
+					message: this.tr('jbifile.diagnostic.tag.T=.warningValueRange'),
+				} );
+			}
+			if( decimalStr?.length >= 3 ) {
+				diagnostics.push( {
+					severity: DiagnosticSeverity.Information,
+					range: diagnosisRange,
+					message: this.tr('jbifile.diagnostic.tag.T=.warningDecimalRange'),
+				} );
+			}
+
+		}	
+
+		return diagnostics;
+	}
+
+	validateInstCommands( lineNo: number, lineText: string ) {
+		if(!this.unknownCommandErrorLevel) {
+			return [];
+		}
+
+		const diagnostics: Diagnostic[] = [];
+
+		const pattern = /^((EDTLCK\s+)?(COMM\s+)?(\t*|\t\s*))([A-Z0-9]+\$?)(\s|$)/;
+	
+		const m = pattern.exec( lineText );
+
+		if( m ) {
+			const commandStr = m[5];
+
+			const diagnosisRange = Range.create( lineNo, m[1].length, lineNo, m[1].length + commandStr.length );
+
+			if(!Inform.isCommandStr( commandStr )) {
+				diagnostics.push( {
+					severity: this.unknownCommandErrorLevel,
+					range: diagnosisRange,
+					message: this.tr( "jbifile.diagnostic.command.unknown" ),
+				} );
+			}
+
+
+		}
+
+		return diagnostics;
+	}
 
 	validate(): Diagnostic[] | null {
 		const sectionedDocument = this.updateSection();
@@ -303,40 +389,8 @@ export class JbiFile extends RobotControllerFile {
 
 			switch( sectionName ) {
 				case "INST": {
-					// check timer
-					const pattern = /(?<=\s)T=([-]?[0-9]+(.([0-9]+))?)\b/;
-	
-					const m = pattern.exec( lineText );
-			
-					if( m ) {
-						const timerValue = +m[1];
-						const decimalStr = m[3];
-		
-						const diagnosisRange = Range.create( i, m.index, i, m.index + m[0].length );
-
-						if( timerValue < 0 || timerValue > 655.35 ) {
-							diagnostics.push( {
-								severity: DiagnosticSeverity.Error,
-								range: diagnosisRange,
-								message: this.tr('jbifile.diagnostic.tag.T=.invalidValueRange'),
-							} );
-						}
-						else if( timerValue > 65.535 ) {
-							diagnostics.push( {
-								severity: DiagnosticSeverity.Information,
-								range: diagnosisRange,
-								message: this.tr('jbifile.diagnostic.tag.T=.warningValueRange'),
-							} );
-						}
-						if( decimalStr?.length >= 3 ) {
-							diagnostics.push( {
-								severity: DiagnosticSeverity.Information,
-								range: diagnosisRange,
-								message: this.tr('jbifile.diagnostic.tag.T=.warningDecimalRange'),
-							} );
-						}
-			
-					}
+					diagnostics.push( ...this.validateInstCommands( i, lineText ) );
+					diagnostics.push( ...this.validateInstTimer( i, lineText ) );
 		
 				} break;
 			}

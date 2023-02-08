@@ -69,6 +69,11 @@ connection.onInitialize((params: InitializeParams) => {
 
 	Inform.initInform();
 
+	// debug
+	Translation.getSupportedLocales().forEach( ( locale ) => {
+		Inform.printUnknownDescription( locale );
+	} );
+
 	// Does the client support the `workspace/configuration` request?
 	// If not, we fall back using global settings.
 	workspace.hasConfigurationCapability = !!(

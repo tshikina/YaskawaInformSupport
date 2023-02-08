@@ -192,6 +192,13 @@
                     "default": "auto",
                     "description": "Select Language locale to show description of inform."
                 },
+                "yaskawaInformLanguageClient.unknownCommands.diagnosisLevel": {
+                    "scope": "resource",
+                    "type": "string",
+                    "enum": ["none", "hint", "information", "warning", "error"],
+                    "default": "none",
+                    "description": "Select diagnosis level for checkin unknown commands."
+                },
                 "yaskawaInformLanguageClient.maxNumberOfProblems": {
                     "scope": "resource",
                     "type": "number",

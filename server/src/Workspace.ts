@@ -17,6 +17,9 @@ import { start } from 'repl';
 interface InformExtensionSettings {
 	maxNumberOfProblems: number;
 	locale: string;
+	unknownCommands: {
+		diagnosisLevel: string;
+	};
 }
 
 
@@ -28,7 +31,10 @@ export class Workspace {
 
 	defaultSettings: InformExtensionSettings = {
 		maxNumberOfProblems: 1000,
-		locale: "en"
+		locale: "en",
+		unknownCommands: {
+			diagnosisLevel: "none"
+		}
 	};
 	// The global settings, used when the `workspace/configuration` request is not supported by the client.
 	// Please note that this is not the case when using this server with the client provided in this example

@@ -103,6 +103,30 @@ export class RobotController {
 		};
 	}
 
+	/**
+	 * Get Io name from logical Io number.
+	 * @param logicalIoNumber e.g. 10010, 30010
+	 * @returns ioName
+	 */
+	getIoName( logicalIoNumber: number ): string | undefined {
+		const ioNameFiles = ["IONAME.DAT", "EXIONAME.DAT"];
+
+		let ioName: string | undefined;
+
+		for( let i = 0; i < ioNameFiles.length; i++ ) {
+			const ioNameFilePath = path.join(this.folderPath, ioNameFiles[i]);
+			const file = this.getIoNameDatFile( ioNameFilePath );
+
+			ioName = file?.getIoName(logicalIoNumber);
+
+			if( ioName ) {
+				// io name found
+				break;
+			}
+		}
+
+		return ioName;
+	}
 
 	// files
 	getFile( filePath: string ) : RobotControllerFile | undefined {

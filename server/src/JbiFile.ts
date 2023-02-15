@@ -113,6 +113,33 @@ export class JbiFile extends RobotControllerFile {
 	}
 
 
+	private static ioNumberStringToLogicalIoNumber( ioNumberString: string ): number | undefined {
+		const m = /(IN|OT)#\(([0-9]+)\)/.exec(ioNumberString);
+
+		if(!m) {
+			// not found
+			return undefined;
+		}
+
+		const ioType = m[1];
+		const typeNumberTable = new Map<string, number>([
+			["IN", 0],
+			["OT", 10000],
+		]);
+		const typeNumber = typeNumberTable.get( ioType );
+
+		if( typeNumber == undefined ) {
+			return undefined;
+		}
+
+		const ioNumber = +m[2] - 1;
+		const groupNumber = Math.floor(ioNumber / 8) + 1;
+		const bitNumber = ioNumber % 8;
+		const logicalNumber = typeNumber + groupNumber * 10 + bitNumber;
+
+		return logicalNumber;
+	}
+
 	/**
 	 * search label
 	 * @param label 
@@ -273,27 +300,50 @@ export class JbiFile extends RobotControllerFile {
 		const offset = pos.line - section.contents.start.line;
 
 		if( sectionName == "INST" ) {
-			const m = /^((EDTLCK\s+)?(COMM\s+)?(\t*|\t\s*))([A-Z0-9]+\$?)(\s|$)/.exec(lineText);
+			{
+				const m = /^((EDTLCK\s+)?(COMM\s+)?(\t*|\t\s*))([A-Z0-9]+\$?)(\s|$)/.exec(lineText);
 
-			if( m ) {
-				// command
-				const commandStr = m[5];
-				const commandRange = Range.create( Position.create(pos.line, m.index + m[1].length), Position.create(pos.line, m.index + m[1].length + commandStr.length) );
-				if( Util.isPositionInRange(commandRange, pos) ) {
-					let str = this.tr("jbifile.hover.lineNo" , offset);
-					
-					if( Inform.isCommandStr( commandStr ) ){
-						str += " " + Inform.getDetailCommand( commandStr );
-						str += "\n\n" + Inform.getCommandDescription( this.locale, commandStr );
-					}
-
-					return {
-						contents: {
-							kind: "markdown",
-							value: str
+				if( m ) {
+					// command
+					const commandStr = m[5];
+					const commandRange = Range.create( Position.create(pos.line, m.index + m[1].length), Position.create(pos.line, m.index + m[1].length + commandStr.length) );
+					if( Util.isPositionInRange(commandRange, pos) ) {
+						let str = this.tr("jbifile.hover.lineNo" , offset);
+						
+						if( Inform.isCommandStr( commandStr ) ){
+							str += " " + Inform.getDetailCommand( commandStr );
+							str += "\n\n" + Inform.getCommandDescription( this.locale, commandStr );
 						}
-					};	
-				}	
+
+						return {
+							contents: {
+								kind: "markdown",
+								value: str
+							}
+						};	
+					}	
+				}
+			}
+			{
+				const m = /(IN|OT)#\(([0-9]+)\)/.exec(lineText);
+
+				if( m ) {
+					const ioNumberString = m[0];
+					const logicalIoNumber = JbiFile.ioNumberStringToLogicalIoNumber(ioNumberString);
+					if( logicalIoNumber ) {
+						const ioName = this.robotController.getIoName( logicalIoNumber );
+
+						if( ioName ) {
+							return {
+								contents: {
+									kind: "markdown",
+									value: ioName
+								}
+							};			
+						}
+					}
+				}
+
 			}
 		}
 

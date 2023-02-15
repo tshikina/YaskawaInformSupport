@@ -2,6 +2,10 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
+## [Unreleased]
+### Added
+- Support Hover to show IO name for JBI files.
+
 ## [1.2.0] - 2023-02-08
 ### Added
 - Support Completion job name for JBI files.

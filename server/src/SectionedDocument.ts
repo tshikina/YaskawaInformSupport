@@ -15,6 +15,10 @@ export class SectionedDocument {
 		this.sectionMap = new Map<string, Section>();
 	}
 
+	getSectionNames() {
+		return [...this.sectionMap.keys()];
+	}
+
 	getSection( sectionName: string ) {
 		return this.sectionMap.get( sectionName );
 	}

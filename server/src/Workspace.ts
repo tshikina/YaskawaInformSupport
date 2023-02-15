@@ -73,7 +73,7 @@ export class Workspace {
 			try{
 				fs.readFileSync(filePath);
 				const text = fs.readFileSync(filePath, "utf-8");
-				lines = text.replace("\r\n","\n").split("\n");
+				lines = text.replace(/\r\n/g,"\n").split("\n");
 			}
 			catch(err) {
 				console.error( `cannot read file: ${filePath}` );

@@ -107,3 +107,12 @@ export function isPositionInRange( range:Range, position:Position ): boolean {
 
 	return true;
 }
+
+export function isPositionInMatch( m: RegExpExecArray, pos: Position ): boolean {
+	const matchRange = Range.create(
+		Position.create(pos.line, m.index),
+		Position.create(pos.line, m.index + m[0].length )
+	);
+
+	return isPositionInRange( matchRange, pos );
+}

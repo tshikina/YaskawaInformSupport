@@ -15,6 +15,7 @@ import { IoNameDatFile } from './IoNameDatFile';
 import { IoMNameDatFile } from './IoMNameDatFile';
 import { PscFile } from './PscFile';
 import { RobotControllerFile } from './RobotControllerFile';
+import { VarNameDatFile } from './VarNameDatFile';
 
 export class RobotController {
 	private workspace: Workspace;
@@ -104,6 +105,19 @@ export class RobotController {
 	}
 
 	/**
+	 * get variable name
+	 * @param varType variable type
+	 * @param varNumber variable number
+	 * @returns variable name
+	 */
+	getVarname( varType: string, varNumber: number ): string | undefined {
+		const varNameFilePath = path.join(this.folderPath, "VARNAME.DAT" );
+		const file = this.getVarNameDatFile( varNameFilePath );
+
+		return file?.getVarName( varType, varNumber );
+	}
+
+	/**
 	 * Get Io name from logical Io number.
 	 * @param logicalIoNumber e.g. 10010, 30010
 	 * @returns ioName
@@ -152,6 +166,9 @@ export class RobotController {
 		}
 		else if( fileName == "VAR.DAT") {
 			file = new VarDatFile( this, filePath );
+		}
+		else if( fileName == "VARNAME.DAT" ) {
+			file = new VarNameDatFile( this, filePath );
 		}
 		else if( fileName == "IONAME.DAT" || fileName == "EXIONAME.DAT" ) {
 			file = new IoNameDatFile( this, filePath );
@@ -211,7 +228,7 @@ export class RobotController {
 		let file = this.robotControllerFiles.get( filePath );
 
 		if( file ) {
-			return file; // return cache
+			return file as VarDatFile; // return cache
 		}
 
 		if( !fs.existsSync(filePath) ) {
@@ -223,6 +240,25 @@ export class RobotController {
 		this.robotControllerFiles.set( filePath, file );
 
 		return file as VarDatFile;
+
+	}
+
+	getVarNameDatFile( filePath: string ) : VarNameDatFile | undefined {
+		let file = this.robotControllerFiles.get( filePath );
+
+		if( file ) {
+			return file as VarNameDatFile; // return cache
+		}
+
+		if( !fs.existsSync(filePath) ) {
+			return undefined;
+		}
+
+		file = new VarNameDatFile( this, filePath );
+
+		this.robotControllerFiles.set( filePath, file );
+
+		return file as VarNameDatFile;
 
 	}
 

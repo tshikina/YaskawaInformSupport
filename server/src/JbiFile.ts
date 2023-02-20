@@ -300,6 +300,8 @@ export class JbiFile extends RobotControllerFile {
 		const offset = pos.line - section.contents.start.line;
 
 		if( sectionName == "INST" ) {
+
+			// command
 			{
 				const m = /^((EDTLCK\s+)?(COMM\s+)?(\t*|\t\s*))([A-Z0-9]+\$?)(\s|$)/.exec(lineText);
 
@@ -324,6 +326,33 @@ export class JbiFile extends RobotControllerFile {
 					}	
 				}
 			}
+			// variable
+			{
+				const variablePattern = /\b(B|I|D|R|S|P|BP|EX)([0-9]+)\b/g;
+				let m: RegExpExecArray | null;
+
+				while( (m = variablePattern.exec(lineText)) ){
+
+					if( m && Util.isPositionInMatch( m, pos ) ) {
+						const varType = m[1];
+						const varNumber = +m[2];
+						const varName = this.robotController.getVarname( varType, varNumber );
+
+						if( varName ) {
+							return {
+								contents: {
+									kind: "markdown",
+									value: varName
+								}
+							};			
+						}
+					}
+				}
+
+			}
+
+
+			// IO
 			{
 				const m = /(IN|OT)#\(([0-9]+)\)/.exec(lineText);
 

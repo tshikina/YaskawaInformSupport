@@ -333,7 +333,7 @@ export class JbiFile extends RobotControllerFile {
 
 				while( (m = variablePattern.exec(lineText)) ){
 
-					if( m && Util.isPositionInMatch( m, pos ) ) {
+					if( Util.isPositionInMatch( m, pos ) ) {
 						const varType = m[1];
 						const varNumber = +m[2];
 						const varName = this.robotController.getVarname( varType, varNumber );
@@ -354,21 +354,24 @@ export class JbiFile extends RobotControllerFile {
 
 			// IO
 			{
-				const m = /(IN|OT)#\(([0-9]+)\)/.exec(lineText);
+				const ioPattern = /\b(IN|OT)#\(([0-9]+)\)/g;
+				let m: RegExpExecArray | null;
 
-				if( m ) {
-					const ioNumberString = m[0];
-					const logicalIoNumber = JbiFile.ioNumberStringToLogicalIoNumber(ioNumberString);
-					if( logicalIoNumber ) {
-						const ioName = this.robotController.getIoName( logicalIoNumber );
+				while((m = ioPattern.exec(lineText))){
+					if( Util.isPositionInMatch( m, pos ) ) {
+						const ioNumberString = m[0];
+						const logicalIoNumber = JbiFile.ioNumberStringToLogicalIoNumber(ioNumberString);
+						if( logicalIoNumber ) {
+							const ioName = this.robotController.getIoName( logicalIoNumber );
 
-						if( ioName ) {
-							return {
-								contents: {
-									kind: "markdown",
-									value: ioName
-								}
-							};			
+							if( ioName ) {
+								return {
+									contents: {
+										kind: "markdown",
+										value: ioName
+									}
+								};			
+							}
 						}
 					}
 				}

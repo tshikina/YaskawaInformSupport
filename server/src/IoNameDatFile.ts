@@ -21,7 +21,7 @@ import * as Util from './Util';
 
 export class IoNameDatFile extends RobotControllerFile {
 
-	ioNameTable: Map<number, string> | undefined;
+	private ioNameTable: Map<number, string> | undefined;
 
 	updateSection() {
 		if( this.sectionedDocument ) {
@@ -140,6 +140,52 @@ export class IoNameDatFile extends RobotControllerFile {
 
 		return this.ioNameTable?.get( logicalNumber );
 	}
+
+	getIoNameRange( logicalIoNumber: number ): Range | null {
+		const sectionedDocument = this.updateSection();
+		if( !sectionedDocument ) {
+			return null;
+		}
+
+		const sectionNameTable = new Map<number, string>([
+			[0, "IN"],
+			[10000, "OUT"],
+			[20000, "EXIN"],
+			[30000, "EXOUT"],
+		]);
+		const typeNumber = Math.floor( logicalIoNumber / 10000 ) * 10000;
+
+		const sectionName = sectionNameTable.get( typeNumber );
+
+		if( !sectionName ) {
+			return null;
+		}
+
+		const section = sectionedDocument.getSection( sectionName );
+
+		if( !section ) {
+			return null;
+		}
+
+		const groupNumber = Math.floor((logicalIoNumber - typeNumber)/10);
+		const bitNumber = logicalIoNumber % 10;
+
+		const lineNo = section.contents.start.line + (groupNumber - 1) * 2 + Math.floor( bitNumber / 4 );
+		const lineText = this.workspace.getTextLine( this.filePath, lineNo );
+		if( lineText ) {
+			const ioNameRange = Util.getRangeAtIndex( lineText, bitNumber % 4 );
+			if( ioNameRange ) {
+				ioNameRange.start.line = lineNo;
+				ioNameRange.end.line = lineNo;
+
+				return ioNameRange;
+			}
+		}
+
+		return null;
+	}
+
+
 
 	onHover(hoverParams: HoverParams): Hover | null {
 		const sectionedDocument = this.updateSection();

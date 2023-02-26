@@ -112,6 +112,10 @@ export class JbiFile extends RobotControllerFile {
 		return /(^\s*)([A-Z0-9]+)(\s|$)/g;
 	}
 
+	private static createIoValuePattern() {
+		return /\b(IN|OT)#\(([0-9]+)\)/g;
+	}
+
 
 	private static ioNumberStringToLogicalIoNumber( ioNumberString: string ): number | undefined {
 		const m = /(IN|OT)#\(([0-9]+)\)/.exec(ioNumberString);
@@ -269,6 +273,29 @@ export class JbiFile extends RobotControllerFile {
 			}
 
 		}
+
+		// seach IO value
+		{
+			const ioPattern = JbiFile.createIoValuePattern();
+			let m: RegExpExecArray | null;
+
+			while((m = ioPattern.exec(lineText))){
+				if( Util.isPositionInMatch( m, pos ) ) {
+					const ioNumberString = m[0];
+					const logicalIoNumber = JbiFile.ioNumberStringToLogicalIoNumber(ioNumberString);
+					if( logicalIoNumber ) {
+						const ioNameLocation = this.robotController.getIoNameLocation( logicalIoNumber );
+
+						if( ioNameLocation ) {
+							return ioNameLocation;			
+						}
+					}
+				}
+			}
+
+		}
+
+
 		return null;
 	}	
 
@@ -354,7 +381,7 @@ export class JbiFile extends RobotControllerFile {
 
 			// IO
 			{
-				const ioPattern = /\b(IN|OT)#\(([0-9]+)\)/g;
+				const ioPattern = JbiFile.createIoValuePattern();
 				let m: RegExpExecArray | null;
 
 				while((m = ioPattern.exec(lineText))){

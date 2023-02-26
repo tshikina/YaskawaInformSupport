@@ -6,6 +6,7 @@ All notable changes to the "inform-job-support" extension will be documented in 
 ### Added
 - Support Hover to show IO name for JBI files.
 - Support Hover to show Variable name for JBI files.
+- Support Go to Definition to IO name for JBI file.
 
 ## [1.2.0] - 2023-02-08
 ### Added

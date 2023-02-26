@@ -104,6 +104,27 @@ export class RobotController {
 		};
 	}
 
+	getIoNameLocation( logicalIoNumber: number ): Location | null {
+		const ioNameFiles = ["IONAME.DAT", "EXIONAME.DAT"];
+
+		for( let i = 0; i < ioNameFiles.length; i++ ) {
+			const ioNameFilePath = path.join(this.folderPath, ioNameFiles[i]);
+			const file = this.getIoNameDatFile( ioNameFilePath );
+			const ioNameRange = file?.getIoNameRange(logicalIoNumber);
+
+			if( ioNameRange ) {
+				// io name found
+				return {
+					uri: Util.fsPathToUriString( ioNameFilePath ),
+					range: ioNameRange
+				};
+			}
+		}
+
+		return null;
+
+	}
+
 	/**
 	 * get variable name
 	 * @param varType variable type

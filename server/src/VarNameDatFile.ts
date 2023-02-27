@@ -18,6 +18,7 @@ import {
 import { RobotControllerFile } from './RobotControllerFile';
 
 import * as Util from './Util';
+import { Position } from 'vscode';
 
 export class VarNameDatFile extends RobotControllerFile {
 
@@ -76,6 +77,47 @@ export class VarNameDatFile extends RobotControllerFile {
 		this.updateVarName();
 
 		return this.varNameTable?.get(varType)?.get( varNumber );
+	}
+
+
+	getVarNameRange( varType: string, varNumber: number ): Range | null {
+		const sectionedDocument = this.updateSection();
+		if( !sectionedDocument ) {
+			return null;
+		}
+
+		const section = sectionedDocument.getSection( "///" + varType );
+
+		if( !section ) {
+			return null;
+		}
+
+		const textLines = this.workspace.getTextLines( this.filePath );
+
+		if( !textLines ) {
+			return null;
+		}
+
+		for( let lineNo = section.contents.start.line; lineNo < section.contents.end.line; lineNo++ ) {
+			const lineText = textLines[lineNo];
+
+			const m = /^([0-9]+)\s+[0-9]+,[0-9+]+,(.*)/.exec( lineText );
+
+			if( m ) {
+				const lineVarNumber = +m[1];
+
+				if( varNumber == lineVarNumber ) {
+					return Range.create( lineNo, 0, lineNo, lineText.length );
+				}
+
+			}
+			else {
+				break;
+			}
+
+		}
+
+		return null;
 	}
 
 }

@@ -125,6 +125,27 @@ export class RobotController {
 
 	}
 
+	getVarNameLocation( varType: string, varNumber: number ): Location | null {
+		const varNameFilePath = path.join(this.folderPath, 'VARNAME.DAT');
+
+		const file = this.getVarNameDatFile( varNameFilePath );
+
+		if( !file ) {
+			return null;
+		}
+
+		const range = file.getVarNameRange( varType, varNumber );
+
+		if( !range ) {
+			return null;
+		}
+
+		return {
+			uri: Util.fsPathToUriString( varNameFilePath ),
+			range: range
+		};
+	}
+
 	/**
 	 * get variable name
 	 * @param varType variable type

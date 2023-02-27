@@ -116,6 +116,10 @@ export class JbiFile extends RobotControllerFile {
 		return /\b(IN|OT)#\(([0-9]+)\)/g;
 	}
 
+	private static createVariablePattern() {
+		return /\b(B|I|D|R|S|P|BP|EX)([0-9]+)\b/g;
+	}
+
 
 	private static ioNumberStringToLogicalIoNumber( ioNumberString: string ): number | undefined {
 		const m = /(IN|OT)#\(([0-9]+)\)/.exec(ioNumberString);
@@ -295,6 +299,24 @@ export class JbiFile extends RobotControllerFile {
 
 		}
 
+		// seach Variable
+		{
+			const variablePattern = JbiFile.createVariablePattern();
+			let m: RegExpExecArray | null;
+
+			while((m = variablePattern.exec(lineText))){
+				if( Util.isPositionInMatch( m, pos ) ) {
+					const varType = m[1];
+					const varNumber = +m[2];
+					const varNameLocation = this.robotController.getVarNameLocation( varType, varNumber );
+
+					if( varNameLocation ) {
+						return varNameLocation;			
+					}
+				}
+			}
+		}
+		
 
 		return null;
 	}	
@@ -355,7 +377,7 @@ export class JbiFile extends RobotControllerFile {
 			}
 			// variable
 			{
-				const variablePattern = /\b(B|I|D|R|S|P|BP|EX)([0-9]+)\b/g;
+				const variablePattern = JbiFile.createVariablePattern();
 				let m: RegExpExecArray | null;
 
 				while( (m = variablePattern.exec(lineText)) ){

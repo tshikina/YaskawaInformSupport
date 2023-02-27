@@ -117,7 +117,7 @@ export class JbiFile extends RobotControllerFile {
 	}
 
 	private static createVariablePattern() {
-		return /\b(B|I|D|R|S|P|BP|EX)([0-9]+)\b/g;
+		return /(?<=ARGF|\b)(B|I|D|R|S|P|BP|EX)([0-9]+)\b/g;
 	}
 
 

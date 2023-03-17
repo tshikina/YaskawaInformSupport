@@ -140,6 +140,9 @@ connection.onDidChangeConfiguration(async change => {
 // Only keep settings for open documents
 documents.onDidClose(e => {
 	workspace.deleteDocumentSettingsCache(e.document.uri);
+
+	// clear diagnostics when file is closed
+	connection.sendDiagnostics({ uri: e.document.uri, diagnostics: [] });
 });
 
 // The content of a text document has changed. This event is emitted

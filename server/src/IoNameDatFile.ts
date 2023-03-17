@@ -5,6 +5,8 @@ import {
 	FoldingRangeParams,
 	FoldingRange,
 	integer,
+	Diagnostic,
+	DiagnosticSeverity,
 } from 'vscode-languageserver/node';
 
 import {
@@ -221,4 +223,52 @@ export class IoNameDatFile extends RobotControllerFile {
 			]
 		};
 	}
+
+	validate(): Diagnostic[] | null {
+
+		this.updateIoName();
+
+		if( !this.ioNameTable ) {
+			return null;
+		}
+
+		const ioNameCnt = new Map<string, number>();
+
+		// count number of same io names
+		this.ioNameTable.forEach( (name) => {
+			let cnt = ioNameCnt.get( name );
+			if( !cnt ) {
+				cnt = 0;
+			}
+
+			cnt++;
+
+			ioNameCnt.set( name, cnt );
+		} );
+
+		const diagnostics: Diagnostic[] = [];
+
+		// check same io names
+		this.ioNameTable.forEach( (name, logicalIoNumber) => {
+			const cnt = ioNameCnt.get( name );
+			if( !cnt || cnt < 2 ) {
+				return;
+			}			
+
+			const range = this.getIoNameRange( logicalIoNumber );
+
+			if( !range ) {
+				return;
+			}
+
+			diagnostics.push({
+				severity: DiagnosticSeverity.Information,
+				range: range,
+				message: this.tr( "ionamedatfile.diagnostic.name.duplicated", name ),
+			});
+		} );	
+	
+		return diagnostics;
+	}
+
 }

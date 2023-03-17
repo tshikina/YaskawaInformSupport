@@ -2,6 +2,10 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
+## [Unreleased]
+### Added
+- Support Diagnosis to check duplicated IO names for IONAME.DAT and EXIONAME.DAT.
+
 ## [1.3.0] - 2023-02-27
 ### Added
 - Support Hover to show IO name for JBI files.

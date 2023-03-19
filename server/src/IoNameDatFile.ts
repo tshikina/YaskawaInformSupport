@@ -226,6 +226,11 @@ export class IoNameDatFile extends RobotControllerFile {
 
 	validate(): Diagnostic[] | null {
 
+		const isIoNameAliasEnabled = this.robotController.getOptions().isIoNameAliasEnabled();
+		if( isIoNameAliasEnabled != undefined && isIoNameAliasEnabled == false ) {
+			return null;
+		}
+
 		this.updateIoName();
 
 		if( !this.ioNameTable ) {

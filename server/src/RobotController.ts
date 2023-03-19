@@ -20,6 +20,7 @@ import { VarNameDatFile } from './VarNameDatFile';
 export class RobotController {
 	private workspace: Workspace;
 	private folderPath: string;
+	private options = new RobotControllerOptions(this);
 
 	// files
 	private robotControllerFiles = new Map<string, RobotControllerFile>();
@@ -182,6 +183,10 @@ export class RobotController {
 		}
 
 		return ioName;
+	}
+
+	getOptions() {
+		return this.options;
 	}
 
 	// files
@@ -365,4 +370,26 @@ export class RobotController {
 		this.robotControllerFiles.delete( filePath );
 	}
 
+}
+
+class RobotControllerOptions {
+	robotController: RobotController;
+
+	constructor( robotController: RobotController ) {
+		this.robotController = robotController;
+	}
+
+	/**
+	 * Check IO name alias function
+	 * @returns: io name alias function is enabled
+	 * @return undefined: unknown. 
+	 */
+	isIoNameAliasEnabled() : boolean | undefined {
+		const value = this.robotController.getParameterValue( "S2C", 395 );
+
+		if( value != undefined || value != null ) {
+			return value > 0;
+		}
+		return undefined;
+	}
 }

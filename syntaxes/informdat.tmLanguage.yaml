@@ -186,12 +186,16 @@
 			"whileCaptures": { 
 				"1":{
 					"patterns": [{
-							"match": "^([^,]{0,16}),([^,]{0,16}),([^,]{0,16}),([^,]{0,16}$)",
+							"match": "^(('[^,]{0,15})|([^,]{0,16})),(('[^,]{0,15})|([^,]{0,16})),(('[^,]{0,15})|([^,]{0,16})),(('[^,]{0,15})|([^,]{0,16}))$",
 							"captures": {
-								"1": {"name": "string.other.ioname.informdat"},
-								"2": {"name": "string.other.ioname.informdat"},
+								"2": {"name": "comment.ioname.informdat"},
 								"3": {"name": "string.other.ioname.informdat"},
-								"4": {"name": "string.other.ioname.informdat"}
+								"5": {"name": "comment.ioname.informdat"},
+								"6": {"name": "string.other.ioname.informdat"},
+								"8": {"name": "comment.ioname.informdat"},
+								"9": {"name": "string.other.ioname.informdat"},
+								"11": {"name": "comment.ioname.informdat"},
+								"12": {"name": "string.other.ioname.informdat"}
 							}
 						},{
 							"match": "(.*)",

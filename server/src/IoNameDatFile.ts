@@ -251,7 +251,7 @@ export class IoNameDatFile extends RobotControllerFile {
 		// check same io names
 		this.ioNameTable.forEach( (name, logicalIoNumber) => {
 			const cnt = ioNameCnt.get( name );
-			if( !cnt || cnt < 2 ) {
+			if( !cnt || cnt < 2 || name.startsWith("'") ) {
 				return;
 			}			
 

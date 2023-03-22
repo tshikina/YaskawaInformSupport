@@ -161,11 +161,12 @@
 			"whileCaptures": {
 				"1" : {
 					"patterns": [ {
-						"match": "^([0-9]+)\\s+(1,0),(.{1,16})$",
+						"match": "^([0-9]+)\\s+(1,0),(('.{0,15})|(.{1,16}))$",
 						"captures": {
 							"1": {"name": "variable.other.informdat"},
 							"2": {"name": "meta.preprocessor.varname.informdat"},
-							"3": {"name": "string.other.varname.informdat"}
+							"4": {"name": "comment.varname.informdat"},
+							"5": {"name": "string.other.varname.informdat"}
 						}
 					},{
 						"match": "^([0-9]+)\\s+(1,0),(.*)$",

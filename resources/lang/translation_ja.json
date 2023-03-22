@@ -132,6 +132,8 @@
 
 	"ionamedatfile.diagnostic.name.duplicated": "{0}は他と重複した名前です。",
 
+	"varnamedatfile.diagnostic.name.duplicated": "{0}は他と重複した名前です。",
+
 	"pscfile.diagnostic.paramMatch": "ALL.PRMと一致しています。",
 	"pscfile.diagnostic.paramUnmatch": "{0} の値「{1}」 は、ALL.PRMの値 「{2}」 と一致していません。",
 	"pscfile.diagnostic.paramNotFound": "ALL.PRM内に {0} が見つかりません。",

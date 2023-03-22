@@ -4,6 +4,8 @@ import {
 	HoverParams,
 	FoldingRangeParams,
 	FoldingRange,
+	Diagnostic,
+	DiagnosticSeverity,
 } from 'vscode-languageserver/node';
 
 import {
@@ -118,6 +120,64 @@ export class VarNameDatFile extends RobotControllerFile {
 		}
 
 		return null;
+	}
+
+
+	validate(): Diagnostic[] | null {
+
+		const isVarNameAliasEnabled = this.robotController.getOptions().isVarNameAliasEnabled();
+		if( isVarNameAliasEnabled != undefined && isVarNameAliasEnabled == false ) {
+			return null;
+		}
+
+		this.updateVarName();
+
+		if( !this.varNameTable ) {
+			return null;
+		}
+
+		const varNameCnt = new Map<string, number>();
+
+		// count number of same io names
+		this.varNameTable.forEach( (table) => {
+			table.forEach( (varNname) => {
+				let cnt = varNameCnt.get( varNname );
+				if( !cnt ) {
+					cnt = 0;
+				}
+	
+				cnt++;
+	
+				varNameCnt.set( varNname, cnt );
+	
+			} );
+		} );
+
+		const diagnostics: Diagnostic[] = [];
+
+		// check same io names
+		this.varNameTable.forEach( (table, varType) => {
+			table.forEach( (varName, varNumber) => {
+				const cnt = varNameCnt.get( varName );
+				if( !cnt || cnt < 2 || varName.startsWith("'") ) {
+					return;
+				}			
+				const range = this.getVarNameRange( varType, varNumber );
+
+				if( !range ) {
+					return;
+				}
+	
+				diagnostics.push({
+					severity: DiagnosticSeverity.Information,
+					range: range,
+					message: this.tr( "varnamedatfile.diagnostic.name.duplicated", varName ),
+				});
+				
+			} );
+		} );
+	
+		return diagnostics;
 	}
 
 }

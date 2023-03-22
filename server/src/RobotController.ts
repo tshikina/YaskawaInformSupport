@@ -392,4 +392,18 @@ class RobotControllerOptions {
 		}
 		return undefined;
 	}
+
+	/**
+	 * Check Variable name alias function
+	 * @returns: Variable name alias function is enabled
+	 * @return undefined: unknown. 
+	 */
+	isVarNameAliasEnabled() : boolean | undefined {
+		const value = this.robotController.getParameterValue( "S2C", 396 );
+
+		if( value != undefined || value != null ) {
+			return value > 0;
+		}
+		return undefined;
+	}
 }

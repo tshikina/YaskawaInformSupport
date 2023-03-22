@@ -132,6 +132,8 @@
 
 	"ionamedatfile.diagnostic.name.duplicated": "{0} is a duplicated name.",
 
+	"varnamedatfile.diagnostic.name.duplicated": "{0} is a duplicated name.",
+
 	"pscfile.diagnostic.paramMatch": "Matched with ALL.PRM",
 	"pscfile.diagnostic.paramUnmatch": "{0} value '{1}' is NOT match with ALL.PRM value '{2}'.",
 	"pscfile.diagnostic.paramNotFound": "{0} is NOT found in ALL.PRM.",

@@ -22,6 +22,7 @@ import {
 	isLocaleSupported,
 } from './Translation';
 
+import * as path from "path";
 
 import * as Util from './Util';
 
@@ -52,6 +53,14 @@ export class RobotControllerFile {
 	/** translation with files locale */
 	tr( key: string, ...values: any[]) {
 		return translate( this.locale, key, ...values );
+	}
+
+	/**
+	 * return file name
+	 * @returns fileName
+	 */
+	fileName() {
+		return path.basename( this.filePath );
 	}
 
 	updateSection() {

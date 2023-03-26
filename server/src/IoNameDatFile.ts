@@ -259,6 +259,10 @@ export class IoNameDatFile extends RobotControllerFile {
 			return null;
 		}
 
+		if( this.fileName() != "IONAME.DAT" ) {
+			return null;
+		}
+
 		this.updateIoName();
 
 		if( !this.ioNameTable ) {

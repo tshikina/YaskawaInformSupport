@@ -43,6 +43,15 @@ export class RobotController {
 		return fs.existsSync( parameterFilePath );
 	}
 
+	/**
+	 * get file path
+	 * @param fileName 
+	 * @returns filePath
+	 */
+	getFilePath( fileName: string ) {
+		return path.join(this.folderPath, fileName);
+	}
+
 	getJbiFilePath( jobName: string ) {
 		return path.join(this.folderPath, jobName + ".JBI");
 	}

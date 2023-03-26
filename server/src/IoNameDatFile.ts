@@ -187,6 +187,33 @@ export class IoNameDatFile extends RobotControllerFile {
 		return null;
 	}
 
+	/**
+	 * @brief count number of same io names
+	 * @returns io name count table
+	 */
+	getIoNameCnt(): Map<string, number> | undefined {
+		this.updateIoName();
+		
+		if( !this.ioNameTable ) {
+			return undefined;
+		}
+
+		// count number of same io names
+		const ioNameCnt = new Map<string, number>();
+
+		this.ioNameTable.forEach( (name) => {
+			let cnt = ioNameCnt.get( name );
+			if( !cnt ) {
+				cnt = 0;
+			}
+
+			cnt++;
+
+			ioNameCnt.set( name, cnt );
+		} );
+
+		return ioNameCnt;		
+	}
 
 
 	onHover(hoverParams: HoverParams): Hover | null {
@@ -227,6 +254,7 @@ export class IoNameDatFile extends RobotControllerFile {
 	validate(): Diagnostic[] | null {
 
 		const isIoNameAliasEnabled = this.robotController.getOptions().isIoNameAliasEnabled();
+		const isVarNameAliasEnabled = this.robotController.getOptions().isVarNameAliasEnabled();
 		if( isIoNameAliasEnabled != undefined && isIoNameAliasEnabled == false ) {
 			return null;
 		}
@@ -237,26 +265,27 @@ export class IoNameDatFile extends RobotControllerFile {
 			return null;
 		}
 
-		const ioNameCnt = new Map<string, number>();
+		const ioNameCntTable = this.getIoNameCnt();
 
-		// count number of same io names
-		this.ioNameTable.forEach( (name) => {
-			let cnt = ioNameCnt.get( name );
-			if( !cnt ) {
-				cnt = 0;
-			}
+		if( !ioNameCntTable ) {
+			return null;
+		}
 
-			cnt++;
-
-			ioNameCnt.set( name, cnt );
-		} );
+		const varNameDatFile = this.robotController.getVarNameDatFile( this.robotController.getFilePath("VARNAME.DAT") );
+		let varNameCntTable : Map<string, number> | undefined;
+		if( isVarNameAliasEnabled )
+		{
+			varNameCntTable = varNameDatFile?.getVarNameCnt();
+		}
 
 		const diagnostics: Diagnostic[] = [];
 
 		// check same io names
-		this.ioNameTable.forEach( (name, logicalIoNumber) => {
-			const cnt = ioNameCnt.get( name );
-			if( !cnt || cnt < 2 || name.startsWith("'") ) {
+		this.ioNameTable.forEach( (ioName, logicalIoNumber) => {
+			const ioNameCnt = ioNameCntTable.get( ioName );
+			let varNameCnt = varNameCntTable?.get( ioName );
+			varNameCnt = varNameCnt ? varNameCnt : 0;
+			if( !ioNameCnt || (ioNameCnt + varNameCnt)< 2 || ioName.startsWith("'") ) {
 				return;
 			}			
 
@@ -266,10 +295,20 @@ export class IoNameDatFile extends RobotControllerFile {
 				return;
 			}
 
+			let errorMessage : string;
+			if( ioNameCnt >= 2)
+			{
+				errorMessage = this.tr( "ionamedatfile.diagnostic.name.duplicated", ioName );
+			}
+			else
+			{
+				errorMessage = this.tr( "varnamedatfile.diagnostic.name.duplicated", ioName );
+			}
+
 			diagnostics.push({
 				severity: DiagnosticSeverity.Information,
 				range: range,
-				message: this.tr( "ionamedatfile.diagnostic.name.duplicated", name ),
+				message: errorMessage,
 			});
 		} );	
 	

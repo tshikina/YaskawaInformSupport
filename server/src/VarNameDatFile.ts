@@ -122,23 +122,20 @@ export class VarNameDatFile extends RobotControllerFile {
 		return null;
 	}
 
-
-	validate(): Diagnostic[] | null {
-
-		const isVarNameAliasEnabled = this.robotController.getOptions().isVarNameAliasEnabled();
-		if( isVarNameAliasEnabled != undefined && isVarNameAliasEnabled == false ) {
-			return null;
-		}
-
+	/**
+	 * @brief count number of same var names
+	 * @returns var name count table
+	 */
+	getVarNameCnt(): Map<string, number> | undefined {
 		this.updateVarName();
-
+		
 		if( !this.varNameTable ) {
-			return null;
+			return undefined;
 		}
-
-		const varNameCnt = new Map<string, number>();
 
 		// count number of same io names
+		const varNameCnt = new Map<string, number>();
+
 		this.varNameTable.forEach( (table) => {
 			table.forEach( (varNname) => {
 				let cnt = varNameCnt.get( varNname );
@@ -153,25 +150,70 @@ export class VarNameDatFile extends RobotControllerFile {
 			} );
 		} );
 
+		return varNameCnt;		
+	}
+
+
+	validate(): Diagnostic[] | null {
+
+		const isVarNameAliasEnabled = this.robotController.getOptions().isVarNameAliasEnabled();
+		const isIoNameAliasEnabled = this.robotController.getOptions().isIoNameAliasEnabled();
+		if( isVarNameAliasEnabled != undefined && isVarNameAliasEnabled == false ) {
+			return null;
+		}
+
+		this.updateVarName();
+
+		if( !this.varNameTable ) {
+			return null;
+		}
+
+		const varNameCntTable = this.getVarNameCnt();
+
+		if( !varNameCntTable ) {
+			return null;
+		}
+
+		const ioNameDatFile = this.robotController.getIoNameDatFile( this.robotController.getFilePath("IONAME.DAT") );
+		let ioNameCntTable : Map<string, number> | undefined;
+		if( isIoNameAliasEnabled )
+		{
+			ioNameCntTable = ioNameDatFile?.getIoNameCnt();
+		}
+
 		const diagnostics: Diagnostic[] = [];
 
 		// check same io names
 		this.varNameTable.forEach( (table, varType) => {
 			table.forEach( (varName, varNumber) => {
-				const cnt = varNameCnt.get( varName );
-				if( !cnt || cnt < 2 || varName.startsWith("'") ) {
+				const varNameCnt = varNameCntTable.get( varName );
+				let ioNameCnt = ioNameCntTable?.get( varName );
+				ioNameCnt = ioNameCnt ? ioNameCnt : 0;
+
+				if( !varNameCnt || (varNameCnt + ioNameCnt) < 2 || varName.startsWith("'") ) {
 					return;
-				}			
+				}
+
 				const range = this.getVarNameRange( varType, varNumber );
 
 				if( !range ) {
 					return;
 				}
+
+				let errorMessage : string;
+				if( varNameCnt >= 2)
+				{
+					errorMessage = this.tr( "varnamedatfile.diagnostic.name.duplicated", varName );
+				}
+				else
+				{
+					errorMessage = this.tr( "ionamedatfile.diagnostic.name.duplicated", varName );
+				}
 	
 				diagnostics.push({
 					severity: DiagnosticSeverity.Information,
 					range: range,
-					message: this.tr( "varnamedatfile.diagnostic.name.duplicated", varName ),
+					message: errorMessage,
 				});
 				
 			} );

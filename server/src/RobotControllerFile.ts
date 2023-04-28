@@ -9,6 +9,8 @@ import {
 	FoldingRange,
 	CompletionParams,
 	CompletionItem,
+	CodeAction,
+	CodeActionParams,
 } from 'vscode-languageserver/node';
 
 import {
@@ -144,6 +146,10 @@ export class RobotControllerFile {
 	}
 
 	onCompletion( completionParams: CompletionParams ): CompletionItem[] | null {
+		return null;
+	}
+
+	onCodeAction( codeActionParams: CodeActionParams ): CodeAction[] | null {
 		return null;
 	}
 }

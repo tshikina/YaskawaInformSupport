@@ -7,6 +7,13 @@ import {
 	integer,
 	Diagnostic,
 	DiagnosticSeverity,
+	CodeAction,
+	CodeActionParams,
+	TextDocumentEdit,
+	TextEdit,
+	OptionalVersionedTextDocumentIdentifier,
+	WorkspaceEdit,
+	CodeActionKind,
 } from 'vscode-languageserver/node';
 
 import {
@@ -20,10 +27,12 @@ import {
 import { RobotControllerFile } from './RobotControllerFile';
 
 import * as Util from './Util';
+import { URI } from 'vscode-uri';
 
 export class IoNameDatFile extends RobotControllerFile {
 
 	private ioNameTable: Map<number, string> | undefined;
+	private diagnosticCodeActionTable: Map<number, string> | undefined;
 
 	updateSection() {
 		if( this.sectionedDocument ) {
@@ -284,6 +293,8 @@ export class IoNameDatFile extends RobotControllerFile {
 
 		const diagnostics: Diagnostic[] = [];
 
+		const diagnosticCodeActions= new Map<number, string>();
+
 		// check same io names
 		this.ioNameTable.forEach( (ioName, logicalIoNumber) => {
 			const ioNameCnt = ioNameCntTable.get( ioName );
@@ -309,14 +320,69 @@ export class IoNameDatFile extends RobotControllerFile {
 				errorMessage = this.tr( "varnamedatfile.diagnostic.name.duplicated", ioName );
 			}
 
+			const diagnosticNo = diagnostics.length;
+
 			diagnostics.push({
 				severity: DiagnosticSeverity.Information,
 				range: range,
 				message: errorMessage,
+				data: diagnosticNo
 			});
+
+			diagnosticCodeActions.set( diagnosticNo, "'" + ioName );
 		} );	
 	
+		this.diagnosticCodeActionTable = diagnosticCodeActions;
+
 		return diagnostics;
 	}
 
+	onCodeAction(codeActionParams: CodeActionParams): CodeAction[] | null {
+		if( !codeActionParams.context.only ) {
+			return null;
+		}
+		if( codeActionParams.context.only.length == 0) {
+			return null;
+		}
+
+		if( codeActionParams.context.only[0] != CodeActionKind.QuickFix ) {
+			return null;
+		}
+
+		const codeActions: CodeAction[] = [];
+
+		codeActionParams.context.diagnostics.forEach((diag) => {
+			if( diag.data == undefined ) {
+				return;
+			}
+		
+			const replaceText = this.diagnosticCodeActionTable?.get( diag.data as number );
+			if( !replaceText ) {
+				return;
+			}
+
+			const title = "Change name to comment";
+
+			const edits = [TextEdit.replace(diag.range, replaceText)];
+
+			const workspaceEdit:WorkspaceEdit = {
+				documentChanges: [
+					TextDocumentEdit.create(
+						OptionalVersionedTextDocumentIdentifier.create(Util.fsPathToUriString( this.filePath), null ),
+						edits
+					)
+				]
+			};
+			// make code action
+			const fixAction = CodeAction.create(
+				title,
+				workspaceEdit,
+				CodeActionKind.QuickFix
+			);
+			fixAction.diagnostics = [diag];
+			codeActions.push(fixAction);
+		});
+		
+		return codeActions;
+	}
 }

@@ -134,6 +134,7 @@
 	"ionamedatfile.quickfix.name.toComment": "IO名をコメントに変更します。",
 
 	"varnamedatfile.diagnostic.name.duplicated": "\"{0}\" は他の変数名と重複した名前です。",
+	"varnamedatfile.quickfix.name.toComment": "変数名をコメントに変更します。",
 
 	"pscfile.diagnostic.paramMatch": "ALL.PRMと一致しています。",
 	"pscfile.diagnostic.paramUnmatch": "{0} の値「{1}」 は、ALL.PRMの値 「{2}」 と一致していません。",

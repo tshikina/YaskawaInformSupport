@@ -131,9 +131,10 @@
 	"jbifile.diagnostic.tag.T=.warningDecimalRange": "T value's decimal place should be up to 2 in YRC1000.",
 
 	"ionamedatfile.diagnostic.name.duplicated": "\"{0}\" is a duplicated name with other IO name.",
-	"ionamedatfile.quickfix.name.toComment": "Change IO name to comment",
+	"ionamedatfile.quickfix.name.toComment": "Change IO name to comment.",
 
 	"varnamedatfile.diagnostic.name.duplicated": "\"{0}\" is a duplicated name with other variable name.",
+	"varnamedatfile.quickfix.name.toComment": "Change variable name to comment.",
 
 	"pscfile.diagnostic.paramMatch": "Matched with ALL.PRM",
 	"pscfile.diagnostic.paramUnmatch": "{0} value '{1}' is NOT match with ALL.PRM value '{2}'.",

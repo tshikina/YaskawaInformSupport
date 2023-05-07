@@ -6,6 +6,13 @@ import {
 	FoldingRange,
 	Diagnostic,
 	DiagnosticSeverity,
+	CodeAction,
+	CodeActionParams,
+	TextDocumentEdit,
+	TextEdit,
+	OptionalVersionedTextDocumentIdentifier,
+	WorkspaceEdit,
+	CodeActionKind,
 } from 'vscode-languageserver/node';
 
 import {
@@ -209,17 +216,75 @@ export class VarNameDatFile extends RobotControllerFile {
 				{
 					errorMessage = this.tr( "ionamedatfile.diagnostic.name.duplicated", varName );
 				}
+
+				const replaceText = this.workspace.
+					getTextLine( this.filePath, range.start.line )?.
+					replace( /^([0-9]+\s+[0-9]+,[0-9+]+,)(.*)/, `$1'${varName}`);
 	
 				diagnostics.push({
 					severity: DiagnosticSeverity.Information,
 					range: range,
 					message: errorMessage,
+					data: replaceText // quick fix
 				});
 				
 			} );
 		} );
 	
 		return diagnostics;
+	}
+
+	onCodeAction(codeActionParams: CodeActionParams): CodeAction[] | null {
+		if( !codeActionParams.context.only ) {
+			return null;
+		}
+		if( codeActionParams.context.only.length == 0) {
+			return null;
+		}
+
+		if( codeActionParams.context.only[0] != CodeActionKind.QuickFix ) {
+			return null;
+		}
+
+		const codeActions: CodeAction[] = [];
+
+		codeActionParams.context.diagnostics.forEach((diag) => {
+			if( diag.data == undefined ) {
+				return;
+			}
+		
+			if( typeof diag.data !== "string" ) {
+				return;
+			}
+			
+			const replaceText = diag.data as string;
+			if( !replaceText ) {
+				return;
+			}
+
+			const title = this.tr("varnamedatfile.quickfix.name.toComment");
+
+			const edits = [TextEdit.replace(diag.range, replaceText)];
+
+			const workspaceEdit:WorkspaceEdit = {
+				documentChanges: [
+					TextDocumentEdit.create(
+						OptionalVersionedTextDocumentIdentifier.create(Util.fsPathToUriString( this.filePath), null ),
+						edits
+					)
+				]
+			};
+			// make code action
+			const fixAction = CodeAction.create(
+				title,
+				workspaceEdit,
+				CodeActionKind.QuickFix
+			);
+			fixAction.diagnostics = [diag];
+			codeActions.push(fixAction);
+		});
+		
+		return codeActions;
 	}
 
 }

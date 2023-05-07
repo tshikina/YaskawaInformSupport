@@ -7,6 +7,7 @@ All notable changes to the "inform-job-support" extension will be documented in 
 - Support Diagnosis to check duplicated IO names for IONAME.DAT.
 - Support Diagnosis to check duplicated Variable names for VARNAME.DAT.
 - Support Code Action to fix duplicated IO names for IONAME.DAT.
+- Support Code Action to fix duplicated Variable names for VARNAME.DAT.
 
 ### Changed
 - Delete diagnostic when file is closed.

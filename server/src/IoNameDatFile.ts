@@ -321,7 +321,7 @@ export class IoNameDatFile extends RobotControllerFile {
 				severity: DiagnosticSeverity.Information,
 				range: range,
 				message: errorMessage,
-				data: "'" + ioName
+				data: "'" + ioName // quick fix
 			});
 		} );	
 	

@@ -32,7 +32,6 @@ import { URI } from 'vscode-uri';
 export class IoNameDatFile extends RobotControllerFile {
 
 	private ioNameTable: Map<number, string> | undefined;
-	private diagnosticCodeActionTable: Map<number, string> | undefined;
 
 	updateSection() {
 		if( this.sectionedDocument ) {
@@ -293,8 +292,6 @@ export class IoNameDatFile extends RobotControllerFile {
 
 		const diagnostics: Diagnostic[] = [];
 
-		const diagnosticCodeActions= new Map<number, string>();
-
 		// check same io names
 		this.ioNameTable.forEach( (ioName, logicalIoNumber) => {
 			const ioNameCnt = ioNameCntTable.get( ioName );
@@ -326,14 +323,10 @@ export class IoNameDatFile extends RobotControllerFile {
 				severity: DiagnosticSeverity.Information,
 				range: range,
 				message: errorMessage,
-				data: diagnosticNo
+				data: "'" + ioName
 			});
-
-			diagnosticCodeActions.set( diagnosticNo, "'" + ioName );
 		} );	
 	
-		this.diagnosticCodeActionTable = diagnosticCodeActions;
-
 		return diagnostics;
 	}
 
@@ -356,7 +349,11 @@ export class IoNameDatFile extends RobotControllerFile {
 				return;
 			}
 		
-			const replaceText = this.diagnosticCodeActionTable?.get( diag.data as number );
+			if( typeof diag.data !== "string" ) {
+				return;
+			}
+			
+			const replaceText = diag.data as string;
 			if( !replaceText ) {
 				return;
 			}

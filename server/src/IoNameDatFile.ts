@@ -356,7 +356,7 @@ export class IoNameDatFile extends RobotControllerFile {
 				return;
 			}
 
-			const title = "Change name to comment";
+			const title = this.tr("ionamedatfile.quickfix.name.toComment");
 
 			const edits = [TextEdit.replace(diag.range, replaceText)];
 

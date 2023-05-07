@@ -131,6 +131,7 @@
 	"jbifile.diagnostic.tag.T=.warningDecimalRange": "YRC1000では、Tの値は小数点2桁以下である必要があります。",
 
 	"ionamedatfile.diagnostic.name.duplicated": "\"{0}\" は他のIO名と重複した名前です。",
+	"ionamedatfile.quickfix.name.toComment": "IO名をコメントに変更します。",
 
 	"varnamedatfile.diagnostic.name.duplicated": "\"{0}\" は他の変数名と重複した名前です。",
 

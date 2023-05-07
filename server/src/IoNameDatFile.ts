@@ -317,8 +317,6 @@ export class IoNameDatFile extends RobotControllerFile {
 				errorMessage = this.tr( "varnamedatfile.diagnostic.name.duplicated", ioName );
 			}
 
-			const diagnosticNo = diagnostics.length;
-
 			diagnostics.push({
 				severity: DiagnosticSeverity.Information,
 				range: range,

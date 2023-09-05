@@ -2,7 +2,7 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
-## [Unreleased]
+## [1.4.0] - 2023-09-05
 ### Added
 - Support Diagnosis to check duplicated IO names for IONAME.DAT.
 - Support Diagnosis to check duplicated Variable names for VARNAME.DAT.

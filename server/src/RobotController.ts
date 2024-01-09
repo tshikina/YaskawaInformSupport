@@ -16,6 +16,7 @@ import { IoMNameDatFile } from './IoMNameDatFile';
 import { PscFile } from './PscFile';
 import { RobotControllerFile } from './RobotControllerFile';
 import { VarNameDatFile } from './VarNameDatFile';
+import { CioPrgLstFile } from './CioPrgLstFile';
 
 export class RobotController {
 	private workspace: Workspace;
@@ -231,6 +232,9 @@ export class RobotController {
 		}
 		else if( fileName == "IOMNAME.DAT") {
 			file = new IoMNameDatFile( this, filePath );
+		}
+		else if( fileName == "CIOPRG.LST") {
+			file = new CioPrgLstFile( this, filePath );
 		}
 		else if( extname == ".PSC") {
 			file = new PscFile( this, filePath );

@@ -2,6 +2,16 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
+## [Unreleased]
+### Added
+- Support Hover to show IO name for CIOPRG.LST.
+
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
+
 ## [1.4.0] - 2023-09-05
 ### Added
 - Support Diagnosis to check duplicated IO names for IONAME.DAT.

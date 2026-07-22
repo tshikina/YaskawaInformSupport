@@ -20,6 +20,7 @@ import { VarNameDatFile } from './VarNameDatFile';
 export class RobotController {
 	private workspace: Workspace;
 	private folderPath: string;
+	private systemFileFolderPath: string | undefined;
 	private options = new RobotControllerOptions(this);
 
 	// files
@@ -28,6 +29,21 @@ export class RobotController {
 	constructor( workspace: Workspace, folderPath: string ) {
 		this.workspace = workspace;
 		this.folderPath = folderPath;
+	}
+
+	updateSettings( resourceFilePath: string ) {
+		this.workspace.getDocumentSettings(Util.fsPathToUriString(resourceFilePath)).then(settings => {
+			const searchFolder = settings?.systemFileFolder?.trim();
+
+			if (searchFolder && searchFolder.length > 0) {
+				this.systemFileFolderPath = path.isAbsolute(searchFolder)
+					? searchFolder
+					: path.resolve(this.folderPath, searchFolder);
+			}
+			else {
+				this.systemFileFolderPath = undefined;
+			}
+		});
 	}
 
 	getWorkspace() : Workspace {
@@ -50,6 +66,11 @@ export class RobotController {
 	 */
 	getFilePath( fileName: string ) {
 		return path.join(this.folderPath, fileName);
+	}
+
+	getSystemFilePath( fileName: string ) {
+		const basePath = this.systemFileFolderPath ?? this.folderPath;
+		return path.join(basePath, fileName);
 	}
 
 	getJbiFilePath( jobName: string ) {
@@ -83,7 +104,7 @@ export class RobotController {
 	 * @return null: file is not found
 	 */
 	getParameterValue( parameterType: string, parameterNumber: number ): number | null | undefined {
-		const parameterFilePath = path.join(this.folderPath, 'ALL.PRM');
+		const parameterFilePath = this.getSystemFilePath('ALL.PRM');
 		const file = this.getParameterFile( parameterFilePath );
 
 		if( !file ) {
@@ -94,7 +115,7 @@ export class RobotController {
 	}
 
 	getParameterLocation( parameterType: string, parameterNumber: number ): Location | null {
-		const parameterFilePath = path.join(this.folderPath, 'ALL.PRM');
+		const parameterFilePath = this.getSystemFilePath('ALL.PRM');
 
 		const file = this.getParameterFile( parameterFilePath );
 
@@ -118,7 +139,7 @@ export class RobotController {
 		const ioNameFiles = ["IONAME.DAT", "EXIONAME.DAT"];
 
 		for( let i = 0; i < ioNameFiles.length; i++ ) {
-			const ioNameFilePath = path.join(this.folderPath, ioNameFiles[i]);
+			const ioNameFilePath = this.getSystemFilePath(ioNameFiles[i]);
 			const file = this.getIoNameDatFile( ioNameFilePath );
 			const ioNameRange = file?.getIoNameRange(logicalIoNumber);
 
@@ -136,7 +157,7 @@ export class RobotController {
 	}
 
 	getVarNameLocation( varType: string, varNumber: number ): Location | null {
-		const varNameFilePath = path.join(this.folderPath, 'VARNAME.DAT');
+		const varNameFilePath = this.getSystemFilePath('VARNAME.DAT');
 
 		const file = this.getVarNameDatFile( varNameFilePath );
 
@@ -163,7 +184,7 @@ export class RobotController {
 	 * @returns variable name
 	 */
 	getVarname( varType: string, varNumber: number ): string | undefined {
-		const varNameFilePath = path.join(this.folderPath, "VARNAME.DAT" );
+		const varNameFilePath = this.getSystemFilePath("VARNAME.DAT");
 		const file = this.getVarNameDatFile( varNameFilePath );
 
 		return file?.getVarName( varType, varNumber );
@@ -180,7 +201,7 @@ export class RobotController {
 		let ioName: string | undefined;
 
 		for( let i = 0; i < ioNameFiles.length; i++ ) {
-			const ioNameFilePath = path.join(this.folderPath, ioNameFiles[i]);
+			const ioNameFilePath = this.getSystemFilePath(ioNameFiles[i]);
 			const file = this.getIoNameDatFile( ioNameFilePath );
 
 			ioName = file?.getIoName(logicalIoNumber);

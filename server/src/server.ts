@@ -164,10 +164,12 @@ function getRobotControllerFromFsPath( fsPath: string ) {
 	let robotController = robotControllerMap.get( folderPath );
 
 	if( robotController ) {
+		robotController.updateSettings(fsPath);
 		return robotController;
 	}
 
 	robotController = new RobotController( workspace, folderPath );
+	robotController.updateSettings(fsPath);
 
 	robotControllerMap.set( folderPath, robotController );
 	

@@ -17,6 +17,7 @@ import { start } from 'repl';
 interface InformExtensionSettings {
 	maxNumberOfProblems: number;
 	locale: string;
+	systemFileFolderPath: string;
 	unknownCommands: {
 		diagnosisLevel: string;
 	};
@@ -32,6 +33,7 @@ export class Workspace {
 	defaultSettings: InformExtensionSettings = {
 		maxNumberOfProblems: 1000,
 		locale: "en",
+		systemFileFolderPath: "",
 		unknownCommands: {
 			diagnosisLevel: "none"
 		}

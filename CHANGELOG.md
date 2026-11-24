@@ -2,6 +2,10 @@
 
 All notable changes to the "inform-job-support" extension will be documented in this file.
 
+## [1.5.0] - 2026-11-24
+### Added
+- Added a setting to specify the target folder for search.
+
 ## [1.4.0] - 2023-09-05
 ### Added
 - Support Diagnosis to check duplicated IO names for IONAME.DAT.

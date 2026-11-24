@@ -205,6 +205,12 @@
                     "default": 100,
                     "description": "Controls the maximum number of problems produced by the server."
                 },
+                "yaskawaInformLanguageClient.systemFileFolder": {
+                    "scope": "resource",
+                    "type": "string",
+                    "default": "",
+                    "description": "Relative folder path used to search for system files such as 'VAR.DAT' and 'VARNAME.DAT'."
+                },
                 "yaskawaInformLanguageClient.trace.server": {
                     "scope": "window",
                     "type": "string",
